@@ -1,3 +1,16 @@
+# Branches
+`git checkout -b x-name`
+
+x reference to issue
+
+# Commits
+
+`git commit -p`
+
+Split diff to exclude non-necesary code
+
+#x in commit message
+
 # Installation
 
 `npm install -g @angular/cli`
