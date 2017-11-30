@@ -1,20 +1,20 @@
-# Branches
+# Installation
+
+`npm install -g @angular/cli`
+`npm install babylonjs --save`
+
+## Branches
 `git checkout -b x-name`
 
 x reference to issue
 
-# Commits
+## Commits
 
 `git commit -p`
 
 Split diff to exclude non-necesary code
 
 #x in commit message
-
-# Installation
-
-`npm install -g @angular/cli`
-`npm install babylonjs --save`
 
 # Babylon
 
