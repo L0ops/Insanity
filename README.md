@@ -3,6 +3,19 @@
 `npm install -g @angular/cli`
 `npm install babylonjs --save`
 
+## Branches
+`git checkout -b x-name`
+
+x reference to issue
+
+## Commits
+
+`git commit -p`
+
+Split diff to exclude non-necesary code
+
+#x in commit message
+
 # Babylon
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.2.

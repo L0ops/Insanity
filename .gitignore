@@ -8,10 +8,6 @@ yarn-error.log*
 # Mac users
 .DS_Store
 
-# TypeScript cli
-.angular-cli.json
-.editorconfig
-
 # Runtime data
 pids
 *.pid
