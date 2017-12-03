@@ -20,6 +20,7 @@ export default class KeyBind {
   public bindMoveRight(value:string){
     var self = this;
     mousetrap.bind(value,function(){
+      self.player.sprite.invertU = 0;
       self.player.moveLeft = false;
       self.player.moveRight = true;
       self.player.move();
@@ -37,6 +38,7 @@ export default class KeyBind {
   public bindMoveLeft(value:string){
     var self = this;
     mousetrap.bind(value,function(){
+      self.player.sprite.invertU = 1;
       self.player.moveRight = false;
       self.player.moveLeft = true;
       self.player.move();
