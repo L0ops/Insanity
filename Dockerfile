@@ -6,10 +6,10 @@ VOLUME ["/app"]
 WORKDIR /app
 
 ADD package.json /app/
-RUN npm install
+RUN npm install --no-shrinkwrap --update-binary
 ADD . /app
 
 EXPOSE 4200
 
 ENTRYPOINT ["/usr/local/bin/npm"]
-CMD ["start"]
+CMD ["run", "ng", "--", "serve", "--host", "0.0.0.0"]

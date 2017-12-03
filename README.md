@@ -47,6 +47,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Docker
 
 If you want to build and use *ng serve* for development, you need to install dependencies in your local repository.
+For mac user, you can skip *--user $UID:$(id -g $UID)*.
 ```bash
 $ docker build -t insanity .
 $ docker run --rm -it -v $PWD:/app --user $UID:$(id -g $UID) insanity install
@@ -59,5 +60,5 @@ $ docker run --rm -it -v $PWD:/app -p 4200:4200 insanity
 
 Otherwise, you can use the base image if you don't want node_modules/ folder.
 ```bash
-$ docker run --rm -it -p 4200:4200
+$ docker run --rm -it -p 4200:4200 insanity
 ```
