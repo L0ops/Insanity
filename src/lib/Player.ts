@@ -1,8 +1,12 @@
+import KeyBind from './KeyBind';
+import Key from './Key';
 export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public animated: Boolean;
+  public keybind : KeyBind;
+  private key : Key;
   private animations;
 
   constructor(pathName: string, scene: BABYLON.Scene, animations) {
@@ -15,6 +19,13 @@ export default class Player {
     this.animated = false;
     this.animations = animations;
     this.idle();
+  }
+
+  public setKeys(key:Key) {
+    this.key = key;
+    this.key.used = true;
+    console.log("set keys", key, "player", this);
+    this.keybind = new KeyBind(this.key, this);
   }
 
   public move() {

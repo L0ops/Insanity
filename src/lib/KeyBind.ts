@@ -1,21 +1,22 @@
 import mousetrap from 'mousetrap';
 import Player from './Player';
+import Key from './Key';
 
 export default class KeyBind {
   public player: Player;
-  public keys;
+  public key: Key;
 
-  constructor(keys, player: Player) {
+  constructor(key: Key, player: Player) {
     this.player = player;
-    this.setBinds(keys);
+    this.setBinds(key);
   }
 
-  public setBinds(keys) {
-    this.keys = keys;
-    this.bindMoveRight(keys.right);
-    this.bindReleaseRight(keys.right);
-    this.bindMoveLeft(keys.left);
-    this.bindReleaseLeft(keys.left);
+  public setBinds(key: Key) {
+    this.key = key;
+    this.bindMoveRight(key.right);
+    this.bindReleaseRight(key.right);
+    this.bindMoveLeft(key.left);
+    this.bindReleaseLeft(key.left);
   }
 
   public bindMoveRight(value: string) {
@@ -50,15 +51,14 @@ export default class KeyBind {
     }, 'keyup');
   }
 
-  public resetBinds(keys) {
-    mousetrap.unbind(this.keys.right);
-    mousetrap.unbind(this.keys.left);
-    mousetrap.unbind(this.keys.right, 'keyup');
-    mousetrap.unbind(this.keys.left, 'keyup');
+  public resetBinds() {
+    console.log('resetBinds', this.player);
+    mousetrap.unbind(this.key.right);
+    mousetrap.unbind(this.key.left);
+    mousetrap.unbind(this.key.right, 'keyup');
+    mousetrap.unbind(this.key.left, 'keyup');
     this.player.moveLeft = false;
     this.player.moveRight = false;
     this.player.idle();
-    this.setBinds(keys);
   }
-
 }
