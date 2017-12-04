@@ -12,6 +12,7 @@ export default class Player {
   constructor(pathName: string, scene: BABYLON.Scene, animations, name: string) {
     const spriteManagerPlayer = new BABYLON.SpriteManager("pm_" + name, pathName, 2, 80, scene);
     const sprite = new BABYLON.Sprite(name, spriteManagerPlayer);
+
     sprite.size = 1;
     this.sprite = sprite;
     this.animated = false;

@@ -34,7 +34,6 @@ export class AppComponent implements  AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-
     const playersPath = {mark: '../assets/mark.png'};
 
     // exemple of 1 player animations
@@ -78,8 +77,8 @@ export class AppComponent implements  AfterViewInit {
       BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0, restitution: 0},
       scene);
 
-    scene.registerBeforeRender(function() {
-      for (var i in players) {
+    scene.registerBeforeRender(function () {
+      for (const i in players) {
         if (players[i].moveLeft) {
           players[i].body.move(-0.05);
         } else if (players[i].moveRight) {
