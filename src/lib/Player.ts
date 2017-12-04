@@ -1,6 +1,3 @@
-// import * as BABYLON from 'babylonjs';
-import mousetrap from 'mousetrap';
-
 export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
@@ -9,8 +6,8 @@ export default class Player {
   private animations;
 
   constructor(pathName: string, scene: BABYLON.Scene, animations) {
-    var spriteManagerPlayer = new BABYLON.SpriteManager("playerManagr", pathName, 2, 80, scene);
-    var sprite = new BABYLON.Sprite("player", spriteManagerPlayer);
+    const spriteManagerPlayer = new BABYLON.SpriteManager('playerManager', pathName, 2, 80, scene);
+    const sprite = new BABYLON.Sprite('player', spriteManagerPlayer);
 
     sprite.position.y = -0.3;
     sprite.size = 1;
