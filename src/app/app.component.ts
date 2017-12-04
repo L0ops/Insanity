@@ -10,7 +10,7 @@ import KeyGenerator from '../lib/KeyGenerator';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements  AfterViewInit {
+export class AppComponent implements AfterViewInit {
   title = 'Babylon';
   private canvas;
   private engine;
@@ -57,7 +57,7 @@ export class AppComponent implements  AfterViewInit {
         speed: 300
       }
     };
-    // exemple return of get animations from api
+    // example return of get animations from api
     const animations = {mark: markAnimation};
 
     const player = new Player(playersPath.mark, scene, animations.mark);
