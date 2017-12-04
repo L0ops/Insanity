@@ -8,7 +8,7 @@ import KeyBind from '../lib/KeyBind';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements  AfterViewInit {
+export class AppComponent implements AfterViewInit {
   title = 'Babylon';
   private canvas;
   private engine;
@@ -35,7 +35,7 @@ export class AppComponent implements  AfterViewInit {
 
     const playersPath = {mark: '../assets/mark.png'};
 
-    // exemple of 1 player animations
+    // example of 1 player animations
     const markAnimation = {
       idle: {
         begin: 0,
@@ -48,20 +48,20 @@ export class AppComponent implements  AfterViewInit {
         speed: 300
       }
     };
-    // exemple return of get animations from api
+    // example return of get animations from api
     const animations = {mark: markAnimation};
 
     const player = new Player(playersPath.mark, scene, animations.mark);
-    const playerControle = {left: 'a', right: 'd'};
-    const playerKeys = new KeyBind(playerControle, player);
+    const playerControl = {left: 'a', right: 'd'};
+    const playerKeys = new KeyBind(playerControl, player);
 
     const player2 = new Player(playersPath.mark, scene, animations.mark);
-    const player2Controle = {left: 'j', right: 'l'};
-    const player2Keys = new KeyBind(player2Controle, player2);
+    const player2Control = {left: 'j', right: 'l'};
+    const player2Keys = new KeyBind(player2Control, player2);
 
     setTimeout(function () {
-      const changeKeysControle = {left: 'q', right: 'e'};
-      playerKeys.resetBinds(changeKeysControle);
+      const changeKeysControl = {left: 'q', right: 'e'};
+      playerKeys.resetBinds(changeKeysControl);
     }, 10000);
 
     const players = [];
