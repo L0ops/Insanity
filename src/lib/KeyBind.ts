@@ -4,7 +4,8 @@ import Player from './Player';
 export default class KeyBind {
   public player: Player;
   public keys;
-  constructor(keys, player:Player) {
+
+  constructor(keys, player: Player) {
     this.player = player;
     this.setBinds(keys);
   }
@@ -17,39 +18,35 @@ export default class KeyBind {
     this.bindReleaseLeft(keys.left);
   }
 
-  public bindMoveRight(value:string){
-    var self = this;
-    mousetrap.bind(value,function(){
-      self.player.sprite.invertU = 0;
-      self.player.moveLeft = false;
-      self.player.moveRight = true;
-      self.player.move();
+  public bindMoveRight(value: string) {
+    mousetrap.bind(value, () => {
+      this.player.sprite.invertU = 0;
+      this.player.moveLeft = false;
+      this.player.moveRight = true;
+      this.player.move();
     });
   }
 
-  public bindReleaseRight(value:string) {
-    var self = this;
-    mousetrap.bind(value, function() {
-      self.player.moveRight = false;
-      self.player.idle();
+  public bindReleaseRight(value: string) {
+    mousetrap.bind(value, () => {
+      this.player.moveRight = false;
+      this.player.idle();
     }, 'keyup');
   }
 
-  public bindMoveLeft(value:string){
-    var self = this;
-    mousetrap.bind(value,function(){
-      self.player.sprite.invertU = 1;
-      self.player.moveRight = false;
-      self.player.moveLeft = true;
-      self.player.move();
+  public bindMoveLeft(value: string) {
+    mousetrap.bind(value, () => {
+      this.player.sprite.invertU = 1;
+      this.player.moveRight = false;
+      this.player.moveLeft = true;
+      this.player.move();
     });
   }
 
-  public bindReleaseLeft(value:string) {
-    var self = this;
-    mousetrap.bind(value, function() {
-      self.player.moveLeft = false;
-      self.player.idle();
+  public bindReleaseLeft(value: string) {
+    mousetrap.bind(value, () => {
+      this.player.moveLeft = false;
+      this.player.idle();
     }, 'keyup');
   }
 
