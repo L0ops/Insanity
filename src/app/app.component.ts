@@ -57,14 +57,12 @@ export class AppComponent implements AfterViewInit {
     const playerControle = {left: 'a', right: 'd'};
     const playerKeys = new KeyBind(playerControle, player);
     player.body.mesh.position.x -= 3;
-    player.body.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(player.body.mesh,
-      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 70, friction: 0.5}, scene);
+    player.body.applyPhysics(scene);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
     const player2Controle = {left:'j', right:'l'};
     const player2Keys = new KeyBind(player2Controle, player2);
-    player2.body.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(player2.body.mesh,
-      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 70, friction: 0.5}, scene);
+    player2.body.applyPhysics(scene);
 
     setTimeout(function () {
       const changeKeysControl = {left: 'q', right: 'e'};
