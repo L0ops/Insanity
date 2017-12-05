@@ -2,6 +2,8 @@ import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import Player from '../lib/Player';
 import KeyBind from '../lib/KeyBind';
+import Key from '../lib/Key';
+import KeyGenerator from '../lib/KeyGenerator';
 
 @Component({
   selector: 'app-root',
@@ -36,7 +38,14 @@ export class AppComponent implements AfterViewInit {
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
     const playersPath = {mark: '../assets/mark.png'};
 
-    // example of 1 player animations
+    const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
+    const keys = [];
+    for (var i in keys_array) {
+      var key = new Key(keys_array[i][0], keys_array[i][1]);
+      keys.push(key);
+    }
+    console.log(keys);
+    // exemple of 1 player animations
     const markAnimation = {
       idle: {
         begin: 0,
@@ -54,20 +63,11 @@ export class AppComponent implements AfterViewInit {
     const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
 
     const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
-    const playerControle = {left: 'a', right: 'd'};
-    const playerKeys = new KeyBind(playerControle, player);
     player.body.mesh.position.x -= 3;
     player.body.applyPhysics(scene);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
-    const player2Controle = {left:'j', right:'l'};
-    const player2Keys = new KeyBind(player2Controle, player2);
     player2.body.applyPhysics(scene);
-
-    setTimeout(function () {
-      const changeKeysControl = {left: 'q', right: 'e'};
-      playerKeys.resetBinds(changeKeysControl);
-    }, 10000);
 
     const players = [];
     players.push(player);
@@ -78,6 +78,12 @@ export class AppComponent implements AfterViewInit {
     plane.physicsImpostor = new BABYLON.PhysicsImpostor(plane,
       BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0.5, restitution: 0},
       scene);
+    KeyGenerator.getInstance().addKeys(keys).addPlayers(players).generate();
+
+    setTimeout(function () {
+      KeyGenerator.getInstance().clean();
+      KeyGenerator.getInstance().generate();
+    }, 10000);
 
     scene.registerBeforeRender(function () {
       for (const i in players) {

@@ -1,11 +1,15 @@
 import mousetrap from 'mousetrap';
 import PlayerBody from '../lib/PlayerBody';
+import KeyBind from './KeyBind';
+import Key from './Key';
 
 export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public animated: Boolean;
+  public keybind : KeyBind;
+  private key : Key;
   private animations;
   public body: PlayerBody;
 
@@ -19,6 +23,13 @@ export default class Player {
     this.body = new PlayerBody(this.sprite, scene);
     this.sprite.position = this.body.mesh.position;
     this.idle();
+  }
+
+  public setKeys(key:Key) {
+    this.key = key;
+    this.key.used = true;
+    console.log("set keys", key, "player", this);
+    this.keybind = new KeyBind(this.key, this);
   }
 
   public move() {
