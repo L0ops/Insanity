@@ -1,5 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
+import * as p2 from 'p2';
 import Player from '../lib/Player';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
@@ -32,7 +33,6 @@ export class AppComponent implements AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
-    scene.enablePhysics();
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
       idle: {
         begin: 0,
         end: 3,
-        speed: 300
+        speed: 100
       },
       move: {
         begin: 4,
@@ -62,22 +62,34 @@ export class AppComponent implements AfterViewInit {
     const animations = {mark: markAnimation};
     const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
 
+    var world = new p2.World({
+      gravity: [0, -9.82]
+    });
+
     const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
-    player.body.mesh.position.x -= 3;
-    player.body.applyPhysics(scene);
+    player.body.position[0] -= 3;
+    world.addBody(player.body);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
-    player2.body.applyPhysics(scene);
+    world.addBody(player2.body);
 
     const players = [];
     players.push(player);
     players.push(player2);
 
-    var plane = BABYLON.MeshBuilder.CreateBox("ground", {width: 10, height: 1}, scene);
-    plane.position.y = -player.sprite.width;
-    plane.physicsImpostor = new BABYLON.PhysicsImpostor(plane,
-      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0.5, restitution: 0},
-      scene);
+    const groundBody = new p2.Body({mass: 0});
+    const groundPlane = new p2.Plane();
+    const groundMaterial = new p2.Material();
+    groundPlane.material = groundMaterial;
+    groundBody.addShape(groundPlane);
+    world.addBody(groundBody);
+
+    for (var i in players) {
+      world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
+        friction: 2.0
+      }));
+    }
+
     KeyGenerator.getInstance().addKeys(keys).addPlayers(players).generate();
 
     setTimeout(function () {
@@ -86,14 +98,21 @@ export class AppComponent implements AfterViewInit {
     }, 10000);
 
     scene.registerBeforeRender(function () {
-      for (const i in players) {
+      world.step(1/60);
+
+      for (var i in players) {
         if (players[i].moveLeft) {
-          players[i].body.move(-0.05);
-        } else if (players[i].moveRight) {
-          players[i].body.move(0.05);
+          players[i].move(-2.5);
         }
-        players[i].body.update();
+        else if (players[i].moveRight)  {
+          players[i].move(2.5);
+        }
+        else {
+          players[i].move(0);
+        }
+        players[i].update();
       }
+
     });
     return scene;
   };
