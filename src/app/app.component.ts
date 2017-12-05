@@ -46,6 +46,11 @@ export class AppComponent implements AfterViewInit {
         begin: 4,
         end: 7,
         speed: 300
+      },
+      dash: {
+        begin: 14,
+        end: 16,
+        speed: 50
       }
     };
     // example return of get animations from api
@@ -73,6 +78,11 @@ export class AppComponent implements AfterViewInit {
           players[i].sprite.position.x -= .05;
         } else if (players[i].moveRight) {
           players[i].sprite.position.x += .05;
+        } else if (players[i].doDash && players[i].dashLeft) {
+          players[i].sprite.position.x -= .07;
+        } else if (players[i].doDash && players[i].dashRight) {
+          players[i].sprite.position.x += .07;
+
         }
       }
     });

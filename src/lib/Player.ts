@@ -2,6 +2,11 @@ export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
+  public doDash: Boolean;
+  public dashRight: Boolean;
+  public dashLeft: Boolean;
+  public lastMoveR: number;
+  public lastMoveL: number;
   public animated: Boolean;
   private animations;
 
@@ -15,6 +20,25 @@ export default class Player {
     this.animated = false;
     this.animations = animations;
     this.idle();
+  }
+
+  public dash() {
+    this.doDash = true;
+    this.sprite.stopAnimation();
+    this.sprite.playAnimation(
+      this.animations.dash.begin,
+      this.animations.dash.end,
+      false,
+      this.animations.dash.speed,
+      null);
+    setTimeout( () => {
+      this.doDash = false;
+      if (this.moveRight || this.moveLeft) {
+        this.move();
+      } else {
+        this.idle();
+      }
+    }, 500);
   }
 
   public move() {
