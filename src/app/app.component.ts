@@ -8,7 +8,7 @@ import KeyBind from '../lib/KeyBind';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements  AfterViewInit {
+export class AppComponent implements AfterViewInit {
   title = 'Babylon';
   private canvas;
   private engine;
@@ -36,7 +36,7 @@ export class AppComponent implements  AfterViewInit {
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
     const playersPath = {mark: '../assets/mark.png'};
 
-    // exemple of 1 player animations
+    // example of 1 player animations
     const markAnimation = {
       idle: {
         begin: 0,
@@ -49,7 +49,7 @@ export class AppComponent implements  AfterViewInit {
         speed: 300
       }
     };
-    // exemple return of get animations from api
+    // example return of get animations from api
     const animations = {mark: markAnimation};
     const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
 
@@ -65,6 +65,11 @@ export class AppComponent implements  AfterViewInit {
     const player2Keys = new KeyBind(player2Controle, player2);
     player2.body.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(player2.body.mesh,
       BABYLON.PhysicsImpostor.BoxImpostor, {mass: 70, friction: 0.5}, scene);
+
+    setTimeout(function () {
+      const changeKeysControl = {left: 'q', right: 'e'};
+      playerKeys.resetBinds(changeKeysControl);
+    }, 10000);
 
     const players = [];
     players.push(player);
