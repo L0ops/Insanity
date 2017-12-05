@@ -30,4 +30,12 @@ export default class Block {
   public move(x: number) {
     this.body.velocity[0] = x;
   }
+
+  protected updateShape() {
+    this.shape = new p2.Box({
+      width: this.sprite.width/2,
+      height: this.sprite.height
+    });
+    this.body.addShape(this.shape);
+  }
 }

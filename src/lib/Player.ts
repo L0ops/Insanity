@@ -1,9 +1,10 @@
 import mousetrap from 'mousetrap';
 import KeyBind from './KeyBind';
 import Key from './Key';
+import Block from './Block';
 import * as p2 from 'p2';
 
-export default class Player {
+export default class Player extends Block {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
@@ -17,33 +18,17 @@ export default class Player {
   private key : Key;
   private animations;
 
-  public body:      p2.Body;
-  public material:  p2.Material;
-  private shape:    p2.Box;
-
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    this.sprite = new BABYLON.Sprite(name, manager);
-    this.sprite.size = 1;
-    this.animated = false;
-    this.animations = animations;
-    this.idleAnim();
-
-    this.shape = new p2.Box({
-      width: this.sprite.width/2,
-      height: this.sprite.height
-    });
+    super(name, scene, manager);
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.sprite.position.x, this.sprite.position.y + this.sprite.height/2]
     });
-    this.material = new p2.Material();
-    this.shape.material = this.material;
-    this.body.addShape(this.shape);
-  }
+    this.updateShape();
 
-  public update() {
-    this.sprite.position.x = this.body.position[0];
-    this.sprite.position.y = this.body.position[1];
+    this.animated = false;
+    this.animations = animations;
+    this.idleAnim();
   }
 
   public setKeys(key:Key) {
@@ -94,9 +79,5 @@ export default class Player {
       this.animations.idle.speed,
       null);
     this.animated = false;
-  }
-
-  public move(x: number) {
-    this.body.velocity[0] = x;
   }
 }
