@@ -8,6 +8,11 @@ export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
+  public doDash: Boolean;
+  public dashRight: Boolean;
+  public dashLeft: Boolean;
+  public lastMoveR: number;
+  public lastMoveL: number;
   public animated: Boolean;
   public keybind : KeyBind;
   private key : Key;
@@ -53,6 +58,25 @@ export default class Player {
     this.key.used = true;
     console.log("set keys", key, "player", this);
     this.keybind = new KeyBind(this.key, this);
+  }
+
+  public dash() {
+    this.doDash = true;
+    this.sprite.stopAnimation();
+    this.sprite.playAnimation(
+      this.animations.dash.begin,
+      this.animations.dash.end,
+      false,
+      this.animations.dash.speed,
+      null);
+    setTimeout( () => {
+      this.doDash = false;
+      if (this.moveRight || this.moveLeft) {
+        this.move();
+      } else {
+        this.idle();
+      }
+    }, 500);
   }
 
   public moveAnim() {
