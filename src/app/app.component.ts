@@ -32,9 +32,10 @@ export class AppComponent implements AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
+    scene.enablePhysics();
+
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-
     const playersPath = {mark: '../assets/mark.png'};
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
@@ -59,14 +60,24 @@ export class AppComponent implements AfterViewInit {
     };
     // example return of get animations from api
     const animations = {mark: markAnimation};
+    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
 
-    const player = new Player(playersPath.mark, scene, animations.mark);
-    const player2 = new Player(playersPath.mark, scene, animations.mark);
+    const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
+    player.body.mesh.position.x -= 3;
+    player.body.applyPhysics(scene);
+
+    const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
+    player2.body.applyPhysics(scene);
 
     const players = [];
     players.push(player);
     players.push(player2);
 
+    var plane = BABYLON.MeshBuilder.CreateBox("ground", {width: 10, height: 1}, scene);
+    plane.position.y = -player.sprite.width;
+    plane.physicsImpostor = new BABYLON.PhysicsImpostor(plane,
+      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0.5, restitution: 0},
+      scene);
     KeyGenerator.getInstance().addKeys(keys).addPlayers(players).generate();
 
     setTimeout(function () {
@@ -77,10 +88,11 @@ export class AppComponent implements AfterViewInit {
     scene.registerBeforeRender(function () {
       for (const i in players) {
         if (players[i].moveLeft) {
-          players[i].sprite.position.x -= .05;
+          players[i].body.move(-0.05);
         } else if (players[i].moveRight) {
-          players[i].sprite.position.x += .05;
+          players[i].body.move(0.05);
         }
+        players[i].body.update();
       }
     });
     return scene;

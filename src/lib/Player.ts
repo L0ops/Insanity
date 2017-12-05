@@ -1,5 +1,8 @@
+import mousetrap from 'mousetrap';
+import PlayerBody from '../lib/PlayerBody';
 import KeyBind from './KeyBind';
 import Key from './Key';
+
 export default class Player {
   public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
@@ -8,16 +11,17 @@ export default class Player {
   public keybind : KeyBind;
   private key : Key;
   private animations;
+  public body: PlayerBody;
 
-  constructor(pathName: string, scene: BABYLON.Scene, animations) {
-    const spriteManagerPlayer = new BABYLON.SpriteManager('playerManager', pathName, 2, 80, scene);
-    const sprite = new BABYLON.Sprite('player', spriteManagerPlayer);
+  constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
+    const sprite = new BABYLON.Sprite(name, manager);
 
-    sprite.position.y = -0.3;
     sprite.size = 1;
     this.sprite = sprite;
     this.animated = false;
     this.animations = animations;
+    this.body = new PlayerBody(this.sprite, scene);
+    this.sprite.position = this.body.mesh.position;
     this.idle();
   }
 
