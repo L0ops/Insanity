@@ -1,7 +1,9 @@
 # Installation
 
-`npm install -g @angular/cli`
-`npm install babylonjs --save`
+```
+npm install -g @angular/cli
+npm install
+```
 
 ## Branches
 `git checkout -b x-name`
