@@ -1,4 +1,7 @@
 import mousetrap from 'mousetrap';
+import PlayerBody from '../lib/PlayerBody';
+import KeyBind from './KeyBind';
+import Key from './Key';
 import * as p2 from 'p2';
 
 export default class Player {
@@ -6,6 +9,8 @@ export default class Player {
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public animated: Boolean;
+  public keybind : KeyBind;
+  private key : Key;
   private animations;
 
   public body:      p2.Body;
@@ -35,12 +40,19 @@ export default class Player {
   }
 
   public move(x: number) {
-    this.body.velocity[0] += x;
+    this.body.velocity[0] = x;
   }
 
   public update() {
     this.sprite.position.x = this.body.position[0];
     this.sprite.position.y = this.body.position[1];
+  }
+
+  public setKeys(key:Key) {
+    this.key = key;
+    this.key.used = true;
+    console.log("set keys", key, "player", this);
+    this.keybind = new KeyBind(this.key, this);
   }
 
   public moveAnim() {
