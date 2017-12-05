@@ -1,5 +1,4 @@
 import mousetrap from 'mousetrap';
-import PlayerBody from '../lib/PlayerBody';
 import KeyBind from './KeyBind';
 import Key from './Key';
 import * as p2 from 'p2';
