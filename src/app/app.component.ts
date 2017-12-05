@@ -36,7 +36,7 @@ export class AppComponent implements AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const playersPath = {mark: '../assets/mark.png'};
+    const playersPath = {mark: '../assets/Sprites/cosm1.png'};
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
@@ -58,8 +58,8 @@ export class AppComponent implements AfterViewInit {
         speed: 300
       },
       dash: {
-        begin: 14,
-        end: 16,
+        begin: 10,
+        end: 15,
         speed: 50
       }
     };
