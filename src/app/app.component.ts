@@ -30,7 +30,7 @@ export class AppComponent implements  AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
-    //scene.enablePhysics();
+    scene.enablePhysics();
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
@@ -51,30 +51,29 @@ export class AppComponent implements  AfterViewInit {
     };
     // exemple return of get animations from api
     const animations = {mark: markAnimation};
+    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
 
-    const player = new Player(playersPath.mark, scene, animations.mark, "Sylvain");
+    const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
     const playerControle = {left: 'a', right: 'd'};
     const playerKeys = new KeyBind(playerControle, player);
+    player.body.mesh.position.x -= 3;
+    player.body.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(player.body.mesh,
+      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 70, friction: 0.5}, scene);
 
-    const player2 = new Player(playersPath.mark, scene, animations.mark, "Tristan");
+    const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
     const player2Controle = {left:'j', right:'l'};
     const player2Keys = new KeyBind(player2Controle, player2);
-
-    setTimeout(function () {
-      const changeKeysControle = {left: 'q', right: 'e'};
-      playerKeys.resetBinds(changeKeysControle);
-    }, 10000);
+    player2.body.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(player2.body.mesh,
+      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 70, friction: 0.5}, scene);
 
     const players = [];
     players.push(player);
     players.push(player2);
 
     var plane = BABYLON.MeshBuilder.CreateBox("ground", {width: 10, height: 1}, scene);
-    plane.position.y = player.sprite.position.y - player.sprite.width;
-    plane.position.x = player.sprite.position.x;
-    plane.position.z = player.sprite.position.z;
+    plane.position.y = -player.sprite.width;
     plane.physicsImpostor = new BABYLON.PhysicsImpostor(plane,
-      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0, restitution: 0},
+      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0.5, restitution: 0},
       scene);
 
     scene.registerBeforeRender(function () {
@@ -84,6 +83,7 @@ export class AppComponent implements  AfterViewInit {
         } else if (players[i].moveRight) {
           players[i].body.move(0.05);
         }
+        players[i].body.update();
       }
     });
     return scene;

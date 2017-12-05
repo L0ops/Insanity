@@ -9,15 +9,15 @@ export default class Player {
   private animations;
   public body: PlayerBody;
 
-  constructor(pathName: string, scene: BABYLON.Scene, animations, name: string) {
-    const spriteManagerPlayer = new BABYLON.SpriteManager("pm_" + name, pathName, 2, 80, scene);
-    const sprite = new BABYLON.Sprite(name, spriteManagerPlayer);
+  constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
+    const sprite = new BABYLON.Sprite(name, manager);
 
     sprite.size = 1;
     this.sprite = sprite;
     this.animated = false;
     this.animations = animations;
     this.body = new PlayerBody(this.sprite, scene);
+    this.sprite.position = this.body.mesh.position;
     this.idle();
   }
 
