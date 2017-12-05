@@ -72,9 +72,9 @@ export default class Player {
     setTimeout( () => {
       this.doDash = false;
       if (this.moveRight || this.moveLeft) {
-        this.move();
+        this.moveAnim();
       } else {
-        this.idle();
+        this.idleAnim();
       }
     }, 500);
   }
