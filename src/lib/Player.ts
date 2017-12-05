@@ -22,10 +22,8 @@ export default class Player {
   private shape:    p2.Box;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    const sprite = new BABYLON.Sprite(name, manager);
-
-    sprite.size = 1;
-    this.sprite = sprite;
+    this.sprite = new BABYLON.Sprite(name, manager);
+    this.sprite.size = 1;
     this.animated = false;
     this.animations = animations;
     this.idleAnim();
@@ -41,10 +39,6 @@ export default class Player {
     this.material = new p2.Material();
     this.shape.material = this.material;
     this.body.addShape(this.shape);
-  }
-
-  public move(x: number) {
-    this.body.velocity[0] = x;
   }
 
   public update() {
@@ -100,5 +94,9 @@ export default class Player {
       this.animations.idle.speed,
       null);
     this.animated = false;
+  }
+
+  public move(x: number) {
+    this.body.velocity[0] = x;
   }
 }

@@ -4,6 +4,7 @@ import * as p2 from 'p2';
 import Player from '../lib/Player';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
+import Block from '../lib/Block';
 import KeyGenerator from '../lib/KeyGenerator';
 
 @Component({
@@ -65,7 +66,7 @@ export class AppComponent implements AfterViewInit {
     };
     // example return of get animations from api
     const animations = {mark: markAnimation};
-    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
+    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 3, 80, scene);
 
     var world = new p2.World({
       gravity: [0, -9.82]
@@ -76,21 +77,20 @@ export class AppComponent implements AfterViewInit {
     world.addBody(player.body);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
+    player2.body.position[0] += 3;
     world.addBody(player2.body);
 
     const players = [];
     players.push(player);
     players.push(player2);
 
-    const groundBody = new p2.Body({mass: 0});
-    const groundPlane = new p2.Plane();
-    const groundMaterial = new p2.Material();
-    groundPlane.material = groundMaterial;
-    groundBody.addShape(groundPlane);
-    world.addBody(groundBody);
+    const block = new Block("block1", scene, spriteManagerPlayer);
+    block.body.position[0] -= 3; 
+    block.body.position[1] -= 1; 
+    world.addBody(block.body);
 
     for (var i in players) {
-      world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
+      world.addContactMaterial(new p2.ContactMaterial(block.material, players[i].material, {
         friction: 2.0
       }));
     }
@@ -124,6 +124,7 @@ export class AppComponent implements AfterViewInit {
         }
         players[i].update();
       }
+      block.update();
 
     });
     return scene;
