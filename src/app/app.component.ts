@@ -46,7 +46,7 @@ export class AppComponent implements AfterViewInit {
       move: {
         begin: 4,
         end: 7,
-        speed: 100
+        speed: 300
       }
     };
     // example return of get animations from api
@@ -58,49 +58,24 @@ export class AppComponent implements AfterViewInit {
     });
 
     const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
-    const playerControle = {left: 'a', right: 'd'};
+    const playerControle = {left: 'b', right: 'a'};
     const playerKeys = new KeyBind(playerControle, player);
-    player.sprite.position.x -= 3;
-
-    const playerBox = new p2.Box({width: player.sprite.width,
-      height: player.sprite.height});
-    const playerBody = new p2.Body({mass: 1, fixedRotation: true,
-      position: [player.sprite.position.x, player.sprite.height/2]});
-    const playerMaterial = new p2.Material();
-    playerBox.material = playerMaterial;
-    playerBody.addShape(playerBox);
-
-    world.addBody(playerBody);
+    player.body.position[0] -= 3;
+    world.addBody(player.body);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
-    const player2Controle = {left:'j', right:'l'};
+    const player2Controle = {left:'v', right:'t'};
     const player2Keys = new KeyBind(player2Controle, player2);
+    world.addBody(player2.body);
 
-    const player2Box = new p2.Box({width: player2.sprite.width,
-      height: player2.sprite.height});
-    const player2Body = new p2.Body({mass: 1, fixedRotation: true,
-      position: [player2.sprite.position.x, player2.sprite.height/2]});
-    player2Body.addShape(player2Box);
-    world.addBody(player2Body);
-
-    /*
     setTimeout(function () {
       const changeKeysControl = {left: 'q', right: 'e'};
       playerKeys.resetBinds(changeKeysControl);
     }, 10000);
-    */
 
     const players = [];
     players.push(player);
-    //players.push(player2);
-
-    /*
-    var plane = BABYLON.MeshBuilder.CreateBox("ground", {width: 10, height: 1}, scene);
-    plane.position.y = -player.sprite.width;
-    plane.physicsImpostor = new BABYLON.PhysicsImpostor(plane,
-      BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, friction: 0.5, restitution: 0},
-      scene);
-     */
+    players.push(player2);
 
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
@@ -109,26 +84,25 @@ export class AppComponent implements AfterViewInit {
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
 
-    world.addContactMaterial(new p2.ContactMaterial(groundMaterial, playerMaterial, {
-      friction: 2.0
-    }));
+    for (var i in players) {
+      world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
+        friction: 2.0
+      }));
+    }
 
     scene.registerBeforeRender(function () {
       world.step(1/60);
 
-      if (player.moveLeft) {
-        playerBody.velocity[0] -= 0.5;
-      }
-      else if (player.moveRight)  {
-        playerBody.velocity[0] += 0.5;
+      for (var i in players) {
+        if (players[i].moveLeft) {
+          players[i].move(-0.5);
+        }
+        else if (players[i].moveRight)  {
+          players[i].move(0.5);
+        }
+        players[i].update();
       }
 
-      player.sprite.position.x = playerBody.position[0];
-      player.sprite.position.y = playerBody.position[1];
-
-      player2.sprite.position.x = player2Body.position[0];
-      player2.sprite.position.y = player2Body.position[1];
-      
     });
     return scene;
   };
