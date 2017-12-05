@@ -33,7 +33,7 @@ export class AppComponent {
     var light = new BABYLON.PointLight("Point", new BABYLON.Vector3(5, 10, 5), scene);
     var freeCamera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 0, -10), scene);
 
-    var playersPath = { mark : "../assets/mark.png"};
+    var playersPath = { mark : "../assets/Sprites/cosm1.png"};
 
     // exemple of 1 player animations
     var markAnimation = {
