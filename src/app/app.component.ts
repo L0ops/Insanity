@@ -33,6 +33,10 @@ export class AppComponent implements AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
+    const background = new BABYLON.Layer("back", "../assets/Sprites/map.png", scene);
+          background.isBackground = true;
+          background.texture.level = 0;
+          background.texture.wAng = 0;
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
@@ -102,24 +106,40 @@ export class AppComponent implements AfterViewInit {
       KeyGenerator.getInstance().generate();
     }, 10000);
 
+    world.on('beginContact', function (evt) {
+      if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
+        let dasher: p2.Body;
+        let touched: p2.Body;
+        if (players[evt.bodyA.id - 1].doDash) {
+          dasher = evt.bodyA;
+          touched = evt.bodyB;
+        } else if (players[evt.bodyB.id - 1].doDash) {
+          dasher = evt.bodyB;
+          touched = evt.bodyA;
+        }
+        if (dasher && touched) {
+          console.log(players[dasher.id - 1].sprite.name, "a fait un dash a", players[touched.id - 1].sprite.name);
+          players[touched.id - 1].hitByDash(players[dasher.id - 1].dashLeft ? -1 : 1);
+          players[dasher.id - 1].stopDash();
+        }
+      }
+    });
+
     scene.registerBeforeRender(function () {
       world.step(1/60);
 
       for (var i in players) {
         if (players[i].moveLeft) {
-//           players[i].sprite.position.x -= .05;
-//         } else if (players[i].moveRight) {
-//           players[i].sprite.position.x += .05;
-//         } else if (players[i].doDash && players[i].dashLeft) {
-//           players[i].sprite.position.x -= .07;
-//         } else if (players[i].doDash && players[i].dashRight) {
-//           players[i].sprite.position.x += .07;
-          players[i].move(-2.5);
-        }
-        else if (players[i].moveRight)  {
-          players[i].move(2.5);
-        }
-        else {
+          players[i].move(-4.5);
+        } else if (players[i].moveRight)  {
+          players[i].move(4.5);
+        } else if (players[i].doDash && players[i].dashLeft) {
+          players[i].move(-10);
+        } else if (players[i].doDash && players[i].dashRight) {
+          players[i].move(10);
+        } else if (players[i].hit) {
+          players[i].takeDash();
+        } else {
           players[i].move(0);
         }
         players[i].update();
