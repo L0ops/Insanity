@@ -7,7 +7,6 @@ export default class Player {
   public moveRight: Boolean;
   public animated: Boolean;
   private animations;
-  public body: PlayerBody;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
     const sprite = new BABYLON.Sprite(name, manager);
@@ -16,12 +15,14 @@ export default class Player {
     this.sprite = sprite;
     this.animated = false;
     this.animations = animations;
-    this.body = new PlayerBody(this.sprite, scene);
-    this.sprite.position = this.body.mesh.position;
-    this.idle();
+    this.idleAnim();
   }
 
-  public move() {
+  public move(x: number) {
+
+  }
+
+  public moveAnim() {
     if (!this.animated) {
       this.sprite.stopAnimation();
       this.sprite.playAnimation(
@@ -34,7 +35,7 @@ export default class Player {
     }
   }
 
-  public idle() {
+  public idleAnim() {
     this.sprite.stopAnimation();
     this.sprite.playAnimation(
       this.animations.idle.begin,

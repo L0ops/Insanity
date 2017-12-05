@@ -23,14 +23,14 @@ export default class KeyBind {
       this.player.sprite.invertU = 0;
       this.player.moveLeft = false;
       this.player.moveRight = true;
-      this.player.move();
+      this.player.moveAnim();
     });
   }
 
   public bindReleaseRight(value: string) {
     mousetrap.bind(value, () => {
       this.player.moveRight = false;
-      this.player.idle();
+      this.player.idleAnim();
     }, 'keyup');
   }
 
@@ -39,14 +39,14 @@ export default class KeyBind {
       this.player.sprite.invertU = 1;
       this.player.moveRight = false;
       this.player.moveLeft = true;
-      this.player.move();
+      this.player.moveAnim();
     });
   }
 
   public bindReleaseLeft(value: string) {
     mousetrap.bind(value, () => {
       this.player.moveLeft = false;
-      this.player.idle();
+      this.player.idleAnim();
     }, 'keyup');
   }
 
@@ -57,7 +57,7 @@ export default class KeyBind {
     mousetrap.unbind(this.keys.left, 'keyup');
     this.player.moveLeft = false;
     this.player.moveRight = false;
-    this.player.idle();
+    this.player.idleAnim();
     this.setBinds(keys);
   }
 
