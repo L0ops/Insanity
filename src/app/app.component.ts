@@ -48,7 +48,6 @@ export class AppComponent implements AfterViewInit {
       var key = new Key(keys_array[i][0], keys_array[i][1]);
       keys.push(key);
     }
-    console.log(keys);
     // exemple of 1 player animations
     const markAnimation = {
       idle: {
@@ -122,7 +121,6 @@ export class AppComponent implements AfterViewInit {
           dasher = evt.bodyB.id - 1;
           touched = evt.bodyA.id - 1;
         }
-        console.log(dasher, touched);
         if (dasher != -1 && touched != -1 &&
           players[dasher].doDash && players[touched].doDash) {
           const rand = KeyGenerator.getInstance().getRandomInt(0, 2);
