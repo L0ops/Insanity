@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
 import Block from '../lib/Block';
 import Player from '../lib/Player';
+import Ground from '../lib/Ground';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
 import KeyGenerator from '../lib/KeyGenerator';
@@ -72,8 +73,10 @@ export class AppComponent implements AfterViewInit {
         speed: 90
       }
     };
+
     // example return of get animations from api
     const animations = {mark: markAnimation};
+
     const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath, 3, 80, scene);
 
     var world = new p2.World({
@@ -105,6 +108,14 @@ export class AppComponent implements AfterViewInit {
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
 
+    const widthGround = 1;
+    const heightGround = 1;
+    const groundPath = "../assets/Sprites/tileground.png";
+    const spriteGroundManager = new BABYLON.SpriteManager("managerGround", groundPath, widthGround * heightGround, new BABYLON.Size(80, 36), scene);
+    const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
+    world.addBody(ground.body);
+
+
     for (var i in players) {
       world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
         friction: 2.0
@@ -119,10 +130,12 @@ export class AppComponent implements AfterViewInit {
 
     KeyGenerator.getInstance().addKeys(keys).addPlayers(players).generate();
 
+    /*
     setTimeout(function () {
       KeyGenerator.getInstance().clean();
       KeyGenerator.getInstance().generate();
     }, 10000);
+    */
 
     world.on('beginContact', function (evt) {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
@@ -160,8 +173,10 @@ export class AppComponent implements AfterViewInit {
       for (var i in players) {
         if (players[i].moveLeft) {
           players[i].move(-4.5);
+          console.log(players[i].body.position);
         } else if (players[i].moveRight)  {
           players[i].move(4.5);
+          console.log(players[i].body.position);
         } else if (players[i].doDash && players[i].dashLeft) {
           players[i].move(-10);
         } else if (players[i].doDash && players[i].dashRight) {
