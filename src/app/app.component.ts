@@ -34,10 +34,14 @@ export class AppComponent implements AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
+    const background = new BABYLON.Layer("back", "../assets/Sprites/map.png", scene);
+          background.isBackground = true;
+          background.texture.level = 0;
+          background.texture.wAng = 0;
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const playersPath = "../assets/mark.png";
+    const playersPath = "../assets/Sprites/cosm.png";
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
@@ -45,7 +49,6 @@ export class AppComponent implements AfterViewInit {
       var key = new Key(keys_array[i][0], keys_array[i][1]);
       keys.push(key);
     }
-    console.log(keys);
     // exemple of 1 player animations
     const markAnimation = {
       idle: {
@@ -59,9 +62,14 @@ export class AppComponent implements AfterViewInit {
         speed: 300
       },
       dash: {
-        begin: 14,
-        end: 16,
+        begin: 10,
+        end: 15,
         speed: 50
+      },
+      jump: {
+        begin: 16,
+        end: 21,
+        speed: 90
       }
     };
     // example return of get animations from api
@@ -102,24 +110,51 @@ export class AppComponent implements AfterViewInit {
       KeyGenerator.getInstance().generate();
     }, 10000);
 
+    world.on('beginContact', function (evt) {
+      if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
+        let dasher = -1;
+        let touched = -1;
+        if (players[evt.bodyA.id - 1].doDash) {
+          dasher = evt.bodyA.id - 1;
+          touched = evt.bodyB.id - 1;
+        } else if (players[evt.bodyB.id - 1].doDash) {
+          dasher = evt.bodyB.id - 1;
+          touched = evt.bodyA.id - 1;
+        }
+        if (dasher != -1 && touched != -1 &&
+          players[dasher].doDash && players[touched].doDash) {
+          const rand = KeyGenerator.getInstance().getRandomInt(0, 2);
+          if (rand == 0) {
+            dasher = evt.bodyA.id - 1;
+            touched = evt.bodyB.id - 1;
+          } else {
+            dasher = evt.bodyB.id - 1;
+            touched = evt.bodyA.id- 1;
+          }
+        }
+        if (dasher != -1 && touched != -1) {
+          console.log(players[dasher].sprite.name, "a fait un dash a", players[touched].sprite.name);
+          players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
+          players[dasher].stopDash();
+        }
+      }
+    });
+
     scene.registerBeforeRender(function () {
       world.step(1/60);
 
       for (var i in players) {
         if (players[i].moveLeft) {
-//           players[i].sprite.position.x -= .05;
-//         } else if (players[i].moveRight) {
-//           players[i].sprite.position.x += .05;
-//         } else if (players[i].doDash && players[i].dashLeft) {
-//           players[i].sprite.position.x -= .07;
-//         } else if (players[i].doDash && players[i].dashRight) {
-//           players[i].sprite.position.x += .07;
-          players[i].move(-2.5);
-        }
-        else if (players[i].moveRight)  {
-          players[i].move(2.5);
-        }
-        else {
+          players[i].move(-4.5);
+        } else if (players[i].moveRight)  {
+          players[i].move(4.5);
+        } else if (players[i].doDash && players[i].dashLeft) {
+          players[i].move(-10);
+        } else if (players[i].doDash && players[i].dashRight) {
+          players[i].move(10);
+        } else if (players[i].hit) {
+          players[i].takeDash();
+        } else {
           players[i].move(0);
         }
         players[i].update();
