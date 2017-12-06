@@ -97,6 +97,20 @@ export class AppComponent implements AfterViewInit {
     block.body.position[1] -= 1; 
     world.addBody(block.body);
 
+    const groundBody = new p2.Body({mass: 0});
+    const groundPlane = new p2.Plane();
+    groundBody.position[1] = -3;
+    const groundMaterial = new p2.Material();
+    groundPlane.material = groundMaterial;
+    groundBody.addShape(groundPlane);
+    world.addBody(groundBody);
+
+    for (var i in players) {
+      world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
+        friction: 2.0
+      }));
+    }
+
     for (var i in players) {
       world.addContactMaterial(new p2.ContactMaterial(block.material, players[i].material, {
         friction: 2.0
