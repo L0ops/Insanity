@@ -34,8 +34,8 @@ export default class KeyGenerator {
 
   public generate() {
     for (var i in this.players) {
-      var binded = false;
-      var nb = 0;
+      let binded = false;
+      let nb = 0;
       while (!binded) {
         nb = this.getRandomInt(0, 4);
         if (!this.keys[nb].used) {
