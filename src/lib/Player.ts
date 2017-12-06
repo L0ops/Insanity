@@ -5,6 +5,7 @@ import Block from './Block';
 import * as p2 from 'p2';
 
 export default class Player extends Block {
+  public isMoving: Boolean;
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public doDash: Boolean;

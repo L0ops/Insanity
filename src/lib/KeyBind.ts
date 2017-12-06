@@ -63,6 +63,7 @@ export default class KeyBind {
     setTimeout( () => {
       if (!this.releaseRight) {
         this.player.moveRight = true;
+        this.player.isMoving = true;
         this.player.moveAnim();
       }
       this.player.dashRight = false;
@@ -73,6 +74,7 @@ export default class KeyBind {
   public moveRight(date) {
     this.player.lastMoveR = date;
     this.player.invertU = 0;
+    this.player.isMoving = true;
     this.player.moveLeft = false;
     this.player.moveRight = true;
     this.player.moveAnim();
@@ -83,6 +85,7 @@ export default class KeyBind {
       this.releaseRight = true;
       if (!this.player.moveLeft && !this.player.jumpLeft) {
         this.player.moveRight = false;
+        this.player.isMoving = false;
         if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
         }
@@ -130,6 +133,7 @@ export default class KeyBind {
     setTimeout( () => {
       if (!this.releaseLeft) {
         this.player.moveLeft = true;
+        this.player.isMoving = true;
         this.player.moveAnim();
       }
       this.player.dashLeft = false;
@@ -140,6 +144,7 @@ export default class KeyBind {
   public moveLeft(date) {
     this.player.lastMoveL = date;
     this.player.invertU = 1;
+    this.player.isMoving = true;
     this.player.moveRight = false;
     this.player.moveLeft = true;
     this.player.moveAnim();
@@ -150,6 +155,7 @@ export default class KeyBind {
       this.releaseLeft = true;
       if (!this.player.moveRight && !this.player.jumpRight) {
         this.player.moveLeft = false;
+        this.player.isMoving = false;
         if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
         }
@@ -164,6 +170,7 @@ export default class KeyBind {
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
+    this.player.isMoving = false;
     this.player.moveLeft = false;
     this.player.moveRight = false;
     this.player.idleAnim();
