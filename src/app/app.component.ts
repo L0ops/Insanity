@@ -1,10 +1,10 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
+import Block from '../lib/Block';
 import Player from '../lib/Player';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
-import Block from '../lib/Block';
 import KeyGenerator from '../lib/KeyGenerator';
 
 @Component({
@@ -37,7 +37,7 @@ export class AppComponent implements AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const playersPath = {mark: '../assets/mark.png'};
+    const playersPath = "../assets/mark.png";
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
@@ -66,7 +66,7 @@ export class AppComponent implements AfterViewInit {
     };
     // example return of get animations from api
     const animations = {mark: markAnimation};
-    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 3, 80, scene);
+    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath, 3, 80, scene);
 
     var world = new p2.World({
       gravity: [0, -9.82]

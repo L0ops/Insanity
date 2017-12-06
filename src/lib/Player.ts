@@ -5,7 +5,6 @@ import Block from './Block';
 import * as p2 from 'p2';
 
 export default class Player extends Block {
-  public sprite: BABYLON.Sprite;
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public doDash: Boolean;
@@ -16,18 +15,18 @@ export default class Player extends Block {
   public animated: Boolean;
   public keybind : KeyBind;
   private key : Key;
-  private animations;
+  private animationList;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
     super(name, scene, manager);
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
-      position: [this.sprite.position.x, this.sprite.position.y + this.sprite.height/2]
+      position: [this.position.x, this.position.y + this.height/2]
     });
     this.updateShape();
 
     this.animated = false;
-    this.animations = animations;
+    this.animationList = animations;
     this.idleAnim();
   }
 
@@ -40,12 +39,12 @@ export default class Player extends Block {
 
   public dash() {
     this.doDash = true;
-    this.sprite.stopAnimation();
-    this.sprite.playAnimation(
-      this.animations.dash.begin,
-      this.animations.dash.end,
+    this.stopAnimation();
+    this.playAnimation(
+      this.animationList.dash.begin,
+      this.animationList.dash.end,
       false,
-      this.animations.dash.speed,
+      this.animationList.dash.speed,
       null);
     setTimeout( () => {
       this.doDash = false;
@@ -59,24 +58,24 @@ export default class Player extends Block {
 
   public moveAnim() {
     if (!this.animated) {
-      this.sprite.stopAnimation();
-      this.sprite.playAnimation(
-        this.animations.move.begin,
-        this.animations.move.end,
+      this.stopAnimation();
+      this.playAnimation(
+        this.animationList.move.begin,
+        this.animationList.move.end,
         true,
-        this.animations.move.speed,
+        this.animationList.move.speed,
         null);
       this.animated = true;
     }
   }
 
   public idleAnim() {
-    this.sprite.stopAnimation();
-    this.sprite.playAnimation(
-      this.animations.idle.begin,
-      this.animations.idle.end,
+    this.stopAnimation();
+    this.playAnimation(
+      this.animationList.idle.begin,
+      this.animationList.idle.end,
       true,
-      this.animations.idle.speed,
+      this.animationList.idle.speed,
       null);
     this.animated = false;
   }
