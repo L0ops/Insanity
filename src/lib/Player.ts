@@ -8,12 +8,15 @@ export default class Player {
   public moveLeft: Boolean;
   public moveRight: Boolean;
   public doDash: Boolean;
+  public isJumping: Boolean;
   public dashRight: Boolean;
   public dashLeft: Boolean;
   public hitDirection: number;
   public hit: Boolean;
   public lastMoveR: number;
   public lastMoveL: number;
+  public jumpRight: Boolean;
+  public jumpLeft: Boolean;
   public animated: Boolean;
   public keybind : KeyBind;
   private key : Key;
@@ -81,6 +84,25 @@ export default class Player {
     this.key.used = true;
     console.log("set keys", key, "player", this);
     this.keybind = new KeyBind(this.key, this);
+  }
+
+  public jumpAnim() {
+    this.isJumping = true;
+    this.sprite.stopAnimation();
+    this.sprite.playAnimation(
+      this.animations.jump.begin,
+      this.animations.jump.end,
+      false,
+      this.animations.jump.speed,
+      null);
+    setTimeout(() => {
+      this.isJumping = false;
+      if (this.moveRight || this.moveLeft) {
+        this.moveAnim();
+      } else {
+        this.idleAnim();
+      }
+    }, 100);
   }
 
   public dash() {
