@@ -27,18 +27,20 @@ export default class KeyBind {
     mousetrap.bind(value, () => {
       this.releaseRight = false;
       let date = + new Date();
-      delete this.player.lastMoveL;
-      if (!this.player.moveRight && !this.player.doDash && !this.player.isJumping) {
-        if (!this.player.moveLeft) {
+      if (!this.player.isJumping) {
+        delete this.player.lastMoveL;
+      }
+      if (!this.player.moveRight && !this.player.doDash) {
+        if (!this.player.moveLeft && !this.player.jumpLeft) {
           if (date - this.player.lastMoveR < 300) {
             this.dashRight();
-          } else {
+          } else if (!this.player.isJumping) {
             this.moveRight(date);
+          } else {
+            this.player.lastMoveR = date;
           }
-        } else {
-          console.log("Jump Right");
-          this.jumpRight();
-          console.log("After JumpRight");
+        } else if (!this.player.isJumping) {
+          this.jumpLeft();
         }
       }
     });
@@ -48,20 +50,16 @@ export default class KeyBind {
     this.player.jumpRight = true;
     this.player.jumpAnim();
     setTimeout(() => {
-      if (!this.releaseRight) {
-        this.player.moveRight = true;
-        this.player.moveAnim();
-      } else {
-
-      }
+      this.player.jumpUp = false;
+    }, 300);
+    setTimeout(() => {
       this.player.jumpRight = false;
-      delete this.player.lastMoveR;
-    }, 500);
+    }, 600);
   }
 
   public dashRight() {
     this.player.dashRight = true;
-    this.player.dash();
+    this.player.dashAnim();
     setTimeout( () => {
       if (!this.releaseRight) {
         this.player.moveRight = true;
@@ -83,7 +81,7 @@ export default class KeyBind {
   public bindReleaseRight(value: string) {
     mousetrap.bind(value, () => {
       this.releaseRight = true;
-      if (!this.player.moveLeft) {
+      if (!this.player.moveLeft && !this.player.jumpLeft) {
         this.player.moveRight = false;
         if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
@@ -96,18 +94,20 @@ export default class KeyBind {
     mousetrap.bind(value, () => {
       this.releaseLeft = false;
       let date = + new Date();
-      delete this.player.lastMoveR;
-      if (!this.player.moveLeft && !this.player.doDash && !this.player.isJumping) {
-        if (!this.player.moveRight) {
+      if (!this.player.isJumping) {
+        delete this.player.lastMoveR;
+      }
+      if (!this.player.moveLeft && !this.player.doDash) {
+        if (!this.player.moveRight && !this.player.jumpRight) {
           if (date - this.player.lastMoveL < 300 ) {
             this.dashLeft();
-          } else {
+          } else if (!this.player.isJumping) {
             this.moveLeft(date);
+          } else {
+            this.player.lastMoveL = date;
           }
-        } else {
-          console.log("Jump Left");
-          this.jumpLeft();
-          console.log("After JumpLeft");
+        } else if (!this.player.isJumping) {
+          this.jumpRight();
         }
       }
     });
@@ -117,18 +117,16 @@ export default class KeyBind {
     this.player.jumpLeft = true;
     this.player.jumpAnim();
     setTimeout(() => {
-      if (!this.releaseLeft) {
-        this.player.moveLeft = true;
-        this.player.moveAnim();
-      }
+      this.player.jumpUp = false;
+    }, 300);
+    setTimeout(() => {
       this.player.jumpLeft = false;
-      delete this.player.lastMoveL;
-    }, 500);
+    }, 600);
   }
 
   public dashLeft() {
     this.player.dashLeft = true;
-    this.player.dash();
+    this.player.dashAnim();
     setTimeout( () => {
       if (!this.releaseLeft) {
         this.player.moveLeft = true;
@@ -150,7 +148,7 @@ export default class KeyBind {
   public bindReleaseLeft(value: string) {
     mousetrap.bind(value, () => {
       this.releaseLeft = true;
-      if (!this.player.moveRight) {
+      if (!this.player.moveRight && !this.player.jumpRight) {
         this.player.moveLeft = false;
         if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
@@ -165,6 +163,7 @@ export default class KeyBind {
     mousetrap.unbind(this.key.left);
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
+    this.key.used = false;
     this.player.moveLeft = false;
     this.player.moveRight = false;
     this.player.idleAnim();

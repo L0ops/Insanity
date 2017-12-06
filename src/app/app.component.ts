@@ -69,7 +69,7 @@ export class AppComponent implements AfterViewInit {
       jump: {
         begin: 16,
         end: 21,
-        speed: 90
+        speed: 150
       }
     };
     // example return of get animations from api
@@ -83,18 +83,21 @@ export class AppComponent implements AfterViewInit {
     const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
     player.body.position[0] -= 3;
     world.addBody(player.body);
-
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
     player2.body.position[0] += 3;
     world.addBody(player2.body);
 
+    const player3 = new Player("player3", scene, animations.mark, spriteManagerPlayer);
+    player3.body.position[0] += 3;
+    world.addBody(player3.body);
     const players = [];
     players.push(player);
     players.push(player2);
+    players.push(player3);
 
     const block = new Block("block1", scene, spriteManagerPlayer);
-    block.body.position[0] -= 3; 
-    block.body.position[1] -= 1; 
+    block.body.position[0] -= 3;
+    block.body.position[1] -= 1;
     world.addBody(block.body);
 
     const groundBody = new p2.Body({mass: 0});
@@ -147,7 +150,7 @@ export class AppComponent implements AfterViewInit {
           }
         }
         if (dasher != -1 && touched != -1) {
-          console.log(players[dasher].sprite.name, "a fait un dash a", players[touched].sprite.name);
+          console.log(players[dasher].name, "a fait un dash a", players[touched].name);
           players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
           players[dasher].stopDash();
         }
@@ -158,17 +161,27 @@ export class AppComponent implements AfterViewInit {
       world.step(1/60);
 
       for (var i in players) {
+        let move = false;
         if (players[i].moveLeft) {
           players[i].move(-4.5);
+          move = true;
         } else if (players[i].moveRight)  {
           players[i].move(4.5);
+          move = true;
         } else if (players[i].doDash && players[i].dashLeft) {
-          players[i].move(-10);
+          players[i].dash(-10);
+          move = true;
         } else if (players[i].doDash && players[i].dashRight) {
-          players[i].move(10);
+          players[i].dash(10);
+          move = true;
         } else if (players[i].hit) {
           players[i].takeDash();
-        } else {
+          move = true;
+        }
+        if (players[i].isJumping) {
+          players[i].jump();
+        }
+        if (!move) {
           players[i].move(0);
         }
         players[i].update();
