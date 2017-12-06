@@ -74,7 +74,7 @@ export default class KeyBind {
 
   public moveRight(date) {
     this.player.lastMoveR = date;
-    this.player.sprite.invertU = 0;
+    this.player.invertU = 0;
     this.player.moveLeft = false;
     this.player.moveRight = true;
     this.player.moveAnim();
@@ -141,7 +141,7 @@ export default class KeyBind {
 
   public moveLeft(date) {
     this.player.lastMoveL = date;
-    this.player.sprite.invertU = 1;
+    this.player.invertU = 1;
     this.player.moveRight = false;
     this.player.moveLeft = true;
     this.player.moveAnim();

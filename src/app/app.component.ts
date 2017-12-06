@@ -1,6 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
+import Block from '../lib/Block';
 import Player from '../lib/Player';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
@@ -40,7 +41,7 @@ export class AppComponent implements AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const playersPath = {mark: '../assets/Sprites/cosm.png'};
+    const playersPath = "../assets/Sprites/cosm.png";
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
@@ -73,7 +74,7 @@ export class AppComponent implements AfterViewInit {
     };
     // example return of get animations from api
     const animations = {mark: markAnimation};
-    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath.mark, 2, 80, scene);
+    const spriteManagerPlayer = new BABYLON.SpriteManager("pm", playersPath, 3, 80, scene);
 
     var world = new p2.World({
       gravity: [0, -9.82]
@@ -84,14 +85,21 @@ export class AppComponent implements AfterViewInit {
     world.addBody(player.body);
 
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
+    player2.body.position[0] += 3;
     world.addBody(player2.body);
 
     const players = [];
     players.push(player);
     players.push(player2);
 
+    const block = new Block("block1", scene, spriteManagerPlayer);
+    block.body.position[0] -= 3; 
+    block.body.position[1] -= 1; 
+    world.addBody(block.body);
+
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
+    groundBody.position[1] = -3;
     const groundMaterial = new p2.Material();
     groundPlane.material = groundMaterial;
     groundBody.addShape(groundPlane);
@@ -99,6 +107,12 @@ export class AppComponent implements AfterViewInit {
 
     for (var i in players) {
       world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
+        friction: 2.0
+      }));
+    }
+
+    for (var i in players) {
+      world.addContactMaterial(new p2.ContactMaterial(block.material, players[i].material, {
         friction: 2.0
       }));
     }
@@ -159,6 +173,7 @@ export class AppComponent implements AfterViewInit {
         }
         players[i].update();
       }
+      block.update();
 
     });
     return scene;
