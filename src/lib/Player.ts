@@ -10,6 +10,8 @@ export default class Player {
   public doDash: Boolean;
   public dashRight: Boolean;
   public dashLeft: Boolean;
+  public hitDirection: number;
+  public hit: Boolean;
   public lastMoveR: number;
   public lastMoveL: number;
   public animated: Boolean;
@@ -17,9 +19,9 @@ export default class Player {
   private key : Key;
   private animations;
 
-  public body:      p2.Body;
-  public material:  p2.Material;
-  private shape:    p2.Box;
+  public body: p2.Body;
+  public material: p2.Material;
+  private shape: p2.Box;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
     const sprite = new BABYLON.Sprite(name, manager);
@@ -47,6 +49,28 @@ export default class Player {
     this.body.velocity[0] = x;
   }
 
+  public takeDash() {
+    const force = 14 * this.hitDirection;
+    this.body.velocity[0] = force;
+  }
+
+  public stopDash() {
+    this.doDash = false;
+    this.dashLeft ? this.dashLeft = false : this.dashRight = false;
+    this.idleAnim();
+  }
+
+  public hitByDash(direction: number) {
+    if (this.doDash) {
+      this.stopDash();
+    }
+    this.hit = true;
+    this.hitDirection = direction;
+    setTimeout( () => {
+      this.hit = false;
+      this.hitDirection = 0;
+    }, 150);
+  }
   public update() {
     this.sprite.position.x = this.body.position[0];
     this.sprite.position.y = this.body.position[1];
