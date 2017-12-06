@@ -36,7 +36,7 @@ export class AppComponent implements AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const playersPath = {mark: '../assets/Sprites/cosm1.png'};
+    const playersPath = {mark: '../assets/Sprites/cosm.png'};
 
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
@@ -61,6 +61,11 @@ export class AppComponent implements AfterViewInit {
         begin: 10,
         end: 15,
         speed: 50
+      },
+      jump: {
+        begin: 16,
+        end: 21,
+        speed: 90
       }
     };
     // example return of get animations from api

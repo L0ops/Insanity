@@ -7,7 +7,7 @@ export default class KeyBind {
   public key: Key;
   public releaseLeft: Boolean;
   public releaseRight: Boolean;
-  
+
   constructor(key: Key, player: Player) {
     this.player = player;
     this.releaseLeft = false;
@@ -28,7 +28,7 @@ export default class KeyBind {
       this.releaseRight = false;
       let date = + new Date();
       delete this.player.lastMoveL;
-      if (!this.player.moveRight && !this.player.doDash) {
+      if (!this.player.moveRight && !this.player.doDash && !this.player.isJumping) {
         if (!this.player.moveLeft) {
           if (date - this.player.lastMoveR < 300) {
             this.dashRight();
@@ -36,10 +36,27 @@ export default class KeyBind {
             this.moveRight(date);
           }
         } else {
-          console.log("have to jump");
+          console.log("Jump Right");
+          this.jumpRight();
+          console.log("After JumpRight");
         }
       }
     });
+  }
+
+  public jumpRight() {
+    this.player.jumpRight = true;
+    this.player.jumpAnim();
+    setTimeout(() => {
+      if (!this.releaseRight) {
+        this.player.moveRight = true;
+        this.player.moveAnim();
+      } else {
+
+      }
+      this.player.jumpRight = false;
+      delete this.player.lastMoveR;
+    }, 500);
   }
 
   public dashRight() {
@@ -68,7 +85,7 @@ export default class KeyBind {
       this.releaseRight = true;
       if (!this.player.moveLeft) {
         this.player.moveRight = false;
-        if (!this.player.doDash) {
+        if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
         }
       }
@@ -80,7 +97,7 @@ export default class KeyBind {
       this.releaseLeft = false;
       let date = + new Date();
       delete this.player.lastMoveR;
-      if (!this.player.moveLeft && !this.player.doDash) {
+      if (!this.player.moveLeft && !this.player.doDash && !this.player.isJumping) {
         if (!this.player.moveRight) {
           if (date - this.player.lastMoveL < 300 ) {
             this.dashLeft();
@@ -88,10 +105,25 @@ export default class KeyBind {
             this.moveLeft(date);
           }
         } else {
-          console.log("have to jump");
+          console.log("Jump Left");
+          this.jumpLeft();
+          console.log("After JumpLeft");
         }
       }
     });
+  }
+
+  public jumpLeft() {
+    this.player.jumpLeft = true;
+    this.player.jumpAnim();
+    setTimeout(() => {
+      if (!this.releaseLeft) {
+        this.player.moveLeft = true;
+        this.player.moveAnim();
+      }
+      this.player.jumpLeft = false;
+      delete this.player.lastMoveL;
+    }, 500);
   }
 
   public dashLeft() {
@@ -120,7 +152,7 @@ export default class KeyBind {
       this.releaseLeft = true;
       if (!this.player.moveRight) {
         this.player.moveLeft = false;
-        if (!this.player.doDash) {
+        if (!this.player.doDash && !this.player.isJumping) {
           this.player.idleAnim();
         }
       }
