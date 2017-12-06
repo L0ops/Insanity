@@ -108,19 +108,31 @@ export class AppComponent implements AfterViewInit {
 
     world.on('beginContact', function (evt) {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
-        let dasher: p2.Body;
-        let touched: p2.Body;
+        let dasher = -1;
+        let touched = -1;
         if (players[evt.bodyA.id - 1].doDash) {
-          dasher = evt.bodyA;
-          touched = evt.bodyB;
+          dasher = evt.bodyA.id - 1;
+          touched = evt.bodyB.id - 1;
         } else if (players[evt.bodyB.id - 1].doDash) {
-          dasher = evt.bodyB;
-          touched = evt.bodyA;
+          dasher = evt.bodyB.id - 1;
+          touched = evt.bodyA.id - 1;
         }
-        if (dasher && touched) {
-          console.log(players[dasher.id - 1].sprite.name, "a fait un dash a", players[touched.id - 1].sprite.name);
-          players[touched.id - 1].hitByDash(players[dasher.id - 1].dashLeft ? -1 : 1);
-          players[dasher.id - 1].stopDash();
+        console.log(dasher, touched);
+        if (dasher != -1 && touched != -1 &&
+          players[dasher].doDash && players[touched].doDash) {
+          const rand = KeyGenerator.getInstance().getRandomInt(0, 2);
+          if (rand == 0) {
+            dasher = evt.bodyA.id - 1;
+            touched = evt.bodyB.id - 1;
+          } else {
+            dasher = evt.bodyB.id - 1;
+            touched = evt.bodyA.id- 1;
+          }
+        }
+        if (dasher != -1 && touched != -1) {
+          console.log(players[dasher].sprite.name, "a fait un dash a", players[touched].sprite.name);
+          players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
+          players[dasher].stopDash();
         }
       }
     });

@@ -61,6 +61,9 @@ export default class Player {
   }
 
   public hitByDash(direction: number) {
+    if (this.doDash) {
+      this.stopDash();
+    }
     this.hit = true;
     this.hitDirection = direction;
     setTimeout( () => {
