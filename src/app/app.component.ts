@@ -70,7 +70,7 @@ export class AppComponent implements AfterViewInit {
       jump: {
         begin: 16,
         end: 21,
-        speed: 90
+        speed: 150
       }
     };
 
@@ -86,23 +86,26 @@ export class AppComponent implements AfterViewInit {
     const player = new Player("player1", scene, animations.mark, spriteManagerPlayer);
     player.body.position[0] -= 3;
     world.addBody(player.body);
-
     const player2 = new Player("player2", scene, animations.mark, spriteManagerPlayer);
     player2.body.position[0] += 3;
     world.addBody(player2.body);
 
+    const player3 = new Player("player3", scene, animations.mark, spriteManagerPlayer);
+    player3.body.position[0] += 3;
+    world.addBody(player3.body);
     const players = [];
     players.push(player);
     players.push(player2);
+    players.push(player3);
 
     const block = new Block("block1", scene, spriteManagerPlayer);
-    block.body.position[0] -= 3; 
-    block.body.position[1] -= 1; 
+    block.body.position[0] -= 3;
+    block.body.position[1] -= 1;
     world.addBody(block.body);
 
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
-    groundBody.position[1] = -3;
+    groundBody.position[1] = -3.5;
     const groundMaterial = new p2.Material();
     groundPlane.material = groundMaterial;
     groundBody.addShape(groundPlane);
@@ -139,28 +142,20 @@ export class AppComponent implements AfterViewInit {
 
     world.on('beginContact', function (evt) {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
-        let dasher = -1;
-        let touched = -1;
-        if (players[evt.bodyA.id - 1].doDash) {
-          dasher = evt.bodyA.id - 1;
-          touched = evt.bodyB.id - 1;
-        } else if (players[evt.bodyB.id - 1].doDash) {
-          dasher = evt.bodyB.id - 1;
-          touched = evt.bodyA.id - 1;
+        let dasher: number;
+        let touched: number;
+        if (players[evt.bodyA.id - 1].doDash || players[evt.bodyB.id - 1].doDash) {
+          dasher = (players[evt.bodyA.id - 1].doDash ? evt.bodyA.id - 1 : evt.bodyB.id - 1);
+          touched = (players[evt.bodyA.id - 1].doDash ? evt.bodyB.id - 1 : evt.bodyA.id - 1);
         }
-        if (dasher != -1 && touched != -1 &&
+        if (dasher != null && touched != null &&
           players[dasher].doDash && players[touched].doDash) {
           const rand = KeyGenerator.getInstance().getRandomInt(0, 2);
-          if (rand == 0) {
-            dasher = evt.bodyA.id - 1;
-            touched = evt.bodyB.id - 1;
-          } else {
-            dasher = evt.bodyB.id - 1;
-            touched = evt.bodyA.id- 1;
-          }
+          dasher = (rand == 0 ? evt.bodyA.id - 1 : evt.bodyB.id - 1);
+          touched = (rand == 0 ? evt.bodyB.id - 1 : evt.bodyA.id - 1);
         }
-        if (dasher != -1 && touched != -1) {
-          console.log(players[dasher].sprite.name, "a fait un dash a", players[touched].sprite.name);
+        if (dasher != null && touched != null) {
+          console.log(players[dasher].name, "a fait un dash a", players[touched].name);
           players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
           players[dasher].stopDash();
         }
@@ -171,19 +166,22 @@ export class AppComponent implements AfterViewInit {
       world.step(1/60);
 
       for (var i in players) {
-        if (players[i].moveLeft) {
-          players[i].move(-4.5);
-          console.log(players[i].body.position);
-        } else if (players[i].moveRight)  {
-          players[i].move(4.5);
-          console.log(players[i].body.position);
-        } else if (players[i].doDash && players[i].dashLeft) {
-          players[i].move(-10);
-        } else if (players[i].doDash && players[i].dashRight) {
-          players[i].move(10);
+        let move = true;
+        if (players[i].isMoving) {
+          let force = players[i].moveLeft ? -4.5 : 4.5;
+          players[i].move(force);
+        } else if (players[i].doDash) {
+          let force = players[i].dashLeft ? -10 : 10;
+          players[i].dash(force);
         } else if (players[i].hit) {
           players[i].takeDash();
         } else {
+          move = false;
+        }
+        if (players[i].isJumping) {
+          players[i].jump();
+        }
+        if (!move) {
           players[i].move(0);
         }
         players[i].update();
