@@ -5,14 +5,15 @@ export default class Block extends BABYLON.Sprite {
   public material:  p2.Material;
   public shape:    p2.Box;
 
-  public constructor(name: string, scene: BABYLON.Scene, manager: BABYLON.SpriteManager) {
+  public constructor(name: string, scene: BABYLON.Scene, manager: BABYLON.SpriteManager, needShape: boolean = true) {
     super(name, manager);
     this.size = 1;
-    this.body = new p2.Body({mass: 0, 
-      position: [this.position.x, this.position.y + this.height/2]
-    });
     this.material = new p2.Material();
-    this.updateShape();
+    if (needShape) {
+      this.body = new p2.Body({mass: 0, 
+        position: [this.position.x, this.position.y + this.height/2] });
+      this.generateShape();
+    }
   }
 
   public update() {
@@ -24,7 +25,7 @@ export default class Block extends BABYLON.Sprite {
     this.body.velocity[0] = x;
   }
 
-  protected updateShape() {
+  protected generateShape() {
     this.shape = new p2.Box({
       width: this.width/2,
       height: this.height

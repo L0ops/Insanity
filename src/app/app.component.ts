@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
 import Block from '../lib/Block';
 import Player from '../lib/Player';
+import Ground from '../lib/Ground';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
 import Arbitre from '../lib/Arbitre';
@@ -62,7 +63,7 @@ export class AppComponent implements AfterViewInit {
 
     let players = Arbitre.getInstance().getPlayers();
 
-    this.createGround(world, players);
+    this.createGround(world, players, scene);
 
     Arbitre.getInstance().setTimerKeys(10000).setKeys(keys).addPlayersToGenerate().generateKeys();
     Arbitre.getInstance().regenerate();
@@ -94,14 +95,23 @@ export class AppComponent implements AfterViewInit {
     });
   };
 
-  createGround = function(world: p2.World, players: Player[]) {
+  createGround = function(world: p2.World, players: Player[], scene: BABYLON.Scene) {
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
-    groundBody.position[1] = -3;
+    groundBody.position[1] = -3.5;
     const groundMaterial = new p2.Material();
     groundPlane.material = groundMaterial;
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
+
+    const widthGround = 12;
+    const heightGround = 2;
+    const groundPath = "../assets/Sprites/tileground.png";
+    const spriteGroundManager = new BABYLON.SpriteManager("managerGround", groundPath, widthGround * heightGround, 80, scene);
+    const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
+    world.addBody(ground.body);
+    ground.setPosition(-5, -1.0);
+
     for (var i in players) {
       world.addContactMaterial(new p2.ContactMaterial(groundMaterial, players[i].material, {
         friction: 2.0
