@@ -49,6 +49,10 @@ export default class KeyGenerator {
   public clean() {
     console.log('prepare to clean players binds');
     for (var i in this.players) {
+      this.players[i].isMoving = false;
+      this.players[i].moveRight = false;
+      this.players[i].moveLeft = false;
+      this.players[i].idleAnim();
       this.players[i].keybind.resetBinds();
     }
     console.log('prepare to clean used keys');
