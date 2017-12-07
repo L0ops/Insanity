@@ -3,6 +3,8 @@ import Block from './Block';
 
 export default class Ground {
   private static _count = 0;
+  private p_width = 0.05;
+  private p_height = 0.025;
 
   private _blocks:  Array<BABYLON.Sprite>;
   private _pos:     BABYLON.Vector2;
@@ -17,7 +19,7 @@ export default class Ground {
     this._pos = new BABYLON.Vector2(0, 0);
 
     this._size = new BABYLON.Vector2(countW, countH);
-    this._cell = new BABYLON.Vector2(1, manager.cellHeight / manager.cellWidth);
+    this._cell = new BABYLON.Vector2(1, 1);
     this.material = new p2.Material();
 
     Ground._count++;
@@ -29,7 +31,8 @@ export default class Ground {
     }
 
     this._shape = new p2.Box({
-      width: this._size.x * this._cell.x, height: this._size.y * this._cell.y,
+      width: this._size.x * this._cell.x - (this._size.x * 0.05),
+      height: this._size.y * this._cell.y,
       position: [this._pos.x, this._pos.y]
     });
     this._shape.material = this.material;
@@ -46,14 +49,14 @@ export default class Ground {
     for (let y = 0; y < this._size.y; y++) {
       for (let x = 0; x < this._size.x; x++) {
         let num = (y * this._size.x) + x;
-        this._blocks[num].position.x = this._pos.x + ((this._blocks[num].width) * x);
-        this._blocks[num].position.y = this._pos.y - ((this._blocks[num].height) * y);
+        this._blocks[num].position.x = this._pos.x + ((this._blocks[num].width - this.p_width) * x);
+        this._blocks[num].position.y = this._pos.y - ((this._blocks[num].height - this.p_height) * y);
       }
     }
 
     this.body.position = [
-      this._pos.x + (this._size.x - 1) * (this._cell.x/2),
-      this._pos.y - (this._size.y - 1) * (this._cell.y/2)
+      this._pos.x + (this._size.x - 1) * ((this._cell.x - this.p_width)/2),
+      this._pos.y - (this._size.y - 1) * ((this._cell.y - this.p_height)/2)
     ];
   }
 
