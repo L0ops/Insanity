@@ -81,6 +81,7 @@ export default class Arbitre {
     setTimeout(() => {
       this.getKeyGenerator().clean();
       this.getKeyGenerator().generate();
+      // this.regenerate();
     }, this.timerKeys);
   }
 
