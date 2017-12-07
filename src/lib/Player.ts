@@ -65,11 +65,20 @@ export default class Player extends Block {
       this.stopDash();
     }
     this.hit = true;
-    this.hitDirection = direction;
+    this.hitDirection = direction; // 1 droite || -1 gauche
+    if (this.invertU > 0 && this.hitDirection < 0) {
+      this.hitBackAnim();
+    } else if (this.invertU == 0 && this.hitDirection > 0) {
+      this.hitFrontAnim();
+    } else if (this.invertU > 0 && this.hitDirection > 0) {
+      this.hitFrontAnim();
+    } else if (this.invertU == 0 && this.hitDirection < 0) {
+      this.hitBackAnim();
+    }
     setTimeout( () => {
       this.hit = false;
       this.hitDirection = 0;
-    }, 150);
+    }, 300);
   }
 
   public setKeys(key:Key) {
@@ -88,6 +97,42 @@ export default class Player extends Block {
         this.body.velocity[1] = -jumpForce;
       }
     }
+  }
+
+  public hitBackAnim() {
+    this.stopAnimation();
+    this.playAnimation(
+      this.animationList.hitback.begin,
+      this.animationList.hitback.end,
+      false,
+      this.animationList.hitback.speed,
+      null);
+      setTimeout(() => {
+        if (this.moveRight || this.moveLeft) {
+          this.animated = false;
+          this.moveAnim();
+        } else {
+          this.idleAnim();
+        }
+      }, 500);
+  }
+
+  public hitFrontAnim() {
+    this.stopAnimation();
+    this.playAnimation(
+      this.animationList.hitfront.begin,
+      this.animationList.hitfront.end,
+      false,
+      this.animationList.hitfront.speed,
+      null);
+      setTimeout(() => {
+        if (this.moveRight || this.moveLeft) {
+          this.animated = false;
+          this.moveAnim();
+        } else {
+          this.idleAnim();
+        }
+      }, 500);
   }
 
   public jumpAnim() {
