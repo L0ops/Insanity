@@ -37,6 +37,16 @@ export default class Arbitre {
         begin: 16,
         end: 21,
         speed: 150
+      },
+      hitback: {
+        begin: 22,
+        end: 25,
+        speed: 100
+      },
+      hitfront: {
+        begin: 26,
+        end: 29,
+        speed: 100
       }
     };
     // example return of get animations from api
