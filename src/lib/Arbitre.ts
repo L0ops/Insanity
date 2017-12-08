@@ -116,4 +116,18 @@ export default class Arbitre {
     this.world.addBody(player.body);
     this.players.push(player);
   }
+
+  public getFirstPlayer() {
+    let firstPlayer: Player;
+    for (let i in this.players) {
+      if (!firstPlayer) {
+        firstPlayer = this.players[i];
+      } else {
+        if (this.players[i].position.x > firstPlayer.position.x) {
+          firstPlayer = this.players[i];
+        }
+      }
+    }
+    return firstPlayer;
+  }
 }
