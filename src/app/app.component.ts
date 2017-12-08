@@ -1,10 +1,8 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
-import Block from '../lib/Block';
 import Player from '../lib/Player';
 import Ground from '../lib/Ground';
-import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
 import Arbitre from '../lib/Arbitre';
 import Environment from '../lib/Environment';
@@ -15,7 +13,6 @@ import Environment from '../lib/Environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit {
-  title = 'Babylon';
   private canvas;
   private engine;
 
@@ -38,9 +35,10 @@ export class AppComponent implements AfterViewInit {
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan();
 
+    // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
+    const keys_array = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
     const keys = [];
     for (var i in keys_array) {
       var key = new Key(keys_array[i][0], keys_array[i][1]);
@@ -70,7 +68,7 @@ export class AppComponent implements AfterViewInit {
     this.setCollision(world, players);
 
     scene.registerBeforeRender(() => {
-      world.step(1/60);
+      world.step(1 / 60);
       let firstPlayer = Arbitre.getInstance().getFirstPlayer();
       freeCamera.position.x = firstPlayer.position.x;
       for (let player of players) {
@@ -89,7 +87,7 @@ export class AppComponent implements AfterViewInit {
     });
   };
 
-  createGround = function(world: p2.World, players: Player[], scene: BABYLON.Scene) {
+  createGround = function (world: p2.World, players: Player[], scene: BABYLON.Scene) {
 
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
@@ -101,8 +99,8 @@ export class AppComponent implements AfterViewInit {
 
     const widthGround = 12;
     const heightGround = 2;
-    const groundPath = "../assets/Sprites/tileground.png";
-    const spriteGroundManager = new BABYLON.SpriteManager("managerGround", groundPath, widthGround * heightGround, 80, scene);
+    const groundPath = '../assets/Sprites/tileground.png';
+    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', groundPath, widthGround * heightGround, 80, scene);
     const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
     world.addBody(ground.body);
     ground.setPosition(-5, -1.0);
@@ -114,7 +112,7 @@ export class AppComponent implements AfterViewInit {
     }
   };
 
-  playerAction = function(player: Player) {
+  playerAction = function (player: Player) {
     let move = true;
     if (player.isMoving) {
       let force = player.moveLeft ? -4.5 : 4.5;
@@ -148,7 +146,7 @@ export class AppComponent implements AfterViewInit {
       }
     }
     if (dasher != null && touched != null) {
-      console.log(players[dasher].name, "a fait un dash a", players[touched].name);
+      console.log(players[dasher].name, 'a fait un dash a', players[touched].name);
       players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
       players[dasher].stopDash();
     }
