@@ -119,12 +119,12 @@ export default class Arbitre {
 
   public getFirstPlayer() {
     let firstPlayer: Player;
-    for (let i in this.players) {
+    for (let player of this.players) {
       if (!firstPlayer) {
-        firstPlayer = this.players[i];
+        firstPlayer = player;
       } else {
-        if (this.players[i].position.x > firstPlayer.position.x) {
-          firstPlayer = this.players[i];
+        if (player.position.x > firstPlayer.position.x) {
+          firstPlayer = player;
         }
       }
     }

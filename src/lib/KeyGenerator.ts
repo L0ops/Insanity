@@ -33,13 +33,13 @@ export default class KeyGenerator {
   }
 
   public generate() {
-    for (var i in this.players) {
+    for (let player of this.players) {
       let binded = false;
       let nb = 0;
       while (!binded) {
         nb = this.getRandomInt(0, 4);
         if (!this.keys[nb].used) {
-          this.players[i].setKeys(this.keys[nb]);
+          player.setKeys(this.keys[nb]);
           binded = true;
         }
       }
@@ -56,8 +56,8 @@ export default class KeyGenerator {
       this.players[i].keybind.resetBinds();
     }
     console.log('prepare to clean used keys');
-    for (var j in this.keys) {
-      this.keys[i].used = false;
+    for (let j in this.keys) {
+      this.keys[j].used = false;
     }
   }
 }
