@@ -40,8 +40,6 @@ export class AppComponent implements AfterViewInit {
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-    console.log(freeCamera.isIntermediate);
-    // freeCamera.position.x += 2;
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
     for (var i in keys_array) {
