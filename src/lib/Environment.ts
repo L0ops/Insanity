@@ -15,7 +15,8 @@ export default class Environment {
   }
 
   public createBackgroundPlan () {
-    const firstPlan = {
+    const secondPlan = {
+      planPosition : 2,
       sizePlan: 3,
       path: "../assets/Sprites/DarkMontain.png",
       spacePlan: 160,
@@ -31,7 +32,8 @@ export default class Environment {
       revert: true,
       widthSprite: 170
     }
-    const secondPlan = {
+    const firstPlan = {
+      planPosition : 1,
       sizePlan: 10,
       path: "../assets/Sprites/WaterMontains.png",
       spacePlan: 14,
@@ -48,8 +50,8 @@ export default class Environment {
       widthSprite: 15
     }
     this.createBack("../assets/Sprites/MainBG.png");
-    this.pieceOfBackground(firstPlan);
     this.pieceOfBackground(secondPlan);
+    this.pieceOfBackground(firstPlan);
   }
 
   private createBack(path:string) {

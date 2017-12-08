@@ -54,9 +54,9 @@ export class AppComponent implements AfterViewInit {
     Arbitre.getInstance().setWorld(world);
     const playersName = ['player1', 'player2', 'player3'];
 
-    for (var i in playersName) {
-      var position = -3;
-      Arbitre.getInstance().createPlayer(playersName[i], position);
+    let position = -3;
+    for (let playerName of playersName) {
+      Arbitre.getInstance().createPlayer(playerName, position);
       position += 3;
     }
 
@@ -71,9 +71,11 @@ export class AppComponent implements AfterViewInit {
 
     scene.registerBeforeRender(() => {
       world.step(1/60);
-      for (var i in players) {
-        this.playerAction(players[i], freeCamera);
-        players[i].update();
+      let firstPlayer = Arbitre.getInstance().getFirstPlayer();
+      freeCamera.position.x = firstPlayer.position.x;
+      for (let player of players) {
+        this.playerAction(player);
+        player.update();
       }
     });
     return scene;
@@ -112,7 +114,7 @@ export class AppComponent implements AfterViewInit {
     }
   };
 
-  playerAction = function(player: Player, camera: BABYLON.FreeCamera) {
+  playerAction = function(player: Player) {
     let move = true;
     if (player.isMoving) {
       let force = player.moveLeft ? -4.5 : 4.5;
@@ -124,9 +126,6 @@ export class AppComponent implements AfterViewInit {
       player.takeDash();
     } else {
       move = false;
-    }
-    if (player.name == 'player1') {
-      camera.position.x = player.position.x;
     }
     if (player.isJumping) {
       player.jump();
