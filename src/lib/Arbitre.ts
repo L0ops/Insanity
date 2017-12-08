@@ -19,36 +19,12 @@ export default class Arbitre {
   constructor() {
     this.players = [];
     const cosmoAnimation = {
-      idle: {
-        begin: 0,
-        end: 3,
-        speed: 100
-      },
-      move: {
-        begin: 4,
-        end: 7,
-        speed: 300
-      },
-      dash: {
-        begin: 10,
-        end: 15,
-        speed: 50
-      },
-      jump: {
-        begin: 16,
-        end: 21,
-        speed: 150
-      },
-      hitback: {
-        begin: 22,
-        end: 25,
-        speed: 100
-      },
-      hitfront: {
-        begin: 26,
-        end: 29,
-        speed: 100
-      }
+      idle: {begin: 0, end: 3, speed: 100},
+      move: {begin: 4, end: 7, speed: 300},
+      dash: {begin: 10, end: 15, speed: 50},
+      jump: {begin: 16, end: 21, speed: 150},
+      hitback: {begin: 22, end: 25, speed: 100},
+      hitfront: {begin: 26, end: 29, speed: 100}
     };
     // example return of get animations from api
     this.animationsPlayers = {cosmo: cosmoAnimation};
@@ -99,8 +75,8 @@ export default class Arbitre {
 
   public parityDash(dasher: number, touched: number) {
     const rand = this.getKeyGenerator().getRandomInt(0, 2);
-    this.dasher = (rand == 0 ? dasher : touched);
-    this.touched = (rand == 0 ? touched : dasher);
+    this.dasher = (rand === 0 ? dasher : touched);
+    this.touched = (rand === 0 ? touched : dasher);
   }
 
   public getDasher() {
@@ -130,16 +106,12 @@ export default class Arbitre {
   }
 
   public getFirstPlayer() {
-    let firstPlayer: Player;
-    for (let player of this.players) {
-      if (!firstPlayer) {
+    let firstPlayer = this.players[0];
+    this.players.forEach(player => {
+      if (player.position.x > firstPlayer.position.x) {
         firstPlayer = player;
-      } else {
-        if (player.position.x > firstPlayer.position.x) {
-          firstPlayer = player;
-        }
       }
-    }
+    });
     return firstPlayer;
   }
 }
