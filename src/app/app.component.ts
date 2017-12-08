@@ -7,6 +7,7 @@ import Ground from '../lib/Ground';
 import KeyBind from '../lib/KeyBind';
 import Key from '../lib/Key';
 import Arbitre from '../lib/Arbitre';
+import Environment from '../lib/Environment';
 
 @Component({
   selector: 'app-root',
@@ -35,12 +36,12 @@ export class AppComponent implements AfterViewInit {
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
-
-    this.createBackground("../assets/Sprites/map.png", scene);
+    Environment.getInstance().setScene(scene).createBackgroundPlan();
 
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -10), scene);
-
+    console.log(freeCamera.isIntermediate);
+    // freeCamera.position.x += 2;
     const keys_array = [['q','w'],['a','s'],['i', 'o'], ['k','l']];
     const keys = [];
     for (var i in keys_array) {
@@ -73,18 +74,11 @@ export class AppComponent implements AfterViewInit {
     scene.registerBeforeRender(() => {
       world.step(1/60);
       for (var i in players) {
-        this.playerAction(players[i]);
+        this.playerAction(players[i], freeCamera);
         players[i].update();
       }
     });
     return scene;
-  };
-
-  createBackground = function (path: string, scene: BABYLON.Scene) {
-    const background = new BABYLON.Layer("back", path, scene);
-          background.isBackground = true;
-          background.texture.level = 0;
-          background.texture.wAng = 0;
   };
 
   setCollision = function (world: p2.World, players: Player[]) {
@@ -96,6 +90,7 @@ export class AppComponent implements AfterViewInit {
   };
 
   createGround = function(world: p2.World, players: Player[], scene: BABYLON.Scene) {
+
     const groundBody = new p2.Body({mass: 0});
     const groundPlane = new p2.Plane();
     groundBody.position[1] = -3.5;
@@ -119,7 +114,7 @@ export class AppComponent implements AfterViewInit {
     }
   };
 
-  playerAction = function(player: Player) {
+  playerAction = function(player: Player, camera: BABYLON.FreeCamera) {
     let move = true;
     if (player.isMoving) {
       let force = player.moveLeft ? -4.5 : 4.5;
@@ -131,6 +126,9 @@ export class AppComponent implements AfterViewInit {
       player.takeDash();
     } else {
       move = false;
+    }
+    if (player.name == 'player1') {
+      camera.position.x = player.position.x;
     }
     if (player.isJumping) {
       player.jump();
