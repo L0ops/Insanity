@@ -1,4 +1,4 @@
-import KeyGenerator from '../lib/KeyGenerator';
+import KeyGenerator from './KeyGenerator';
 import Key from './Key';
 import Player from './Player';
 import * as p2 from 'p2';

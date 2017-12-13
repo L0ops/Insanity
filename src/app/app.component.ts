@@ -1,11 +1,11 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
-import Player from '../lib/Player';
-import Ground from '../lib/Ground';
-import Key from '../lib/Key';
-import Arbitre from '../lib/Arbitre';
-import Environment from '../lib/Environment';
+import Player from './class/Player';
+import Ground from './class/Ground';
+import Key from './class/Key';
+import Arbitre from './class/Arbitre';
+import Environment from './class/Environment';
 
 @Component({
   selector: 'app-root',
