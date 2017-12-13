@@ -1,17 +1,19 @@
 import * as p2 from 'p2';
 
 export default class Block extends BABYLON.Sprite {
-  public body:      p2.Body;
-  public material:  p2.Material;
-  public shape:    p2.Box;
+  public body: p2.Body;
+  public material: p2.Material;
+  public shape: p2.Box;
 
   public constructor(name: string, scene: BABYLON.Scene, manager: BABYLON.SpriteManager, needShape: boolean = true) {
     super(name, manager);
     this.size = 1;
     this.material = new p2.Material();
     if (needShape) {
-      this.body = new p2.Body({mass: 0, 
-        position: [this.position.x, this.position.y + this.height/2] });
+      this.body = new p2.Body({
+        mass: 0,
+        position: [this.position.x, this.position.y + this.height / 2]
+      });
       this.generateShape();
     }
   }
@@ -27,7 +29,7 @@ export default class Block extends BABYLON.Sprite {
 
   protected generateShape() {
     this.shape = new p2.Box({
-      width: this.width/2,
+      width: this.width / 2,
       height: this.height
     });
     this.shape.material = this.material;
