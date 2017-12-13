@@ -21,7 +21,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/Map\/tileground.tsx"
+         "source":".\/tileground.tsx"
         }],
  "tilewidth":80,
  "type":"map",

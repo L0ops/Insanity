@@ -94,7 +94,7 @@ export class AppComponent implements AfterViewInit {
 
     const widthGround = 12;
     const heightGround = 2;
-    const groundPath = '../assets/Sprites/tileground.png';
+    const groundPath = '../assets/Sprites/tile.png';
     const spriteGroundManager = new BABYLON.SpriteManager('managerGround', groundPath, widthGround * heightGround, 80, scene);
     const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
     world.addBody(ground.body);
