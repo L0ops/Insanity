@@ -1,0 +1,12 @@
+{ "columns":2,
+ "image":"tileground (1).png",
+ "imageheight":80,
+ "imagewidth":160,
+ "margin":0,
+ "name":"tileground (1)",
+ "spacing":0,
+ "tilecount":2,
+ "tileheight":80,
+ "tilewidth":80,
+ "type":"tileset"
+}
