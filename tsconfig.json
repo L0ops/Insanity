@@ -15,5 +15,12 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "src/*.ts",
+    "src/app/*"
+  ],
+  "exclude": [
+    "**/assets"
+  ]
 }
