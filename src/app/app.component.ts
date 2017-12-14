@@ -74,6 +74,9 @@ export class AppComponent implements AfterViewInit {
       world.step(1/60);
       let firstPlayer = Arbitre.getInstance().getFirstPlayer();
       freeCamera.position.x = firstPlayer.position.x;
+      if (firstPlayer.position.y > 0){
+        freeCamera.position.y = firstPlayer.position.y;
+      }
       for (let player of players) {
         this.playerAction(player);
         player.update();
