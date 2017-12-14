@@ -1,6 +1,7 @@
 import KeyGenerator from './KeyGenerator';
 import Key from './Key';
 import Player from './Player';
+import Ground from './Ground';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
 
@@ -13,7 +14,8 @@ export default class Arbitre {
   private scene: BABYLON.Scene;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private players: Player[];
-
+  private plateform: Ground;
+  private groundBody: p2.Body;
   private animationsPlayers;
 
   constructor() {
@@ -37,6 +39,19 @@ export default class Arbitre {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
+  }
+
+  public setGround(groundBody:p2.Body, plateform:Ground) {
+    this.plateform = plateform;
+    this.groundBody = groundBody;
+  }
+
+  public getPlateform() {
+    return this.plateform;
+  }
+
+  public getGroundBody() {
+    return this.groundBody;
   }
 
   public setWorld(world: p2.World) {

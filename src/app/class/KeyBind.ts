@@ -52,15 +52,16 @@ export default class KeyBind {
 
   public jumpRight() {
     let jump = this.player.movements['jump'];
-
-    jump.doRight = true;
-    jump.animate();
-    setTimeout(() => {
-      jump.jumpUp = false;
-    }, 300);
-    setTimeout(() => {
-      jump.doRight = false;
-    }, 600);
+    if (this.player.grounded) {
+      jump.doRight = true;
+      jump.animate();
+      setTimeout(() => {
+        jump.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        jump.doRight = false;
+      }, 600);
+    }
   }
 
   public dashRight() {
@@ -140,14 +141,16 @@ export default class KeyBind {
   public jumpLeft() {
     let jump = this.player.movements['jump'];
 
-    jump.doLeft = true;
-    jump.animate();
-    setTimeout(() => {
-      jump.jumpUp = false;
-    }, 300);
-    setTimeout(() => {
-      jump.doLeft = false;
-    }, 600);
+    if (this.player.grounded) {
+      jump.doLeft = true;
+      jump.animate();
+      setTimeout(() => {
+        jump.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        jump.doLeft = false;
+      }, 600);
+    }
   }
 
   public dashLeft() {

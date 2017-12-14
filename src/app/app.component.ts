@@ -80,12 +80,49 @@ export class AppComponent implements AfterViewInit {
   }
 
   setCollision(world: p2.World, players: Player[]) {
+    const groundBody = Arbitre.getInstance().getGroundBody();
+    const plateform = Arbitre.getInstance().getPlateform();
     world.on('beginContact', (evt) => {
+      if ((evt.bodyA.mass == groundBody.mass && evt.bodyA.id == groundBody.id) ||
+      (evt.bodyB.mass == groundBody.mass && evt.bodyB.id == groundBody.id)) {
+        this.collisionGround(evt.bodyA, evt.bodyB, players);
+      }
+      if ((evt.bodyA.mass == plateform.body.mass && evt.bodyA.id == plateform.body.id) ||
+      (evt.bodyB.mass == plateform.body.mass && evt.bodyB.id == plateform.body.id)) {
+        this.collisionGround(evt.bodyA, evt.bodyB, players);
+      }
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
       }
     });
+
+    world.on('endContact', (evt) => {
+      if ((evt.bodyA.mass == groundBody.mass && evt.bodyA.id == groundBody.id) ||
+      (evt.bodyB.mass == groundBody.mass && evt.bodyB.id == groundBody.id)) {
+        this.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      }
+      if ((evt.bodyA.mass == plateform.body.mass && evt.bodyA.id == plateform.body.id) ||
+      (evt.bodyB.mass == plateform.body.mass && evt.bodyB.id == plateform.body.id)) {
+        this.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      }
+    })
   }
+
+  collisionGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
+    const player = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
+    if (player) {
+      player.grounded = true;
+    }
+  }
+
+  collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
+    const player = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
+    if (player) {
+      player.grounded = false;
+    }
+  }
+
+
 
   createGround(world: p2.World, players: Player[], scene: BABYLON.Scene) {
     const groundBody = new p2.Body({mass: 0});
@@ -96,7 +133,6 @@ export class AppComponent implements AfterViewInit {
     groundPlane.material = groundMaterial;
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
-
     const widthGround = 12;
     const heightGround = 2;
     const groundPath = '../assets/Sprites/tileground.png';
@@ -104,7 +140,7 @@ export class AppComponent implements AfterViewInit {
     const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
     world.addBody(ground.body);
     ground.setPosition(-5, -1.0);
-
+    Arbitre.getInstance().setGround(groundBody, ground);
     players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
       friction: 2.0
     })));

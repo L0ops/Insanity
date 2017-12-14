@@ -14,6 +14,7 @@ import Hit from './player_move/Hit';
 
 export default class Player extends Block {
   public keybind : KeyBind;
+  public grounded : Boolean;
   private key : Key;
   public animationList;
   public movements = new Array<Movement>();
