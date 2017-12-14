@@ -24,22 +24,26 @@ export default class KeyBind {
   }
 
   public bindMoveRight(value: string) {
+    let run = this.player.movements['run'];
+    let jump = this.player.movements['jump'];
+    let dash = this.player.movements['dash'];
+
     mousetrap.bind(value, () => {
       this.releaseRight = false;
       let date = + new Date();
-      if (!this.player.isJumping) {
-        delete this.player.lastMoveL;
+      if (!jump.doSomething) {
+        delete dash.lastMoveL;
       }
-      if (!this.player.moveRight && !this.player.doDash) {
-        if (!this.player.moveLeft && !this.player.jumpLeft) {
-          if (date - this.player.lastMoveR < 300) {
+      if (!run.doRight && !dash.doSomething) {
+        if (!run.doLeft && !jump.doLeft) {
+          if (date - dash.lastMoveR < 300) {
             this.dashRight();
-          } else if (!this.player.isJumping) {
-            this.moveRight(date);
+          } else if (!jump.doSomething) {
+            this.runRight(date);
           } else {
-            this.player.lastMoveR = date;
+            dash.lastMoveR = date;
           }
-        } else if (!this.player.isJumping) {
+        } else if (!jump.doSomething) {
           this.jumpLeft();
         }
       }
@@ -47,69 +51,86 @@ export default class KeyBind {
   }
 
   public jumpRight() {
-    this.player.jumpRight = true;
-    this.player.jumpAnim();
+    let jump = this.player.movements['jump'];
+
+    jump.doRight = true;
+    jump.animate();
     setTimeout(() => {
-      this.player.jumpUp = false;
+      jump.jumpUp = false;
     }, 300);
     setTimeout(() => {
-      this.player.jumpRight = false;
+      jump.doRight = false;
     }, 600);
   }
 
   public dashRight() {
-    this.player.dashRight = true;
-    this.player.dashAnim();
+    let run = this.player.movements['run'];
+    let dash = this.player.movements['dash'];
+
+    dash.doRight = true;
+    dash.animate();
     setTimeout( () => {
       if (!this.releaseRight) {
-        this.player.moveRight = true;
-        this.player.isMoving = true;
-        this.player.moveAnim();
+        run.doRight = true;
+        run.doSomething = true;
+        run.animate();
       }
-      this.player.dashRight = false;
-      delete this.player.lastMoveR;
+      dash.doRight = false;
+      delete dash.lastMoveR;
     }, 500);
   }
 
-  public moveRight(date) {
-    this.player.lastMoveR = date;
+  public runRight(date) {
+    let run = this.player.movements['run'];
+    let dash = this.player.movements['dash'];
+
+    dash.lastMoveR = date;
     this.player.invertU = 0;
-    this.player.isMoving = true;
-    this.player.moveLeft = false;
-    this.player.moveRight = true;
-    this.player.moveAnim();
+    run.doSomething = true;
+    run.doLeft = false;
+    run.doRight = true;
+    run.animate();
   }
 
   public bindReleaseRight(value: string) {
+    let idle = this.player.movements['idle'];
+    let run = this.player.movements['run'];
+    let jump = this.player.movements['jump'];
+    let dash = this.player.movements['dash'];
+
     mousetrap.bind(value, () => {
       this.releaseRight = true;
-      if (!this.player.moveLeft && !this.player.jumpLeft) {
-        this.player.moveRight = false;
-        this.player.isMoving = false;
-        if (!this.player.doDash && !this.player.isJumping) {
-          this.player.idleAnim();
+      if (!run.doLeft && !jump.doLeft) {
+        run.doRight = false;
+        run.doSomething = false;
+        if (!dash.doSomething && !jump.doSomething) {
+          idle.animate();
         }
       }
     }, 'keyup');
   }
 
   public bindMoveLeft(value: string) {
+    let run = this.player.movements['run'];
+    let jump = this.player.movements['jump'];
+    let dash = this.player.movements['dash'];
+
     mousetrap.bind(value, () => {
       this.releaseLeft = false;
       let date = + new Date();
-      if (!this.player.isJumping) {
-        delete this.player.lastMoveR;
+      if (!jump.doSomething) {
+        delete dash.lastMoveR;
       }
-      if (!this.player.moveLeft && !this.player.doDash) {
-        if (!this.player.moveRight && !this.player.jumpRight) {
-          if (date - this.player.lastMoveL < 300 ) {
+      if (!run.doLeft && !dash.doSomething) {
+        if (!run.doRight && !jump.doRight) {
+          if (date - dash.lastMoveL < 300 ) {
             this.dashLeft();
-          } else if (!this.player.isJumping) {
-            this.moveLeft(date);
+          } else if (!jump.doSomething) {
+            this.runLeft(date);
           } else {
-            this.player.lastMoveL = date;
+            dash.lastMoveL = date;
           }
-        } else if (!this.player.isJumping) {
+        } else if (!jump.doSomething) {
           this.jumpRight();
         }
       }
@@ -117,47 +138,60 @@ export default class KeyBind {
   }
 
   public jumpLeft() {
-    this.player.jumpLeft = true;
-    this.player.jumpAnim();
+    let jump = this.player.movements['jump'];
+
+    jump.doLeft = true;
+    jump.animate();
     setTimeout(() => {
-      this.player.jumpUp = false;
+      jump.jumpUp = false;
     }, 300);
     setTimeout(() => {
-      this.player.jumpLeft = false;
+      jump.doLeft = false;
     }, 600);
   }
 
   public dashLeft() {
-    this.player.dashLeft = true;
-    this.player.dashAnim();
+    let run = this.player.movements['run'];
+    let dash = this.player.movements['dash'];
+
+    dash.doLeft = true;
+    dash.animate();
     setTimeout( () => {
       if (!this.releaseLeft) {
-        this.player.moveLeft = true;
-        this.player.isMoving = true;
-        this.player.moveAnim();
+        run.doLeft = true;
+        run.doSomething = true;
+        run.animate();
       }
-      this.player.dashLeft = false;
-      delete this.player.lastMoveL;
+      dash.doLeft = false;
+      delete dash.lastMoveL;
     }, 500);
   }
 
-  public moveLeft(date) {
-    this.player.lastMoveL = date;
+  public runLeft(date) {
+    let run = this.player.movements['run'];
+    let dash = this.player.movements['dash'];
+
+    dash.lastMoveL = date;
     this.player.invertU = 1;
-    this.player.isMoving = true;
-    this.player.moveRight = false;
-    this.player.moveLeft = true;
-    this.player.moveAnim();
+    run.doSomething = true;
+    run.doRight = false;
+    run.doLeft = true;
+    run.animate();
   }
 
   public bindReleaseLeft(value: string) {
+    let idle = this.player.movements['idle'];
+    let run = this.player.movements['run'];
+    let jump = this.player.movements['jump'];
+    let dash = this.player.movements['dash'];
+
     mousetrap.bind(value, () => {
       this.releaseLeft = true;
-      if (!this.player.moveRight && !this.player.jumpRight) {
-        this.player.moveLeft = false;
-        this.player.isMoving = false;
-        if (!this.player.doDash && !this.player.isJumping) {
-          this.player.idleAnim();
+      if (!run.doRight && !jump.doRight) {
+        run.doLeft = false;
+        run.doSomething = false;
+        if (!dash.doSomething && !jump.doSomething) {
+          idle.animate();
         }
       }
     }, 'keyup');
@@ -165,14 +199,17 @@ export default class KeyBind {
 
   public resetBinds() {
     console.log('resetBinds', this.player);
+    let idle = this.player.movements['idle'];
+    let run = this.player.movements['run'];
+
     mousetrap.unbind(this.key.right);
     mousetrap.unbind(this.key.left);
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
-    this.player.isMoving = false;
-    this.player.moveLeft = false;
-    this.player.moveRight = false;
-    this.player.idleAnim();
+    run.doSomething = false;
+    run.doLeft = false;
+    run.doRight = false;
+    idle.animate();
   }
 }

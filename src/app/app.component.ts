@@ -33,6 +33,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
+
   createScene = function () {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
@@ -115,33 +116,40 @@ export class AppComponent implements AfterViewInit {
   };
 
   playerAction = function(player: Player) {
-    let move = true;
-    if (player.isMoving) {
-      let force = player.moveLeft ? -4.5 : 4.5;
-      player.move(force);
-    } else if (player.doDash) {
-      let force = player.dashLeft ? -10 : 10;
-      player.dash(force);
-    } else if (player.hit) {
-      player.takeDash();
+    let idle = player.movements['idle'];
+    let run = player.movements['run'];
+    let jump = player.movements['jump'];
+    let dash = player.movements['dash'];
+    let hit = player.movements['hit'];
+    let shifting = true;
+
+    if (run.doSomething) {
+      run.do();
+    } else if (dash.doSomething) {
+      dash.do();
+    } else if (hit.doSomething) {
+      hit.do();
     } else {
-      move = false;
+      shifting = false;
     }
-    if (player.isJumping) {
-      player.jump();
+    if (jump.doSomething) {
+      jump.do();
     }
-    if (!move) {
-      player.move(0);
+    if (!shifting) {
+      idle.do();
     }
   };
 
   collisionDash = function (evt: p2.EventEmitter, players: Player[]) {
+    let player1 = players[evt.bodyA.id - 1];
+    let player2 = players[evt.bodyB.id - 1];
     let dasher: number;
     let touched: number;
-    if (players[evt.bodyA.id - 1].doDash || players[evt.bodyB.id - 1].doDash) {
-      dasher = (players[evt.bodyA.id - 1].doDash ? evt.bodyA.id - 1 : evt.bodyB.id - 1);
-      touched = (players[evt.bodyA.id - 1].doDash ? evt.bodyB.id - 1 : evt.bodyA.id - 1);
-      if (players[dasher].doDash && players[touched].doDash) {
+
+    if (player1.movements['dash'].doSomething || player2.movements['dash'].doSomething) {
+      dasher = (player1.movements['dash'].doSomething ? evt.bodyA.id - 1 : evt.bodyB.id - 1);
+      touched = (player1.movements['dash'].doSomething ? evt.bodyB.id - 1 : evt.bodyA.id - 1);
+      if (players[dasher].movements['dash'].doSomething && players[touched].movements['dash'].doSomething) {
         Arbitre.getInstance().parityDash(evt.bodyA.id - 1, evt.bodyB.id - 1);
         dasher = Arbitre.getInstance().getDasher();
         touched = Arbitre.getInstance().getTouchedByDash();
@@ -149,8 +157,8 @@ export class AppComponent implements AfterViewInit {
     }
     if (dasher != null && touched != null) {
       console.log(players[dasher].name, "a fait un dash a", players[touched].name);
-      players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
-      players[dasher].stopDash();
+      players[touched].movements['hit'].hitByDash(players[dasher].movements['dash'].doLeft ? -1 : 1);
+      players[dasher].movements['dash'].stopDash();
     }
   };
 }
