@@ -6,6 +6,9 @@ import Ground from './class/Ground';
 import Key from './class/Key';
 import Arbitre from './class/Arbitre';
 import Environment from './class/Environment';
+import {JsonReaderService} from './services/json-reader.service';
+import Block from './class/Block';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -15,12 +18,22 @@ import Environment from './class/Environment';
 export class AppComponent implements AfterViewInit {
   private canvas;
   private engine;
+  private map;
 
-  constructor() {
+  constructor(private jsonReader: JsonReaderService) {
     console.log('Construct');
   }
 
   ngAfterViewInit() {
+    this.initJson();
+  }
+
+  initJson = async () => {
+    this.map = await this.jsonReader.getObject('Sprites/map.json');
+    this.initGame();
+  };
+
+  initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
     this.engine = new BABYLON.Engine(this.canvas, true);
@@ -37,7 +50,7 @@ export class AppComponent implements AfterViewInit {
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
-    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -15), scene);
+    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -20), scene);
     const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
     const keys = [];
     keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
@@ -92,17 +105,37 @@ export class AppComponent implements AfterViewInit {
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
 
-    const widthGround = 12;
-    const heightGround = 2;
-    const groundPath = '../assets/Sprites/tile.png';
-    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', groundPath, widthGround * heightGround, 80, scene);
-    const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
-    world.addBody(ground.body);
-    ground.setPosition(-5, -1.0);
+    const {width, height, data: tmpBlocks} = this.map.layers[0];
+    const mapBlocks = _.chunk(tmpBlocks, width);
+    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', '../assets/Sprites/tile.png', width * height, 80, scene);
+    mapBlocks.forEach((row, index1) => {
+      row.forEach((mapBlock, index2) => {
+        if (mapBlocks[index1][index2] === 1 || mapBlocks[index1][index2] === 2) {
+          const block = new Block(`osef_${index2}_${index1}`, scene, spriteGroundManager, true);
+          block.cellIndex = mapBlocks[index1][index2] - 1;
+          block.body.position[0] = index2;
+          block.body.position[1] = height - index1 - 7;
+          block.update();
+          if (block.cellIndex === 0 || block.cellIndex === 1) {
+            world.addBody(block.body);
+          }
+        }
+      });
+      players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
+        friction: 2.0
+      })));
+    });
 
-    players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
-      friction: 2.0
-    })));
+    // const widthGround = 12;
+    // const heightGround = 2;
+    // const groundPath = '../assets/Sprites/tile.png';
+    // const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
+    // world.addBody(ground.body);
+    // ground.setPosition(-5, -1.0);
+    //
+    // players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
+    //   friction: 2.0
+    // })));
   }
 
   playerAction(player: Player) {

@@ -25,7 +25,7 @@ export default class Player extends Block {
   private animationList;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    super(name, scene, manager, false);
+    super(name, scene, manager, false, true);
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height/2]
