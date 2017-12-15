@@ -88,8 +88,12 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+  public getKeys() {
+    return this.key;
+  }
+
   public jump() {
-    const jumpForce = 4;
+    const jumpForce = 5;
     if (!this.doDash) {
       if (this.jumpUp) {
         this.body.velocity[1] = jumpForce;

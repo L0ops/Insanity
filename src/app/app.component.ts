@@ -1,5 +1,6 @@
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import * as BABYLON from 'babylonjs';
+import * as GUI from 'babylonjs-gui';
 import * as p2 from 'p2';
 import Player from './class/Player';
 import Ground from './class/Ground';
@@ -47,7 +48,7 @@ export class AppComponent implements AfterViewInit {
     });
     Arbitre.getInstance().setScene(scene);
     Arbitre.getInstance().setWorld(world);
-    const playersName = ['player1', 'player2', 'player3'];
+    const playersName = ['Lucas', 'Sulyvan', 'Tom'];
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
@@ -55,12 +56,13 @@ export class AppComponent implements AfterViewInit {
     this.createGround(world, players, scene);
 
     Arbitre.getInstance()
-      .setTimerKeys(10000)
-      .setKeys(keys)
-      .addPlayersToGenerate()
-      .generateKeys()
-      .regenerate();
+    .setTimerKeys(10000)
+    .setKeys(keys)
+    .addPlayersToGenerate()
+    .generateKeys()
+    .regenerate();
     this.setCollision(world, players);
+    this.fillHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
@@ -71,7 +73,35 @@ export class AppComponent implements AfterViewInit {
         player.update();
       });
     });
+
     return scene;
+  }
+
+  fillHud() {
+    const players = Arbitre.getInstance().getPlayers();
+    let h = -1;
+
+    players.forEach(player => this.createHud(
+      player.name
+      + "\n"
+      + player.getKeys().left.toUpperCase()
+      + ' & '
+      + player.getKeys().right.toUpperCase(),
+      ++h
+    ));
+  }
+
+  createHud(player, hName) {
+    let advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    let playerName = new BABYLON.GUI.TextBlock();
+
+    playerName.text = player;
+    playerName.color = player.color;
+    playerName.fontSize = 20;
+    playerName.textHorizontalAlignment = hName;
+    playerName.textVerticalAlignment = 0;
+    // playerName.onTextChangedObservable.notifyObservers(player);
+    advancedTexture.addControl(playerName);
   }
 
   setCollision(world: p2.World, players: Player[]) {

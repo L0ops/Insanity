@@ -20,7 +20,7 @@ export default class Arbitre {
     this.players = [];
     const cosmoAnimation = {
       idle: {begin: 0, end: 3, speed: 100},
-      move: {begin: 4, end: 7, speed: 300},
+      move: {begin: 4, end: 7, speed: 400},
       dash: {begin: 10, end: 15, speed: 50},
       jump: {begin: 16, end: 21, speed: 150},
       hitback: {begin: 22, end: 25, speed: 100},
