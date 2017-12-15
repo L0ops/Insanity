@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
     });
     Arbitre.getInstance().setScene(scene);
     Arbitre.getInstance().setWorld(world);
-    const playersName = ['lucas', 'sulyvan', 'tom'];
+    const playersName = ['tom', 'sulyvan', 'matt'];
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
@@ -92,9 +92,9 @@ export class AppComponent implements AfterViewInit {
     // lKeys : 5, 590, 1175
     // rKeys : 50, 635, 1220
     players.forEach(player =>  {
-      lKey = this.keyHud(player.getKeys().left, 5, 30),
-      rKey = this.keyHud(player.getKeys().right, 50, 30),
-      pName = this.playerHud(player.name, 0, 0),
+      lKey = this.keyHud(player.getKeys().left, 5, 50),
+      rKey = this.keyHud(player.getKeys().right, 50, 50),
+      pName = this.playerHud(player.name, 20, 5),
       ++c
     });
 
@@ -105,7 +105,7 @@ export class AppComponent implements AfterViewInit {
     let image = new BABYLON.GUI.Image(name, "../assets/Sprites/Letters/" + name + ".png");
 
     image.width = "50px";
-    image.height = "30px";
+    image.height = "50px";
     image.left = left;
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
