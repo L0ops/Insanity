@@ -39,6 +39,8 @@ export class AppComponent implements AfterViewInit {
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -15), scene);
+    freeCamera.position.y += 2;
+    const firstPosCamera = freeCamera.position.y;
     const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
     const keys = [];
     keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
@@ -68,6 +70,9 @@ export class AppComponent implements AfterViewInit {
       world.step(1 / 60);
       const firstPlayer = Arbitre.getInstance().getFirstPlayer();
       freeCamera.position.x = firstPlayer.position.x;
+      if (firstPlayer.position.y > firstPosCamera){
+        freeCamera.position.y = firstPlayer.position.y;
+      }
       players.forEach(player => {
         this.playerAction(player);
         player.update();
@@ -93,7 +98,7 @@ export class AppComponent implements AfterViewInit {
 
   createHud(player, hName) {
     let advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    let playerName = new BABYLON.GUI.TextBlock();
+    let playerName = new GUI.TextBlock();
 
     playerName.text = player;
     playerName.color = player.color;
@@ -136,23 +141,27 @@ export class AppComponent implements AfterViewInit {
   }
 
   playerAction(player: Player) {
-    let move = true;
-    if (player.isMoving) {
-      const force = player.moveLeft ? -4.5 : 4.5;
-      player.move(force);
-    } else if (player.doDash) {
-      const force = player.dashLeft ? -10 : 10;
-      player.dash(force);
-    } else if (player.hit) {
-      player.takeDash();
+    let idle = player.movements['idle'];
+    let run = player.movements['run'];
+    let jump = player.movements['jump'];
+    let dash = player.movements['dash'];
+    let hit = player.movements['hit'];
+    let movement = true;
+
+    if (run.doSomething) {
+      run.do();
+    } else if (dash.doSomething) {
+      dash.do();
+    } else if (hit.doSomething) {
+      hit.do();
     } else {
-      move = false;
+      movement = false;
     }
-    if (player.isJumping) {
-      player.jump();
+    if (jump.doSomething) {
+      jump.do();
     }
-    if (!move) {
-      player.move(0);
+    if (!movement) {
+      idle.do();
     }
   }
 
@@ -161,19 +170,19 @@ export class AppComponent implements AfterViewInit {
     let touched: number;
     const idA = evt.bodyA.id - 1;
     const idB = evt.bodyB.id - 1;
-    if (players[idA].doDash || players[idB].doDash) {
-      dasher = players[idA].doDash ? idA : idB;
-      touched = players[idA].doDash ? idB : idA;
-      if (players[dasher].doDash && players[touched].doDash) {
+    if (players[idA].movements['dash'].doSomething || players[idB].movements['dash'].doSomething) {
+      dasher = players[idA].movements['dash'].doSomething ? idA : idB;
+      touched = players[idA].movements['dash'].doSomething ? idB : idA;
+      if (players[dasher].movements['dash'].doSomething && players[touched].movements['dash'].doSomething) {
         Arbitre.getInstance().parityDash(idA, idB);
         dasher = Arbitre.getInstance().getDasher();
         touched = Arbitre.getInstance().getTouchedByDash();
       }
     }
     if (dasher != null && touched != null) {
-      console.log(players[dasher].name, 'a fait un dash a', players[touched].name);
-      players[touched].hitByDash(players[dasher].dashLeft ? -1 : 1);
-      players[dasher].stopDash();
+      console.log(players[dasher].name, "a fait un dash a", players[touched].name);
+      players[touched].movements['hit'].hitByDash(players[dasher].movements['dash'].doLeft ? -1 : 1);
+      players[dasher].movements['dash'].stopDash();
     }
   }
 }

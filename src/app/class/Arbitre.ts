@@ -19,12 +19,14 @@ export default class Arbitre {
   constructor() {
     this.players = [];
     const cosmoAnimation = {
-      idle: {begin: 0, end: 3, speed: 100},
-      move: {begin: 4, end: 7, speed: 400},
-      dash: {begin: 10, end: 15, speed: 50},
-      jump: {begin: 16, end: 21, speed: 150},
-      hitback: {begin: 22, end: 25, speed: 100},
-      hitfront: {begin: 26, end: 29, speed: 100}
+      idle: {begin: 0,end: 3,speed: 100,repeat: true},
+      run: {begin: 4,end: 7,speed: 300,repeat: true},
+      dash: {begin: 10,end: 15,speed: 50,repeat: false},
+      jump: {begin: 16,end: 21,speed: 150,repeat: false},
+      hit: {
+        back: {begin: 22,end: 25,speed: 100,repeat: false},
+        front: {begin: 26,end: 29,speed: 100,repeat: false}
+      }
     };
     // example return of get animations from api
     this.animationsPlayers = {cosmo: cosmoAnimation};
