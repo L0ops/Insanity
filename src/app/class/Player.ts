@@ -31,7 +31,7 @@ export default class Player extends Block {
 
     this.movements['idle'] = new Idle(this, 0, this.animationList.idle);
     this.movements['run'] = new Run(this, 4.5, this.animationList.run);
-    this.movements['jump'] = new Jump(this, 4, this.animationList.jump);
+    this.movements['jump'] = new Jump(this, 5, this.animationList.jump);
     this.movements['dash'] = new Dash(this, 10, this.animationList.dash);
     this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();

@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
     });
     Arbitre.getInstance().setScene(scene);
     Arbitre.getInstance().setWorld(world);
-    const playersName = ['Lucas', 'Sulyvan', 'Tom'];
+    const playersName = ['lucas', 'sulyvan', 'tom'];
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
@@ -64,7 +64,7 @@ export class AppComponent implements AfterViewInit {
     .generateKeys()
     .regenerate();
     this.setCollision(world, players);
-    this.fillHud();
+    this.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
@@ -82,31 +82,57 @@ export class AppComponent implements AfterViewInit {
     return scene;
   }
 
-  fillHud() {
+  createHud() {
     const players = Arbitre.getInstance().getPlayers();
-    let h = -1;
+    let lKey;
+    let rKey;
+    let pName;
+    let c = 0;
 
-    players.forEach(player => this.createHud(
-      player.name
-      + "\n"
-      + player.getKeys().left.toUpperCase()
-      + ' & '
-      + player.getKeys().right.toUpperCase(),
-      ++h
-    ));
+    // lKeys : 5, 590, 1175
+    // rKeys : 50, 635, 1220
+    players.forEach(player =>  {
+      lKey = this.keyHud(player.getKeys().left, 5, 30),
+      rKey = this.keyHud(player.getKeys().right, 50, 30),
+      pName = this.playerHud(player.name, 0, 0),
+      ++c
+    });
+
+    players.forEach(player => this.fillHud(pName, lKey, rKey));
   }
 
-  createHud(player, hName) {
-    let advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    let playerName = new GUI.TextBlock();
+  playerHud(name, left, top) {
+    let image = new BABYLON.GUI.Image(name, "../assets/Sprites/Letters/" + name + ".png");
 
-    playerName.text = player;
-    playerName.color = player.color;
-    playerName.fontSize = 20;
-    playerName.textHorizontalAlignment = hName;
-    playerName.textVerticalAlignment = 0;
-    // playerName.onTextChangedObservable.notifyObservers(player);
-    advancedTexture.addControl(playerName);
+    image.width = "50px";
+    image.height = "30px";
+    image.left = left;
+    image.top = top;
+    image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return image;
+  }
+
+  keyHud(keyPlayer, left, top) {
+    let image = new BABYLON.GUI.Image(keyPlayer, "../assets/Sprites/Letters/letter" + keyPlayer + ".png");
+
+    image.width = "40px";
+    image.height = "40px";
+    image.left = left;
+    image.top = top;
+    image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return image;
+  }
+
+  fillHud(name, lKey, rKey) {
+    let advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    advancedTexture.addControl(name);
+    advancedTexture.addControl(lKey);
+    advancedTexture.addControl(rKey);
   }
 
   setCollision(world: p2.World, players: Player[]) {
