@@ -6,6 +6,7 @@ import Ground from './class/Ground';
 import Key from './class/Key';
 import Arbitre from './class/Arbitre';
 import Environment from './class/Environment';
+import mousetrap from 'mousetrap';
 
 @Component({
   selector: 'app-root',
@@ -41,8 +42,9 @@ export class AppComponent implements AfterViewInit {
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -15), scene);
     freeCamera.position.y += 2;
-    const camBoundaryX = 10;
+    const camBoundary = new BABYLON.Vector2(10, 7);
     const firstPosCamera = freeCamera.position.y;
+    this.controlCamera(freeCamera);
     const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
     const keys = [];
     keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
@@ -50,6 +52,7 @@ export class AppComponent implements AfterViewInit {
     const world = new p2.World({
       gravity: [0, -9.82]
     });
+    Arbitre.getInstance().newGame();
     Arbitre.getInstance().setScene(scene);
     Arbitre.getInstance().setWorld(world);
     const playersName = ['player1', 'player2', 'player3'];
@@ -69,27 +72,46 @@ export class AppComponent implements AfterViewInit {
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
-      const firstPlayer = Arbitre.getInstance().getFirstPlayer();
-      freeCamera.position.x = firstPlayer.position.x;
-      if (firstPlayer.position.y > firstPosCamera){
-        freeCamera.position.y = firstPlayer.position.y;
-      }
-      players.forEach(player => {
-        if (player.isAlive()) {
-          if (player.position.x + camBoundaryX < freeCamera.position.x) {
-            player.die();
-            setTimeout(() => {
-              const firstPlayer = Arbitre.getInstance().getFirstPlayer();
-              player.revive(firstPlayer);
-            }, 1000);
-          } else {
-            this.playerAction(player);
+      if (!Arbitre.getInstance().gameState()) {
+        const firstPlayer = Arbitre.getInstance().getFirstPlayer();
+        if (firstPlayer) {
+          freeCamera.position.x = firstPlayer.position.x;
+          if (firstPlayer.position.y > firstPosCamera){
+            freeCamera.position.y = firstPlayer.position.y;
           }
+          players.forEach(player => {
+            if (player.isAlive()) {
+              if (player.position.x + camBoundary.x < freeCamera.position.x ||
+                player.position.y + camBoundary.y < freeCamera.position.y) {
+                player.die();
+                setTimeout(() => {
+                  if (!Arbitre.getInstance().gameState()) {
+                    const firstPlayer = Arbitre.getInstance().getFirstPlayer();
+                    player.revive(firstPlayer);
+                  }
+                }, 1000);
+              } else {
+                this.playerAction(player);
+              }
+            }
+            player.update();
+          });
+        } else {
+          console.log("gameover");
+          Arbitre.getInstance().gameOver();
         }
-        player.update();
-      });
+      }
     });
     return scene;
+  }
+
+  controlCamera(camera: BABYLON.FreeCamera) {
+    mousetrap.bind('up', () => {
+      camera.position.y = camera.position.y + .1;
+    })
+    mousetrap.bind('down', () => {
+      camera.position.y = camera.position.y - .1;
+    })
   }
 
   setCollision(world: p2.World, players: Player[]) {
