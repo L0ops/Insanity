@@ -123,12 +123,22 @@ export default class Arbitre {
   }
 
   public getFirstPlayer() {
-    let firstPlayer = this.players[0];
-    this.players.forEach(player => {
-      if (player.position.x > firstPlayer.position.x) {
+    let firstPlayer;
+    for (let player of this.players) {
+      if (player.isAlive()) {
         firstPlayer = player;
+        break;
       }
-    });
-    return firstPlayer;
+    }
+    if (firstPlayer) {
+      this.players.forEach(player => {
+        if (player.position.x > firstPlayer.position.x &&
+          player.isAlive()) {
+          firstPlayer = player;
+        }
+      });
+      return firstPlayer;
+    }
+    return null;
   }
 }
