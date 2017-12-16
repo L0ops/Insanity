@@ -85,19 +85,16 @@ export class AppComponent implements AfterViewInit {
     const groundBody = Arbitre.getInstance().getGroundBody();
     const plateform = Arbitre.getInstance().getPlateform();
     world.on('beginContact', (evt) => {
-      if ((evt.bodyA.mass == groundBody.mass && evt.bodyA.id == groundBody.id) ||
-      (evt.bodyB.mass == groundBody.mass && evt.bodyB.id == groundBody.id)) {
-        this.collisionGround(evt.bodyA, evt.bodyB, players);
-      }
-      if ((evt.bodyA.mass == plateform.body.mass && evt.bodyA.id == plateform.body.id) ||
-      (evt.bodyB.mass == plateform.body.mass && evt.bodyB.id == plateform.body.id)) {
-        this.collisionGround(evt.bodyA, evt.bodyB, players);
-      }
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
       }
     });
 
+    world.on('preSolve', (evt) => {
+      evt.contactEquations.forEach (contact => {
+        this.preSolveGround(contact.bodyA, contact.bodyB, players);
+      })
+    })
     world.on('endContact', (evt) => {
       if ((evt.bodyA.mass == groundBody.mass && evt.bodyA.id == groundBody.id) ||
       (evt.bodyB.mass == groundBody.mass && evt.bodyB.id == groundBody.id)) {
@@ -107,13 +104,25 @@ export class AppComponent implements AfterViewInit {
       (evt.bodyB.mass == plateform.body.mass && evt.bodyB.id == plateform.body.id)) {
         this.collisionEndGround(evt.bodyA, evt.bodyB, players);
       }
-    })
+    });
   }
 
-  collisionGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
-    const player = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
-    if (player) {
-      player.grounded = true;
+  preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
+    const player1 = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
+    const player2 = player1.body.id == bodyB.id ? null : players[bodyB.id - 1];
+    if (player1 && !player2) {
+      if (!player1.grounded) {
+        player1.grounded = true;
+      }
+    } else if (player1 && player2) {
+      if (player1.movements['dash'].doSomething ||
+      player2.movements['dash'].doSomething) {
+        let evt = new p2.EventEmitter();
+        evt.bodyA = bodyA;
+        evt.bodyB = bodyB;
+
+        this.collisionDash(evt, players);
+      }
     }
   }
 
