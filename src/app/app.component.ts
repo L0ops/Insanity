@@ -23,6 +23,8 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
+    this.canvas.style.width = "700px";
+    this.canvas.style.height = "450px";
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
