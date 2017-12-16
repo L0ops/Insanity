@@ -15,6 +15,7 @@ import Hit from './player_move/Hit';
 export default class Player extends Block {
   public keybind : KeyBind;
   public grounded : Boolean;
+  private live : Boolean;
   private key : Key;
   public animationList;
   public movements = new Array<Movement>();
@@ -27,7 +28,7 @@ export default class Player extends Block {
       position: [this.position.x, this.position.y + this.height/2]
     });
     this.generateShape();
-
+    this.live = true;
     this.animationList = animations;
 
     this.movements['idle'] = new Idle(this, 0, this.animationList.idle);
@@ -36,12 +37,29 @@ export default class Player extends Block {
     this.movements['dash'] = new Dash(this, 10, this.animationList.dash);
     this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();
-}
+  }
 
   public setKeys(key:Key) {
     this.key = key;
     this.key.used = true;
     console.log("set keys", key, "player", this);
     this.keybind = new KeyBind(this.key, this);
+  }
+
+  public isAlive() {
+    return this.live;
+  }
+
+  public revive(firstPlayer: Player) {
+    this.live = true;
+    console.log(this.name + ' revive');
+    this.body.position[0] = firstPlayer.body.position[0];
+    this.body.position[1] = firstPlayer.body.position[1] + (firstPlayer.shape.height + 0.2);
+    super.update();
+  }
+
+  public die() {
+    this.live = false;
+    console.log(this.name + ' dies');
   }
 }

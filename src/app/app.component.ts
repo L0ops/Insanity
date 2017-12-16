@@ -41,6 +41,7 @@ export class AppComponent implements AfterViewInit {
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 0, -15), scene);
     freeCamera.position.y += 2;
+    const camBoundaryX = 10;
     const firstPosCamera = freeCamera.position.y;
     const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
     const keys = [];
@@ -74,7 +75,17 @@ export class AppComponent implements AfterViewInit {
         freeCamera.position.y = firstPlayer.position.y;
       }
       players.forEach(player => {
-        this.playerAction(player);
+        if (player.isAlive()) {
+          if (player.position.x + camBoundaryX < freeCamera.position.x) {
+            player.die();
+            setTimeout(() => {
+              const firstPlayer = Arbitre.getInstance().getFirstPlayer();
+              player.revive(firstPlayer);
+            }, 1000);
+          } else {
+            this.playerAction(player);
+          }
+        }
         player.update();
       });
     });
