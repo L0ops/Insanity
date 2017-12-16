@@ -17,6 +17,7 @@ export default class Arbitre {
   private plateform: Ground;
   private groundBody: p2.Body;
   private animationsPlayers;
+  private overGame : Boolean;
 
   constructor() {
     this.players = [];
@@ -44,6 +45,18 @@ export default class Arbitre {
   public setGround(groundBody:p2.Body, plateform:Ground) {
     this.plateform = plateform;
     this.groundBody = groundBody;
+  }
+
+  public gameState() {
+    return this.overGame;
+  }
+
+  public gameOver() {
+    this.overGame = true;
+  }
+
+  public newGame() {
+    this.overGame = false;
   }
 
   public getPlateform() {
