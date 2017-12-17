@@ -1,6 +1,7 @@
 import KeyGenerator from './KeyGenerator';
 import Key from './Key';
 import Player from './Player';
+import Ground from './Ground';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
 
@@ -13,8 +14,8 @@ export default class Arbitre {
   private scene: BABYLON.Scene;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private players: Player[];
-
   private animationsPlayers;
+  private overGame : Boolean;
 
   constructor() {
     this.players = [];
@@ -37,6 +38,18 @@ export default class Arbitre {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
+  }
+
+  public gameState() {
+    return this.overGame;
+  }
+
+  public gameOver() {
+    this.overGame = true;
+  }
+
+  public newGame() {
+    this.overGame = false;
   }
 
   public setWorld(world: p2.World) {
@@ -108,12 +121,22 @@ export default class Arbitre {
   }
 
   public getFirstPlayer() {
-    let firstPlayer = this.players[0];
-    this.players.forEach(player => {
-      if (player.position.x > firstPlayer.position.x) {
+    let firstPlayer;
+    for (let player of this.players) {
+      if (player.isAlive()) {
         firstPlayer = player;
+        break;
       }
-    });
-    return firstPlayer;
+    }
+    if (firstPlayer) {
+      this.players.forEach(player => {
+        if (player.position.x > firstPlayer.position.x &&
+          player.isAlive()) {
+          firstPlayer = player;
+        }
+      });
+      return firstPlayer;
+    }
+    return null;
   }
 }

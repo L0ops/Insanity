@@ -9,7 +9,7 @@ export class JsonReaderService {
 
   getObject(url) {
     return new Promise(resolve => {
-      this.http.get('../../assets/JSON/' + url).subscribe(response => {
+      this.http.get('../../assets/' + url).subscribe(response => {
         resolve(response);
       });
     });

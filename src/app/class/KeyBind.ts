@@ -34,17 +34,19 @@ export default class KeyBind {
       if (!jump.doSomething) {
         delete dash.lastMoveL;
       }
-      if (!run.doRight && !dash.doSomething) {
-        if (!run.doLeft && !jump.doLeft) {
-          if (date - dash.lastMoveR < 300) {
-            this.dashRight();
+      if (this.player.isAlive()) {
+        if (!run.doRight && !dash.doSomething) {
+          if (!run.doLeft && !jump.doLeft) {
+            if (date - dash.lastMoveR < 300) {
+              this.dashRight();
+            } else if (!jump.doSomething) {
+              this.runRight(date);
+            } else {
+              dash.lastMoveR = date;
+            }
           } else if (!jump.doSomething) {
-            this.runRight(date);
-          } else {
-            dash.lastMoveR = date;
+            this.jumpLeft();
           }
-        } else if (!jump.doSomething) {
-          this.jumpLeft();
         }
       }
     });
@@ -52,15 +54,16 @@ export default class KeyBind {
 
   public jumpRight() {
     let jump = this.player.movements['jump'];
-
-    jump.doRight = true;
-    jump.animate();
-    setTimeout(() => {
-      jump.jumpUp = false;
-    }, 300);
-    setTimeout(() => {
-      jump.doRight = false;
-    }, 600);
+    if (this.player.grounded) {
+      jump.doRight = true;
+      jump.animate();
+      setTimeout(() => {
+        jump.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        jump.doRight = false;
+      }, 600);
+    }
   }
 
   public dashRight() {
@@ -121,17 +124,19 @@ export default class KeyBind {
       if (!jump.doSomething) {
         delete dash.lastMoveR;
       }
-      if (!run.doLeft && !dash.doSomething) {
-        if (!run.doRight && !jump.doRight) {
-          if (date - dash.lastMoveL < 300 ) {
-            this.dashLeft();
+      if (this.player.isAlive()) {
+        if (!run.doLeft && !dash.doSomething) {
+          if (!run.doRight && !jump.doRight) {
+            if (date - dash.lastMoveL < 300 ) {
+              this.dashLeft();
+            } else if (!jump.doSomething) {
+              this.runLeft(date);
+            } else {
+              dash.lastMoveL = date;
+            }
           } else if (!jump.doSomething) {
-            this.runLeft(date);
-          } else {
-            dash.lastMoveL = date;
+            this.jumpRight();
           }
-        } else if (!jump.doSomething) {
-          this.jumpRight();
         }
       }
     });
@@ -140,14 +145,16 @@ export default class KeyBind {
   public jumpLeft() {
     let jump = this.player.movements['jump'];
 
-    jump.doLeft = true;
-    jump.animate();
-    setTimeout(() => {
-      jump.jumpUp = false;
-    }, 300);
-    setTimeout(() => {
-      jump.doLeft = false;
-    }, 600);
+    if (this.player.grounded) {
+      jump.doLeft = true;
+      jump.animate();
+      setTimeout(() => {
+        jump.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        jump.doLeft = false;
+      }, 600);
+    }
   }
 
   public dashLeft() {

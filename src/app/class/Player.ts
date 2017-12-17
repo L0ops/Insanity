@@ -14,28 +14,29 @@ import Hit from './player_move/Hit';
 
 export default class Player extends Block {
   public keybind : KeyBind;
+  public grounded : Boolean;
+  private live : Boolean;
   private key : Key;
   public animationList;
   public movements = new Array<Movement>();
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    super(name, scene, manager, false);
-
+    super(name, scene, manager, false, true);
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height/2]
     });
     this.generateShape();
-
+    this.live = true;
     this.animationList = animations;
 
     this.movements['idle'] = new Idle(this, 0, this.animationList.idle);
     this.movements['run'] = new Run(this, 4.5, this.animationList.run);
-    this.movements['jump'] = new Jump(this, 5, this.animationList.jump);
+    this.movements['jump'] = new Jump(this, 5.25, this.animationList.jump);
     this.movements['dash'] = new Dash(this, 10, this.animationList.dash);
     this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();
-}
+  }
 
   public setKeys(key:Key) {
     this.key = key;
@@ -44,7 +45,25 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+
   public getKeys() {
       return this.key;
+  }
+
+  public isAlive() {
+    return this.live;
+  }
+
+  public revive(firstPlayer: Player) {
+    this.live = true;
+    console.log(this.name + ' revive');
+    this.body.position[0] = firstPlayer.body.position[0];
+    this.body.position[1] = firstPlayer.body.position[1] + (firstPlayer.shape.height + 0.2);
+    super.update();
+  }
+
+  public die() {
+    this.live = false;
+    console.log(this.name + ' dies');
   }
 }
