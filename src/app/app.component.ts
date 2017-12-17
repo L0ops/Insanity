@@ -2,13 +2,11 @@ import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
 import Player from './class/Player';
-import Ground from './class/Ground';
 import Key from './class/Key';
 import Arbitre from './class/Arbitre';
 import Environment from './class/Environment';
+import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
-import Block from './class/Block';
-import _ from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -97,7 +95,7 @@ export class AppComponent implements AfterViewInit {
 
   createGround(world: p2.World, players: Player[], scene: BABYLON.Scene) {
     const groundBody = new p2.Body({mass: 0});
-    groundBody.position[1] = -3.5;
+    groundBody.position[1] = -5.5;
 
     const groundPlane = new p2.Plane();
     const groundMaterial = new p2.Material();
@@ -105,37 +103,17 @@ export class AppComponent implements AfterViewInit {
     groundBody.addShape(groundPlane);
     world.addBody(groundBody);
 
-    const {width, height, data: tmpBlocks} = this.map.layers[0];
-    const mapBlocks = _.chunk(tmpBlocks, width);
-    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', '../assets/Sprites/tile.png', width * height, 80, scene);
-    mapBlocks.forEach((row, index1) => {
-      row.forEach((mapBlock, index2) => {
-        if (mapBlocks[index1][index2] === 1 || mapBlocks[index1][index2] === 2) {
-          const block = new Block(`osef_${index2}_${index1}`, scene, spriteGroundManager, true);
-          block.cellIndex = mapBlocks[index1][index2] - 1;
-          block.body.position[0] = index2;
-          block.body.position[1] = height - index1 - 7;
-          block.update();
-          if (block.cellIndex === 0 || block.cellIndex === 1) {
-            world.addBody(block.body);
-          }
-        }
-      });
-      players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
-        friction: 2.0
-      })));
-    });
+    const {width, height, data: blocks} = this.map.layers[0];
+    const worldSpriteManager = new BABYLON.SpriteManager('world-sprite', '../assets/Sprites/tile.png', width * height, 80, scene);
+    const worldMap = WorldMapGenerator.getInstance()
+      .setSize(width, height)
+      .setWorldDetails(blocks)
+      .setWorld(world)
+      .generate(scene, worldSpriteManager);
 
-    // const widthGround = 12;
-    // const heightGround = 2;
-    // const groundPath = '../assets/Sprites/tile.png';
-    // const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
-    // world.addBody(ground.body);
-    // ground.setPosition(-5, -1.0);
-    //
-    // players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
-    //   friction: 2.0
-    // })));
+    players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
+      friction: 2.0
+    })));
   }
 
   playerAction(player: Player) {
