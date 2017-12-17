@@ -139,8 +139,13 @@ export default class KeyBind {
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
-    run.doSomething = false;
-    run.doLeft = false;
-    run.doRight = false;
+    for (let i in this.player.movements) {
+      console.log('set to false');
+      if (i != 'jump') {
+        this.player.movements[i].doSomething = false;
+        this.player.movements[i].doRight = false;
+        this.player.movements[i].doLeft = false;
+      }
+    }
   }
 }
