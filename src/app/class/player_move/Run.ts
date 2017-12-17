@@ -15,4 +15,27 @@ export default class Run extends Movement {
   public animate() {
     super.animate('run');
   }
+
+  public runRight(date) {
+    let dash = this.player.movements['dash'];
+
+    dash.lastMoveR = date;
+    this.player.invertU = 0;
+    this.doSomething = true;
+    this.doLeft = false;
+    this.doRight = true;
+    this.animate();
+  }
+
+  public runLeft(date) {
+    let dash = this.player.movements['dash'];
+
+    dash.lastMoveL = date;
+    this.player.invertU = 1;
+    this.doSomething = true;
+    this.doRight = false;
+    this.doLeft = true;
+    this.animate();
+  }
+
 }
