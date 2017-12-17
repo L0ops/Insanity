@@ -53,7 +53,7 @@ export class AppComponent implements AfterViewInit {
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 2, -17), scene);
-    const camBoundary = new BABYLON.Vector2(10, 7);
+    const camBoundary = new BABYLON.Vector2(12, 7.7);
     const firstPosCamera = freeCamera.position.y;
     this.controlCamera(freeCamera);
     const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
@@ -72,7 +72,6 @@ export class AppComponent implements AfterViewInit {
 
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
-
     Arbitre.getInstance()
       .setTimerKeys(10000)
       .setKeys(keys)
@@ -93,7 +92,8 @@ export class AppComponent implements AfterViewInit {
           players.forEach(player => {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
-                player.position.y + camBoundary.y < freeCamera.position.y) {
+              player.position.y + camBoundary.y < freeCamera.position.y ||
+              player.position.y - camBoundary.y > freeCamera.position.y) {
                 player.die();
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {
@@ -126,8 +126,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   setCollision(world: p2.World, players: Player[]) {
-    const groundBody = Arbitre.getInstance().getGroundBody();
-    const plateform = Arbitre.getInstance().getPlateform();
     world.on('beginContact', (evt) => {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
@@ -140,14 +138,7 @@ export class AppComponent implements AfterViewInit {
       })
     })
     world.on('endContact', (evt) => {
-      if ((evt.bodyA.mass == groundBody.mass && evt.bodyA.id == groundBody.id) ||
-      (evt.bodyB.mass == groundBody.mass && evt.bodyB.id == groundBody.id)) {
         this.collisionEndGround(evt.bodyA, evt.bodyB, players);
-      }
-      if ((evt.bodyA.mass == plateform.body.mass && evt.bodyA.id == plateform.body.id) ||
-      (evt.bodyB.mass == plateform.body.mass && evt.bodyB.id == plateform.body.id)) {
-        this.collisionEndGround(evt.bodyA, evt.bodyB, players);
-      }
     });
   }
 
@@ -159,7 +150,11 @@ export class AppComponent implements AfterViewInit {
         player1.grounded = true;
       }
     } else if (player1 && player2) {
-      if (player1.movements['dash'].doSomething ||
+      if (player1.position.y + (player1.shape.height / 2) < player2.position.y ||
+      player2.position.y + (player2.shape.height / 2) < player1.position.y) {
+        const jumper = player1.movements['jump'].doSomething ? player1 : player2;
+        jumper.grounded = true;
+      } else if (player1.movements['dash'].doSomething ||
       player2.movements['dash'].doSomething) {
         let evt = new p2.EventEmitter();
         evt.bodyA = bodyA;
@@ -171,13 +166,14 @@ export class AppComponent implements AfterViewInit {
   }
 
   collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
-    const player = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
-    if (player) {
-      player.grounded = false;
+    const player1 = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
+    const player2 = player1.body.id == bodyB.id ? null : players[bodyB.id - 1];
+    if (player1 && !player2) {
+      player1.grounded = false;
+    } else if (player1 && player2) {
+      player1.movements['jump'].doSomething ? player1.grounded = false : player2.grounded = false;
     }
   }
-
-
 
   createGround(world: p2.World, players: Player[], scene: BABYLON.Scene) {
     const groundBody = new p2.Body({mass: 0});
@@ -204,8 +200,6 @@ export class AppComponent implements AfterViewInit {
     const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
     world.addBody(ground.body);
     ground.setPosition(-5, -1.0);
-
-    Arbitre.getInstance().setGround(groundBody, ground);
 
     players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
       friction: 2.0
