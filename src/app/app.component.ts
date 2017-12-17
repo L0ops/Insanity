@@ -56,7 +56,11 @@ export class AppComponent implements AfterViewInit {
     const camBoundary = new BABYLON.Vector2(12, 7.7);
     const firstPosCamera = freeCamera.position.y;
     this.controlCamera(freeCamera);
-    const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
+    const keysArray = [
+      ['q', 'w'], ['r', 't'], ['i', 'o'],
+      ['a', 's'], ['f', 'g'], ['k', 'l'],
+      ['z', 'x'], ['n', 'm']
+    ];
     const keys = [];
     keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
 
@@ -64,9 +68,10 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
-    Arbitre.getInstance().setScene(scene);
+    // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
+    const playersName = ['player1', 'player2', 'player3', 'player4'];
+    Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setWorld(world);
-    const playersName = ['player1', 'player2', 'player3'];
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
