@@ -40,12 +40,15 @@ export default class WorldMapGenerator {
     const worldMap = new WorldMap();
     mapBlocks.forEach((row, y) => {
       row.forEach((mapBlock, x) => {
+        // TODO: Refactor array [1, 2] to WorldMapGenerator attribut
         if ([1, 2].includes(mapBlocks[y][x])) {
           const block = new Block(`osef_${x}_${y}`, scene, manager, true);
           block.cellIndex = mapBlocks[y][x] - 1;
           block.body.position[0] = x;
+          // TODO: Change 7 to another number more generic
           block.body.position[1] = this._height - y - 7;
           block.update();
+          // TODO: Same as l43 for [0, 1]
           if (this._world != null && [0, 1].includes(block.cellIndex)) {
             this._world.addBody(block.body);
           }
