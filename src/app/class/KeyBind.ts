@@ -7,6 +7,7 @@ export default class KeyBind {
   public key: Key;
   public releaseLeft: Boolean;
   public releaseRight: Boolean;
+  private unbind: Boolean;
 
   constructor(key: Key, player: Player) {
     this.player = player;
@@ -21,6 +22,7 @@ export default class KeyBind {
     this.bindReleaseRight(key.right);
     this.bindMoveLeft(key.left);
     this.bindReleaseLeft(key.left);
+    this.unbind = false;
   }
 
   public bindMoveRight(value: string) {
@@ -29,23 +31,25 @@ export default class KeyBind {
     let dash = this.player.movements['dash'];
 
     mousetrap.bind(value, () => {
-      this.releaseRight = false;
-      let date = + new Date();
-      if (!jump.doSomething) {
-        delete dash.lastMoveL;
-      }
-      if (this.player.isAlive()) {
-        if (!run.doRight && !dash.doSomething) {
-          if (!run.doLeft && !jump.doLeft) {
-            if (date - dash.lastMoveR < 300) {
-              this.dashRight();
+      if (!this.unbind) {
+        this.releaseRight = false;
+        let date = + new Date();
+        if (!jump.doSomething) {
+          delete dash.lastMoveL;
+        }
+        if (this.player.isAlive()) {
+          if (!run.doRight && !dash.doSomething) {
+            if (!run.doLeft && !jump.doLeft) {
+              if (date - dash.lastMoveR < 300) {
+                this.dashRight();
+              } else if (!jump.doSomething) {
+                this.runRight(date);
+              } else {
+                dash.lastMoveR = date;
+              }
             } else if (!jump.doSomething) {
-              this.runRight(date);
-            } else {
-              dash.lastMoveR = date;
+              this.jumpLeft();
             }
-          } else if (!jump.doSomething) {
-            this.jumpLeft();
           }
         }
       }
@@ -119,23 +123,25 @@ export default class KeyBind {
     let dash = this.player.movements['dash'];
 
     mousetrap.bind(value, () => {
-      this.releaseLeft = false;
-      let date = + new Date();
-      if (!jump.doSomething) {
-        delete dash.lastMoveR;
-      }
-      if (this.player.isAlive()) {
-        if (!run.doLeft && !dash.doSomething) {
-          if (!run.doRight && !jump.doRight) {
-            if (date - dash.lastMoveL < 300 ) {
-              this.dashLeft();
+      if (!this.unbind) {
+        this.releaseLeft = false;
+        let date = + new Date();
+        if (!jump.doSomething) {
+          delete dash.lastMoveR;
+        }
+        if (this.player.isAlive()) {
+          if (!run.doLeft && !dash.doSomething) {
+            if (!run.doRight && !jump.doRight) {
+              if (date - dash.lastMoveL < 300 ) {
+                this.dashLeft();
+              } else if (!jump.doSomething) {
+                this.runLeft(date);
+              } else {
+                dash.lastMoveL = date;
+              }
             } else if (!jump.doSomething) {
-              this.runLeft(date);
-            } else {
-              dash.lastMoveL = date;
+              this.jumpRight();
             }
-          } else if (!jump.doSomething) {
-            this.jumpRight();
           }
         }
       }
@@ -144,7 +150,6 @@ export default class KeyBind {
 
   public jumpLeft() {
     let jump = this.player.movements['jump'];
-
     if (this.player.grounded) {
       jump.doLeft = true;
       jump.animate();
@@ -206,9 +211,14 @@ export default class KeyBind {
 
   public resetBinds() {
     console.log('resetBinds', this.player);
+    this.unbind = true;
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
-
+    if (this.player.invertU == 0) {
+      this.jumpLeft();
+    } else {
+      this.jumpRight();
+    }
     mousetrap.unbind(this.key.right);
     mousetrap.unbind(this.key.left);
     mousetrap.unbind(this.key.right, 'keyup');
@@ -217,6 +227,5 @@ export default class KeyBind {
     run.doSomething = false;
     run.doLeft = false;
     run.doRight = false;
-    idle.animate();
   }
 }
