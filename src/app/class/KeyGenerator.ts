@@ -37,7 +37,7 @@ export default class KeyGenerator {
       let binded = false;
       let nb = 0;
       while (!binded) {
-        nb = this.getRandomInt(0, 4);
+        nb = this.getRandomInt(0, this.keys.length);
         if (!this.keys[nb].used) {
           player.setKeys(this.keys[nb]);
           binded = true;
