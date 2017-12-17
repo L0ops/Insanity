@@ -3,7 +3,7 @@ import Block from './Block';
 
 export default class Ground {
   private static _count = 0;
-  private p_width = 0.05;
+  private p_width = 0.025;
   private p_height = 0.025;
 
   private _blocks:  Array<BABYLON.Sprite>;
@@ -31,7 +31,7 @@ export default class Ground {
     }
 
     this._shape = new p2.Box({
-      width: this._size.x * this._cell.x - (this._size.x * 0.05),
+      width: this._size.x * this._cell.x - (this._size.x * this.p_width),
       height: this._size.y * this._cell.y,
       position: [this._pos.x, this._pos.y]
     });

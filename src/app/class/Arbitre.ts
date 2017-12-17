@@ -14,8 +14,6 @@ export default class Arbitre {
   private scene: BABYLON.Scene;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private players: Player[];
-  private plateform: Ground;
-  private groundBody: p2.Body;
   private animationsPlayers;
   private overGame : Boolean;
 
@@ -42,11 +40,6 @@ export default class Arbitre {
     return Arbitre.instance;
   }
 
-  public setGround(groundBody:p2.Body, plateform:Ground) {
-    this.plateform = plateform;
-    this.groundBody = groundBody;
-  }
-
   public gameState() {
     return this.overGame;
   }
@@ -57,14 +50,6 @@ export default class Arbitre {
 
   public newGame() {
     this.overGame = false;
-  }
-
-  public getPlateform() {
-    return this.plateform;
-  }
-
-  public getGroundBody() {
-    return this.groundBody;
   }
 
   public setWorld(world: p2.World) {
