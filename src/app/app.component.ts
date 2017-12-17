@@ -87,18 +87,19 @@ export class AppComponent implements AfterViewInit {
     let lKey;
     let rKey;
     let pName;
-    let c = 0;
+    let left = 5;
+    let right = 50;
+    let head = 25;
 
-    // lKeys : 5, 590, 1175
-    // rKeys : 50, 635, 1220
     players.forEach(player =>  {
-      lKey = this.keyHud(player.getKeys().left, 5, 50),
-      rKey = this.keyHud(player.getKeys().right, 50, 50),
-      pName = this.playerHud(player.name, 20, 5),
-      ++c
+      lKey = this.keyHud(player.getKeys().left, left, 50);
+      rKey = this.keyHud(player.getKeys().right, right, 50);
+      pName = this.playerHud(player.name, head, 5);
+      left += 100;
+      right += 100;
+      head += 100;
+      this.fillHud(pName, lKey, rKey);
     });
-
-    players.forEach(player => this.fillHud(pName, lKey, rKey));
   }
 
   playerHud(name, left, top) {
