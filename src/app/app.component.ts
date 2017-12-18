@@ -53,6 +53,9 @@ export class AppComponent implements AfterViewInit {
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan();
 
+    // background music
+    let bgMusic = new BABYLON.Sound("bgMusic", "../assets/Music/bgmusic.mp3", scene, null, { loop: true, autoplay: true });
+
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 2, -17), scene);
@@ -71,7 +74,6 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
-    // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setWorld(world);
