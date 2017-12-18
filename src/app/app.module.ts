@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {JsonReaderService} from './services/json-reader.service';
 import {HttpClientModule} from '@angular/common/http';
+import {HudService} from './services/hud.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    JsonReaderService
+    JsonReaderService,
+    HudService
   ],
   bootstrap: [AppComponent]
 })

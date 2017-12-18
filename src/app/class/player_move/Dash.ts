@@ -1,5 +1,6 @@
 import Movement from './Movement';
 import Player from '../Player';
+import Arbitre from '../Arbitre';
 
 export default class Dash extends Movement {
   public lastMoveR: number;
@@ -28,6 +29,7 @@ export default class Dash extends Movement {
 
     this.doSomething = true;
     super.animate('dash');
+    Arbitre.getInstance().playSound('dash', 0.2);
     setTimeout( () => {
       this.doSomething = false;
       if (jump.doSomething) {

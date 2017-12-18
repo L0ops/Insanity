@@ -13,10 +13,10 @@ import Dash from './player_move/Dash';
 import Hit from './player_move/Hit';
 
 export default class Player extends Block {
-  public keybind : KeyBind;
-  public grounded : Boolean;
-  private live : Boolean;
-  private key : Key;
+  public keybind: KeyBind;
+  public grounded: Boolean;
+  private live: Boolean;
+  private key: Key;
   public animationList;
   public movements = new Array<Movement>();
 
@@ -24,7 +24,7 @@ export default class Player extends Block {
     super(name, scene, manager, false, true);
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
-      position: [this.position.x, this.position.y + this.height/2]
+      position: [this.position.x, this.position.y + this.height / 2]
     });
     this.generateShape();
     this.live = true;
@@ -38,11 +38,16 @@ export default class Player extends Block {
     this.movements['idle'].animate();
   }
 
-  public setKeys(key:Key) {
+  public setKeys(key: Key) {
     this.key = key;
     this.key.used = true;
-    console.log("set keys", key, "player", this);
+    console.log('set keys', key, 'player', this);
     this.keybind = new KeyBind(this.key, this);
+  }
+
+
+  public getKeys() {
+    return this.key;
   }
 
   public isAlive() {
