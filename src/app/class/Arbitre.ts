@@ -106,10 +106,10 @@ export default class Arbitre {
     return this.players;
   }
 
-  public setScene(scene: BABYLON.Scene) {
+  public setScene(scene: BABYLON.Scene, nbPlayers:number) {
     const playersPath = '../assets/Sprites/cosm.png';
     this.scene = scene;
-    this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, 3, 80, this.scene);
+    this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
     this.players = [];
   }
 

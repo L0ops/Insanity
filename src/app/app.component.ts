@@ -60,7 +60,11 @@ export class AppComponent implements AfterViewInit {
     const camBoundary = new BABYLON.Vector2(12, 7.7);
     const firstPosCamera = freeCamera.position.y;
     this.controlCamera(freeCamera);
-    const keysArray = [['q', 'w'], ['a', 's'], ['i', 'o'], ['k', 'l']];
+    const keysArray = [
+      ['q', 'w'], ['r', 't'], ['i', 'o'],
+      ['a', 's'], ['f', 'g'], ['k', 'l'],
+      ['z', 'x'], ['n', 'm']
+    ];
     const keys = [];
     keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
 
@@ -68,9 +72,10 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
-    Arbitre.getInstance().setScene(scene);
+    // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
+    const playersName = ['player1', 'player2', 'player3', 'player4'];
+    Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setWorld(world);
-    const playersName = ['tom', 'sulyvan', 'matt'];
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
@@ -128,16 +133,16 @@ export class AppComponent implements AfterViewInit {
     let rKey;
     let pName;
     let left = 5;
-    let right = 50;
-    let head = 25;
+    let right = 30;
+    let head = 12;
 
     players.forEach(player =>  {
-      lKey = this.keyHud(player.getKeys().left, left, 50);
-      rKey = this.keyHud(player.getKeys().right, right, 50);
+      lKey = this.keyHud(player.getKeys().left, left, 35);
+      rKey = this.keyHud(player.getKeys().right, right, 35);
       pName = this.playerHud(player.name, head, 5);
-      left += 100;
-      right += 100;
-      head += 100;
+      left += 60;
+      right += 60;
+      head += 60;
       this.fillHud(pName, lKey, rKey);
     });
   }
@@ -145,8 +150,8 @@ export class AppComponent implements AfterViewInit {
   playerHud(name, left, top) {
     let image = new BABYLON.GUI.Image(name, "../assets/Sprites/Letters/" + name + ".png");
 
-    image.width = "50px";
-    image.height = "50px";
+    image.width = "30px";
+    image.height = "30px";
     image.left = left;
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -158,8 +163,8 @@ export class AppComponent implements AfterViewInit {
   keyHud(keyPlayer, left, top) {
     let image = new BABYLON.GUI.Image(keyPlayer, "../assets/Sprites/Letters/letter" + keyPlayer + ".png");
 
-    image.width = "40px";
-    image.height = "40px";
+    image.width = "20px";
+    image.height = "20px";
     image.left = left;
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
