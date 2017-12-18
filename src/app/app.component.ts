@@ -208,15 +208,7 @@ export class AppComponent implements AfterViewInit {
       .setWorldDetails(blocks)
       .setWorld(world)
       .generate(scene, worldSpriteManager);
-
-    const widthGround = 12;
-    const heightGround = 2;
-    const groundPath = '../assets/Sprites/tileground.png';
-    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', groundPath, widthGround * heightGround, 80, scene);
-    const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
-    world.addBody(ground.body);
-    ground.setPosition(-5, -1.0);
-
+    
     players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
       friction: 2.0
     })));
