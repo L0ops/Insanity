@@ -1,5 +1,6 @@
 import Movement from './Movement';
 import Player from '../Player';
+import Arbitre from '../Arbitre';
 
 export default class Jump extends Movement {
   public jumpUp: Boolean;
@@ -28,6 +29,7 @@ export default class Jump extends Movement {
     this.doSomething = true;
     this.jumpUp = true;
     super.animate('jump');
+    Arbitre.getInstance().playSound('jump', 0.1);
     setTimeout(() => {
       if (!dash.doSomething) {
         jump.doSomething = false;
