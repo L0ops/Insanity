@@ -16,9 +16,7 @@ export default class Environment {
 
   public createBackgroundPlan(background) {
     this.createBack('../assets/Sprites/MainBG.png');
-    for (let i in background) {
-      this.pieceOfBackground(background[i]);
-    }
+    Object.values(background).forEach(bg => this.pieceOfBackground(bg));
   }
 
   private createBack(path: string) {
