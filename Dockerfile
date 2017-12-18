@@ -1,8 +1,6 @@
 FROM teracy/angular-cli
 LABEL maintainer="WTFlay <flay.schriever@gmail.com>"
 
-VOLUME ["/app"]
-
 WORKDIR /app
 
 ADD package.json /app/
