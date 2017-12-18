@@ -6,8 +6,8 @@ export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
 
-  constructor(player:Player, force:number, animations) {
-    super('dash', player, force, animations);
+  constructor(player:Player, force:number, animations, scene) {
+    super('dash', player, force, animations, scene);
   }
 
   public do() {
@@ -28,8 +28,7 @@ export default class Dash extends Movement {
     let jump = this.player.movements['jump'];
 
     this.doSomething = true;
-    super.animate('dash');
-    Arbitre.getInstance().playSound('dash', 0.2);
+    super.animate('dash', 'dash', 0.2);
     setTimeout( () => {
       this.doSomething = false;
       if (jump.doSomething) {

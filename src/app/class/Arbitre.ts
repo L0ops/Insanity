@@ -131,9 +131,4 @@ export default class Arbitre {
     }
     return null;
   }
-
-  public playSound(sound, volume) {
-    let s = new BABYLON.Sound("s", "../assets/Music/Sounds/" + sound +  ".wav", this.scene, null, {loop: false, autoplay: true});
-    s.setVolume(volume);
-  }
 }

@@ -5,7 +5,6 @@ export default class PlayerAnimation {
   public end = new Array<number>();
   public speed = new Array<number>();
   public repeat = new Array<number>();
-
   constructor(movementType:string, animations) {
     if (animations.hasOwnProperty("begin")) {
       this.begin[movementType] = animations.begin;
@@ -22,6 +21,13 @@ export default class PlayerAnimation {
         this.repeat[movementTypes[i]] = animations[j].repeat;
         i++;
       }
+    }
+  }
+
+  public playSound(sound, volume, scene) {
+    if (sound && volume) {
+      let s = new BABYLON.Sound("s", "../assets/Music/Sounds/" + sound +  ".wav", scene, null, {loop: false, autoplay: true});
+      s.setVolume(volume);
     }
   }
 

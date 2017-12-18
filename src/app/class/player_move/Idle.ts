@@ -2,8 +2,8 @@ import Player from '../Player';
 import Movement from './Movement';
 
 export default class Idle extends Movement {
-  constructor(player:Player, force:number, animations) {
-    super('idle', player, force, animations);
+  constructor(player:Player, force:number, animations, scene) {
+    super('idle', player, force, animations, scene);
   }
 
   public do() {
@@ -11,6 +11,6 @@ export default class Idle extends Movement {
   }
 
   public animate() {
-    super.animate('idle');
+    super.animate('idle', null, null);
   }
 }

@@ -1,12 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
-import Arbitre from '../Arbitre';
 
 export default class Jump extends Movement {
   public jumpUp: Boolean;
 
-  constructor(player:Player, force:number, animations) {
-    super('jump', player, force, animations);
+  constructor(player:Player, force:number, animations, scene) {
+    super('jump', player, force, animations, scene);
   }
 
   public do() {
@@ -28,8 +27,7 @@ export default class Jump extends Movement {
 
     this.doSomething = true;
     this.jumpUp = true;
-    super.animate('jump');
-    Arbitre.getInstance().playSound('jump', 0.1);
+    super.animate('jump', 'jump', 0.1);
     setTimeout(() => {
       if (!dash.doSomething) {
         jump.doSomething = false;
