@@ -106,11 +106,11 @@ export default class Arbitre {
   }
 
   public createPlayer(name: string, position: number) {
-    const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
-    player.body.position[0] += position;
-    this.world.addBody(player.body);
-    this.players.push(player);
-  }
+     const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
+     player.body.position = [position, 7, 0];
+     this.world.addBody(player.body);
+     this.players.push(player);
+   }
 
   public getFirstPlayer() {
     let firstPlayer;
