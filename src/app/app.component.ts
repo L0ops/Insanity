@@ -38,8 +38,8 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '700px';
-    this.canvas.style.height = '500px';
+    this.canvas.style.width = '1200px';
+    this.canvas.style.height = '675px';
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -53,7 +53,10 @@ export class AppComponent implements AfterViewInit {
     Environment.getInstance().setScene(scene).createBackgroundPlan();
 
     // background music
-    const bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {loop: true, autoplay: true});
+    const bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {
+      loop: true,
+      autoplay: true
+    });
     bgMusic.setVolume(0.3);
 
     // `const light =` is useless because we don't reuse it later
@@ -104,7 +107,8 @@ export class AppComponent implements AfterViewInit {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
                 player.position.y + camBoundary.y < freeCamera.position.y ||
-                player.position.y - camBoundary.y > freeCamera.position.y) {
+                player.position.y - camBoundary.y > freeCamera.position.y ||
+                player.position.y < 0) {
                 player.die();
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {

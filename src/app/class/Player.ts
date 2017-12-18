@@ -17,6 +17,7 @@ export default class Player extends Block {
   public grounded: Boolean;
   private live: Boolean;
   private key: Key;
+  private death: number;
   public animationList;
   public movements = new Array<Movement>();
 
@@ -29,6 +30,7 @@ export default class Player extends Block {
     this.generateShape();
     this.live = true;
     this.animationList = animations;
+    this.death = 0;
 
     this.movements['idle'] = new Idle(this, 0, this.animationList.idle);
     this.movements['run'] = new Run(this, 4.5, this.animationList.run);
@@ -64,6 +66,7 @@ export default class Player extends Block {
 
   public die() {
     this.live = false;
-    console.log(this.name + ' dies');
+    this.death++;
+    console.log(this.name + ` died, ${this.death}`);
   }
 }
