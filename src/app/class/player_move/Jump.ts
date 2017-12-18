@@ -41,4 +41,30 @@ export default class Jump extends Movement {
       }
     }, 600);
   }
+
+  public jumpRight() {
+    if (this.player.grounded) {
+      this.doRight = true;
+      this.animate();
+      setTimeout(() => {
+        this.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        this.doRight = false;
+      }, 600);
+    }
+  }
+
+  public jumpLeft() {
+    if (this.player.grounded) {
+      this.doLeft = true;
+      this.animate();
+      setTimeout(() => {
+        this.jumpUp = false;
+      }, 300);
+      setTimeout(() => {
+        this.doLeft = false;
+      }, 600);
+    }
+  }
 }
