@@ -74,7 +74,6 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
-    // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setWorld(world);
