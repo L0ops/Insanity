@@ -3,7 +3,7 @@ import Player from '../Player';
 import Arbitre from '../Arbitre';
 
 export default class Run extends Movement {
-  constructor(player:Player, force:number, animations) {
+  constructor(player: Player, force: number, animations) {
     super('run', player, force, animations);
   }
 
@@ -19,7 +19,7 @@ export default class Run extends Movement {
   }
 
   public runRight(date) {
-    let dash = this.player.movements['dash'];
+    const dash = this.player.movements['dash'];
 
     dash.lastMoveR = date;
     this.player.invertU = 0;
@@ -30,7 +30,7 @@ export default class Run extends Movement {
   }
 
   public runLeft(date) {
-    let dash = this.player.movements['dash'];
+    const dash = this.player.movements['dash'];
 
     dash.lastMoveL = date;
     this.player.invertU = 1;

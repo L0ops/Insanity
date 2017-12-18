@@ -6,7 +6,7 @@ export default class PlayerAnimation {
   public speed = new Array<number>();
   public repeat = new Array<number>();
 
-  constructor(movementType:string, animations) {
+  constructor(movementType: string, animations) {
     if (animations.hasOwnProperty("begin")) {
       this.begin[movementType] = animations.begin;
       this.end[movementType] = animations.end;
@@ -15,7 +15,7 @@ export default class PlayerAnimation {
     } else {
       const movementTypes = movementType.split(' ');
       let i = 0;
-      for (let j in animations) {
+      for (const j in animations) {
         this.begin[movementTypes[i]] = animations[j].begin;
         this.end[movementTypes[i]] = animations[j].end;
         this.speed[movementTypes[i]] = animations[j].speed;
@@ -25,7 +25,7 @@ export default class PlayerAnimation {
     }
   }
 
-  public playMyAnimation(player: Player, type:string) {
+  public playMyAnimation(player: Player, type: string) {
     player.stopAnimation();
     player.playAnimation(this.begin[type], this.end[type], this.repeat[type], this.speed[type], null);
   }

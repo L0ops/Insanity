@@ -4,11 +4,11 @@ import Block from './Block';
 import WorldMap from './WorldMap';
 
 export default class WorldMapGenerator {
+  private static _instance: WorldMapGenerator;
   private _width: number;
   private _height: number;
   private _details: Array<number>;
   private _world: p2.World;
-  private static _instance: WorldMapGenerator;
 
   private constructor() {
   }

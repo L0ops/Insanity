@@ -6,7 +6,8 @@ export default class Block extends BABYLON.Sprite {
   public shape: p2.Box;
   private isPlayer: boolean;
 
-  public constructor(name: string, scene: BABYLON.Scene, manager: BABYLON.SpriteManager, needShape: boolean = true, isPlayer: boolean = false) {
+  public constructor(name: string, scene: BABYLON.Scene, manager: BABYLON.SpriteManager, needShape: boolean = true,
+                     isPlayer: boolean = false) {
     super(name, manager);
     this.size = 1;
     this.material = new p2.Material();

@@ -1,39 +1,39 @@
-import Key from './Key'
-import Player from './Player'
+import Key from './Key';
+import Player from './Player';
 
 export default class KeyGenerator {
+  private static instance: KeyGenerator;
   public keys: Key[];
   public players: Player[];
-  private static instance: KeyGenerator;
 
   private constructor() {
   }
 
   static getInstance() {
     if (!KeyGenerator.instance) {
-        KeyGenerator.instance = new KeyGenerator();
+      KeyGenerator.instance = new KeyGenerator();
     }
     return KeyGenerator.instance;
   }
 
-  public addKeys(keys:Key[]) {
+  public addKeys(keys: Key[]) {
     this.keys = keys;
     return this;
   }
 
-  public addPlayers(players:Player[]) {
+  public addPlayers(players: Player[]) {
     this.players = players;
     return this;
   }
 
-  public getRandomInt(min:number, max:number) {
-    var min = Math.ceil(min);
-    var max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
+  public getRandomInt(min: number, max: number) {
+    const _min = Math.ceil(min);
+    const _max = Math.floor(max);
+    return Math.floor(Math.random() * (_max - _min)) + _min;
   }
 
   public generate() {
-    for (let player of this.players) {
+    this.players.forEach(player => {
       let binded = false;
       let nb = 0;
       while (!binded) {
@@ -43,17 +43,13 @@ export default class KeyGenerator {
           binded = true;
         }
       }
-    }
+    });
   }
 
   public clean() {
     console.log('prepare to clean players binds');
-    for (var i in this.players) {
-      this.players[i].keybind.resetBinds();
-    }
+    this.players.forEach(player => player.keybind.resetBinds());
     console.log('prepare to clean used keys');
-    for (let j in this.keys) {
-      this.keys[j].used = false;
-    }
+    this.keys.forEach(keys => keys.used = false);
   }
 }

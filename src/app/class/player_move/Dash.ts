@@ -6,12 +6,12 @@ export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
 
-  constructor(player:Player, force:number, animations) {
+  constructor(player: Player, force: number, animations) {
     super('dash', player, force, animations);
   }
 
   public do() {
-    let jump = this.player.movements['jump'];
+    const jump = this.player.movements['jump'];
 
     const direction = this.doLeft ? -1 : 1;
     const force = this.force * direction;
@@ -23,14 +23,14 @@ export default class Dash extends Movement {
   }
 
   public animate() {
-    let idle = this.player.movements['idle'];
-    let run = this.player.movements['run'];
-    let jump = this.player.movements['jump'];
+    const idle = this.player.movements['idle'];
+    const run = this.player.movements['run'];
+    const jump = this.player.movements['jump'];
 
     this.doSomething = true;
     super.animate('dash');
     Arbitre.getInstance().playSound('dash', 0.2);
-    setTimeout( () => {
+    setTimeout(() => {
       this.doSomething = false;
       if (jump.doSomething) {
         jump.doSomething = false;
@@ -46,9 +46,9 @@ export default class Dash extends Movement {
   }
 
   public stopDash() {
-    let idle = this.player.movements['idle'];
-    let jump = this.player.movements['jump'];
-    let dash = this.player.movements['dash'];
+    const idle = this.player.movements['idle'];
+    const jump = this.player.movements['jump'];
+    const dash = this.player.movements['dash'];
 
     if (jump.doSomething) {
       jump.doSomething = false;
@@ -61,11 +61,11 @@ export default class Dash extends Movement {
   }
 
   public dashRight() {
-    let run = this.player.movements['run'];
+    const run = this.player.movements['run'];
 
     this.doRight = true;
     this.animate();
-    setTimeout( () => {
+    setTimeout(() => {
       if (run.doSomething) {
         run.animate();
       }
@@ -75,11 +75,11 @@ export default class Dash extends Movement {
   }
 
   public dashLeft() {
-    let run = this.player.movements['run'];
+    const run = this.player.movements['run'];
 
     this.doLeft = true;
     this.animate();
-    setTimeout( () => {
+    setTimeout(() => {
       if (run.doSomething) {
         run.animate();
       }

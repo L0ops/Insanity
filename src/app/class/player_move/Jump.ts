@@ -5,12 +5,12 @@ import Arbitre from '../Arbitre';
 export default class Jump extends Movement {
   public jumpUp: Boolean;
 
-  constructor(player:Player, force:number, animations) {
+  constructor(player: Player, force: number, animations) {
     super('jump', player, force, animations);
   }
 
   public do() {
-    let dash = this.player.movements['dash'];
+    const dash = this.player.movements['dash'];
 
     if (!dash.doSomething) {
       if (this.jumpUp) {
@@ -20,11 +20,12 @@ export default class Jump extends Movement {
       }
     }
   }
+
   public animate() {
-    let idle = this.player.movements['idle'];
-    let run = this.player.movements['run'];
-    let jump = this.player.movements['jump'];
-    let dash = this.player.movements['dash'];
+    const idle = this.player.movements['idle'];
+    const run = this.player.movements['run'];
+    const jump = this.player.movements['jump'];
+    const dash = this.player.movements['dash'];
 
     this.doSomething = true;
     this.jumpUp = true;

@@ -5,7 +5,7 @@ import Arbitre from '../Arbitre';
 export default class Hit extends Movement {
   public hitDirection: number;
 
-  constructor(player:Player, force:number, animations) {
+  constructor(player: Player, force: number, animations) {
     super('back front', player, force, animations);
   }
 
@@ -15,8 +15,8 @@ export default class Hit extends Movement {
   }
 
   public hitByDash(direction: number) {
-    let dash = this.player.movements['dash'];
-    let hit = this.player.movements['hit'];
+    const dash = this.player.movements['dash'];
+    const hit = this.player.movements['hit'];
 
     if (dash.doSomething) {
       dash.stopDash();
@@ -25,22 +25,22 @@ export default class Hit extends Movement {
     hit.hitDirection = direction; // 1 droite || -1 gauche
     if (this.player.invertU > 0 && hit.hitDirection < 0) {
       this.hitBackAnim();
-    } else if (this.player.invertU == 0 && hit.hitDirection > 0) {
+    } else if (this.player.invertU === 0 && hit.hitDirection > 0) {
       this.hitFrontAnim();
     } else if (this.player.invertU > 0 && hit.hitDirection > 0) {
       this.hitFrontAnim();
-    } else if (this.player.invertU == 0 && hit.hitDirection < 0) {
+    } else if (this.player.invertU === 0 && hit.hitDirection < 0) {
       this.hitBackAnim();
     }
-    setTimeout( () => {
+    setTimeout(() => {
       hit.doSomething = false;
       hit.hitDirection = 0;
     }, 300);
   }
 
   public hitBackAnim() {
-    let idle = this.player.movements['idle'];
-    let run = this.player.movements['run'];
+    const idle = this.player.movements['idle'];
+    const run = this.player.movements['run'];
 
     super.animate('back');
     Arbitre.getInstance().playSound('hit', 0.1);
@@ -51,27 +51,27 @@ export default class Hit extends Movement {
       false,
       this.player.animationList.hit.back.speed,
       null);
-      setTimeout(() => {
-        if (run.doRight || run.doLeft) {
-          run.animate();
-        } else {
-          idle.animate();
-        }
-      }, 500);
+    setTimeout(() => {
+      if (run.doRight || run.doLeft) {
+        run.animate();
+      } else {
+        idle.animate();
+      }
+    }, 500);
   }
 
   public hitFrontAnim() {
-    let idle = this.player.movements['idle'];
-    let run = this.player.movements['run'];
+    const idle = this.player.movements['idle'];
+    const run = this.player.movements['run'];
 
     super.animate('front');
     Arbitre.getInstance().playSound('hit', 0.2);
-      setTimeout(() => {
-        if (run.doRight || run.doLeft) {
-          run.animate();
-        } else {
-          idle.animate();
-        }
-      }, 500);
+    setTimeout(() => {
+      if (run.doRight || run.doLeft) {
+        run.animate();
+      } else {
+        idle.animate();
+      }
+    }, 500);
   }
 }
