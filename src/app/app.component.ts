@@ -39,8 +39,8 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '500px';
-    this.canvas.style.height = '300px';
+    this.canvas.style.width = "700px";
+    this.canvas.style.height = "500px";
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -55,6 +55,13 @@ export class AppComponent implements AfterViewInit {
 
     // background music
     let bgMusic = new BABYLON.Sound("bgMusic", "../assets/Music/bgmusic.mp3", scene, null, { loop: true, autoplay: true });
+    bgMusic.setVolume(0.6);
+
+    // sounds effects
+    // const runSound = new BABYLON.Sound("run", "../assets/Music/walk.wav", scene, null, { loop: false, autoplay: false });
+    // const jumpSound = new BABYLON.Sound("jump", "../assets/Music/bgmusic.mp3", scene);
+    // const dashSound = new BABYLON.Sound("dash", "../assets/Music/bgmusic.mp3", scene);
+    // const hitSound = new BABYLON.Sound("hit", "../assets/Music/bgmusic.mp3", scene);
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
@@ -113,7 +120,7 @@ export class AppComponent implements AfterViewInit {
                   }
                 }, 1000);
               } else {
-                this.playerAction(player);
+                this.playerAction(player, scene);
               }
             }
             player.update();
@@ -218,7 +225,7 @@ export class AppComponent implements AfterViewInit {
     })));
   }
 
-  playerAction(player: Player) {
+  playerAction(player: Player, scene) {
     let idle = player.movements['idle'];
     let run = player.movements['run'];
     let jump = player.movements['jump'];
