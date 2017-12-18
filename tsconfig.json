@@ -22,5 +22,10 @@
   ],
   "exclude": [
     "**/assets"
+  ],
+  "types": [
+    "babylonjs",
+    "babylonjs-gui",
+    "angularFTW"
   ]
 }

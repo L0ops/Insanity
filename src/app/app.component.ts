@@ -1,5 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
+import * as GUI from 'babylonjs-gui';
 import * as p2 from 'p2';
 import Player from './class/Player';
 import Key from './class/Key';
@@ -9,6 +10,7 @@ import Ground from './class/Ground';
 import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
 import mousetrap from 'mousetrap';
+import {HudService} from './services/hud.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +22,8 @@ export class AppComponent implements AfterViewInit {
   private engine;
   private map;
 
-  constructor(private jsonReader: JsonReaderService) {
+  constructor(private jsonReader: JsonReaderService,
+              private hudService: HudService) {
     console.log('Construct');
   }
 
@@ -36,8 +39,8 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = "500px";
-    this.canvas.style.height = "300px";
+    this.canvas.style.width = '500px';
+    this.canvas.style.height = '300px';
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -84,6 +87,7 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players);
+    this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
@@ -91,14 +95,14 @@ export class AppComponent implements AfterViewInit {
         const firstPlayer = Arbitre.getInstance().getFirstPlayer();
         if (firstPlayer) {
           freeCamera.position.x = firstPlayer.position.x;
-          if (firstPlayer.position.y > firstPosCamera){
+          if (firstPlayer.position.y > firstPosCamera) {
             freeCamera.position.y = firstPlayer.position.y;
           }
           players.forEach(player => {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
-              player.position.y + camBoundary.y < freeCamera.position.y ||
-              player.position.y - camBoundary.y > freeCamera.position.y) {
+                player.position.y + camBoundary.y < freeCamera.position.y ||
+                player.position.y - camBoundary.y > freeCamera.position.y) {
                 player.die();
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {
@@ -113,21 +117,22 @@ export class AppComponent implements AfterViewInit {
             player.update();
           });
         } else {
-          console.log("gameover");
+          console.log('gameover');
           Arbitre.getInstance().gameOver();
         }
       }
     });
+
     return scene;
   }
 
   controlCamera(camera: BABYLON.FreeCamera) {
     mousetrap.bind('up', () => {
       camera.position.y = camera.position.y + .1;
-    })
+    });
     mousetrap.bind('down', () => {
       camera.position.y = camera.position.y - .1;
-    })
+    });
   }
 
   setCollision(world: p2.World, players: Player[]) {
@@ -138,16 +143,16 @@ export class AppComponent implements AfterViewInit {
     });
 
     world.on('preSolve', (evt) => {
-      evt.contactEquations.forEach (contact => {
+      evt.contactEquations.forEach(contact => {
         this.preSolveGround(contact.bodyA, contact.bodyB, players);
-      })
-    })
+      });
+    });
     world.on('endContact', (evt) => {
-        this.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      this.collisionEndGround(evt.bodyA, evt.bodyB, players);
     });
   }
 
-  preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
+  preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]) {
     const player1 = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
     const player2 = player1.body.id == bodyB.id ? null : players[bodyB.id - 1];
     if (player1 && !player2) {
@@ -156,11 +161,11 @@ export class AppComponent implements AfterViewInit {
       }
     } else if (player1 && player2) {
       if (player1.position.y + (player1.shape.height / 2) < player2.position.y ||
-      player2.position.y + (player2.shape.height / 2) < player1.position.y) {
+        player2.position.y + (player2.shape.height / 2) < player1.position.y) {
         const jumper = player1.movements['jump'].doSomething ? player1 : player2;
         jumper.grounded = true;
       } else if (player1.movements['dash'].doSomething ||
-      player2.movements['dash'].doSomething) {
+        player2.movements['dash'].doSomething) {
         let evt = new p2.EventEmitter();
         evt.bodyA = bodyA;
         evt.bodyB = bodyB;
@@ -170,7 +175,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players:Player[]) {
+  collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]) {
     const player1 = bodyA.mass == 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
     const player2 = player1.body.id == bodyB.id ? null : players[bodyB.id - 1];
     if (player1 && !player2) {
@@ -251,7 +256,7 @@ export class AppComponent implements AfterViewInit {
       }
     }
     if (dasher != null && touched != null) {
-      console.log(players[dasher].name, "a fait un dash a", players[touched].name);
+      console.log(players[dasher].name, 'a fait un dash a', players[touched].name);
       players[touched].movements['hit'].hitByDash(players[dasher].movements['dash'].doLeft ? -1 : 1);
       players[dasher].movements['dash'].stopDash();
     }

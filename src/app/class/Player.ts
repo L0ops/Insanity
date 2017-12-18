@@ -45,6 +45,11 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+
+  public getKeys() {
+      return this.key;
+  }
+
   public isAlive() {
     return this.live;
   }
