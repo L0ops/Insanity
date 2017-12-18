@@ -1,5 +1,6 @@
 import Movement from './Movement';
 import Player from '../Player';
+import Arbitre from '../Arbitre';
 
 export default class Hit extends Movement {
   public hitDirection: number;
@@ -42,6 +43,7 @@ export default class Hit extends Movement {
     let run = this.player.movements['run'];
 
     super.animate('back');
+    Arbitre.getInstance().playSound('hit', 0.1);
     this.player.stopAnimation();
     this.player.playAnimation(
       this.player.animationList.hit.back.begin,
@@ -63,6 +65,7 @@ export default class Hit extends Movement {
     let run = this.player.movements['run'];
 
     super.animate('front');
+    Arbitre.getInstance().playSound('hit', 0.2);
       setTimeout(() => {
         if (run.doRight || run.doLeft) {
           run.animate();
