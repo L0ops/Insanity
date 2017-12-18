@@ -39,8 +39,8 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '500px';
-    this.canvas.style.height = '300px';
+    this.canvas.style.width = "700px";
+    this.canvas.style.height = "500px";
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -52,6 +52,10 @@ export class AppComponent implements AfterViewInit {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan();
+
+    // background music
+    let bgMusic = new BABYLON.Sound("bgMusic", "../assets/Music/bgmusic.mp3", scene, null, { loop: true, autoplay: true });
+    bgMusic.setVolume(0.3);
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
@@ -71,7 +75,6 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
-    // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setWorld(world);

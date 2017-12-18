@@ -1,5 +1,6 @@
 import Movement from './Movement';
 import Player from '../Player';
+import Arbitre from '../Arbitre';
 
 export default class Run extends Movement {
   constructor(player:Player, force:number, animations) {
@@ -14,5 +15,6 @@ export default class Run extends Movement {
 
   public animate() {
     super.animate('run');
+    Arbitre.getInstance().playSound('run', 0.1);
   }
 }
