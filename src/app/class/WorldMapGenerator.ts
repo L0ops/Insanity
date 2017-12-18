@@ -49,7 +49,7 @@ export default class WorldMapGenerator {
           block.body.position[0] = x;
           block.body.position[1] = this._height - y;
           block.update();
-          if (this._world != null && _.inRange(block.cellIndex, 0, 4)) {
+          if (this._world != null && _.inRange(block.cellIndex, 1, 4)) {
             this._world.addBody(block.body);
           }
           worldMap.addBlock(block);
