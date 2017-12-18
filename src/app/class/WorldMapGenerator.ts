@@ -13,43 +13,43 @@ export default class WorldMapGenerator {
   private constructor() {
   }
 
-  public static getInstance():WorldMapGenerator {
+  public static getInstance(): WorldMapGenerator {
     return this._instance || (this._instance = new this());
   }
 
-  public setSize(width: number, height: number):WorldMapGenerator {
+  public setSize(width: number, height: number): WorldMapGenerator {
     this._width = width;
     this._height = height;
     return this;
   }
 
-  public setWorldDetails(details: Array<number>):WorldMapGenerator {
+  public setWorldDetails(details: Array<number>): WorldMapGenerator {
     this._details = details;
     return this;
   }
 
-  public setWorld(world: p2.World):WorldMapGenerator {
+  public setWorld(world: p2.World): WorldMapGenerator {
     this._world = world;
     return this;
   }
 
-  public generate(scene: BABYLON.Scene, manager: BABYLON.SpriteManager):WorldMap {
-    if (!this.fieldIsSet("width", this._width) || !this.fieldIsSet("height", this._height) || !this.fieldIsSet("world details ", this._details))
+  public generate(scene: BABYLON.Scene, manager: BABYLON.SpriteManager): WorldMap {
+    if (!this.fieldIsSet('width', this._width) ||
+      !this.fieldIsSet('height', this._height) ||
+      !this.fieldIsSet('world details ', this._details)) {
       return null;
+    }
     const mapBlocks = _.chunk(this._details, this._width);
     const worldMap = new WorldMap();
     mapBlocks.forEach((row, y) => {
       row.forEach((mapBlock, x) => {
-        // TODO: Refactor array [1, 2] to WorldMapGenerator attribut
-        if ([1, 2].includes(mapBlocks[y][x])) {
+        if (mapBlocks[y][x] !== 0) {
           const block = new Block(`osef_${x}_${y}`, scene, manager, true);
           block.cellIndex = mapBlocks[y][x] - 1;
           block.body.position[0] = x;
-          // TODO: Change 7 to another number more generic
-          block.body.position[1] = this._height - y - 7;
+          block.body.position[1] = this._height - y;
           block.update();
-          // TODO: Same as l43 for [0, 1]
-          if (this._world != null && [0, 1].includes(block.cellIndex)) {
+          if (this._world != null && _.inRange(block.cellIndex, 0, 4)) {
             this._world.addBody(block.body);
           }
           worldMap.addBlock(block);
@@ -59,7 +59,7 @@ export default class WorldMapGenerator {
     return worldMap;
   }
 
-  private fieldIsSet(name: string, obj: Object):boolean {
+  private fieldIsSet(name: string, obj: Object): boolean {
     if (typeof obj === 'undefined' || obj === null) {
       console.error(`Map generator: ${name} is not set`);
       return false;
