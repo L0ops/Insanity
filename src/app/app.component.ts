@@ -40,8 +40,8 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '700px';
-    this.canvas.style.height = '500px';
+    this.canvas.style.width = '1200px';
+    this.canvas.style.height = '675px';
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -55,7 +55,10 @@ export class AppComponent implements AfterViewInit {
     Environment.getInstance().setScene(scene).createBackgroundPlan(this.conf.background);
 
     // background music
-    const bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {loop: true, autoplay: true});
+    const bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {
+      loop: true,
+      autoplay: true
+    });
     bgMusic.setVolume(0.3);
 
     // `const light =` is useless because we don't reuse it later
@@ -103,7 +106,8 @@ export class AppComponent implements AfterViewInit {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
                 player.position.y + camBoundary.y < freeCamera.position.y ||
-                player.position.y - camBoundary.y > freeCamera.position.y) {
+                player.position.y - camBoundary.y > freeCamera.position.y ||
+                player.position.y < 0) {
                 player.die();
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {
@@ -203,15 +207,7 @@ export class AppComponent implements AfterViewInit {
       .setWorldDetails(blocks)
       .setWorld(world)
       .generate(scene, worldSpriteManager);
-
-    const widthGround = 12;
-    const heightGround = 2;
-    const groundPath = '../assets/Sprites/tileground.png';
-    const spriteGroundManager = new BABYLON.SpriteManager('managerGround', groundPath, widthGround * heightGround, 80, scene);
-    const ground = new Ground(scene, spriteGroundManager, widthGround, heightGround);
-    world.addBody(ground.body);
-    ground.setPosition(-5, -1.0);
-
+    
     players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
       friction: 2.0
     })));
