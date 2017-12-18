@@ -19,6 +19,7 @@ export class AppComponent implements AfterViewInit {
   private canvas;
   private engine;
   private map;
+  private conf;
 
   constructor(private jsonReader: JsonReaderService) {
     console.log('Construct');
@@ -30,6 +31,7 @@ export class AppComponent implements AfterViewInit {
 
   initJson = async () => {
     this.map = await this.jsonReader.getObject('Sprites/map.json');
+    this.conf = await this.jsonReader.getObject('JSON/insanity.json');
     this.initGame();
   };
 
@@ -48,7 +50,7 @@ export class AppComponent implements AfterViewInit {
   createScene() {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
-    Environment.getInstance().setScene(scene).createBackgroundPlan();
+    Environment.getInstance().setScene(scene).createBackgroundPlan(this.conf.background);
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
@@ -56,13 +58,9 @@ export class AppComponent implements AfterViewInit {
     const camBoundary = new BABYLON.Vector2(12, 7.7);
     const firstPosCamera = freeCamera.position.y;
     this.controlCamera(freeCamera);
-    const keysArray = [
-      ['q', 'w'], ['r', 't'], ['i', 'o'],
-      ['a', 's'], ['f', 'g'], ['k', 'l'],
-      ['z', 'x'], ['n', 'm']
-    ];
+
     const keys = [];
-    keysArray.forEach(kp => keys.push(new Key(kp[0], kp[1])));
+    this.conf.keys.forEach(kp => keys.push(new Key(kp[0], kp[1])));
 
     const world = new p2.World({
       gravity: [0, -9.82]
@@ -71,6 +69,7 @@ export class AppComponent implements AfterViewInit {
     // const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
+    Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
     Arbitre.getInstance().setWorld(world);
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));

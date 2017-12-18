@@ -19,18 +19,6 @@ export default class Arbitre {
 
   constructor() {
     this.players = [];
-    const cosmoAnimation = {
-      idle: {begin: 0,end: 3,speed: 100,repeat: true},
-      run: {begin: 4,end: 7,speed: 300,repeat: true},
-      dash: {begin: 10,end: 15,speed: 50,repeat: false},
-      jump: {begin: 16,end: 21,speed: 150,repeat: false},
-      hit: {
-        back: {begin: 22,end: 25,speed: 100,repeat: false},
-        front: {begin: 26,end: 29,speed: 100,repeat: false}
-      }
-    };
-    // example return of get animations from api
-    this.animationsPlayers = {cosmo: cosmoAnimation};
   }
 
   static getInstance() {
@@ -68,6 +56,10 @@ export default class Arbitre {
   public setKeys(keys: Key[]) {
     this.getKeyGenerator().addKeys(keys);
     return this;
+  }
+
+  public setAnimationPlayers(animationsList) {
+    this.animationsPlayers = animationsList;
   }
 
   public addPlayersToGenerate() {
@@ -114,7 +106,7 @@ export default class Arbitre {
   }
 
   public createPlayer(name: string, position: number) {
-    const player = new Player(name, this.scene, this.animationsPlayers.cosmo, this.spriteManagerPlayer);
+    const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
     player.body.position[0] += position;
     this.world.addBody(player.body);
     this.players.push(player);

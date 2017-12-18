@@ -1,0 +1,39 @@
+{
+  "keys": [
+    ["q", "w"], ["r", "t"], ["i", "o"],
+    ["a", "s"], ["f", "g"], ["k", "l"],
+    ["z", "x"], ["n", "m"]
+  ],
+  "background" : {
+    "second" : {
+      "planPosition": 2,
+      "sizePlan": 3,
+      "path": "../assets/Sprites/DarkMontain.png",
+      "spacePlan": 160,
+      "positions": {"x": -48, "y": -8, "z": 70},
+      "sizeImage": {"width": 2132, "height": 786},
+      "revert": true,
+      "widthSprite": 170
+    },
+    "first": {
+      "planPosition": 1,
+      "sizePlan": 10,
+      "path": "../assets/Sprites/WaterMontains.png",
+      "spacePlan": 14,
+      "positions": {"x": -6, "y": 0, "z": 0},
+      "sizeImage": {"width": 1903, "height": 1106},
+      "revert": true,
+      "widthSprite": 15
+    }
+  },
+  "animations" : {
+    "idle": {"begin": 0,"end": 3,"speed": 100,"repeat": true},
+    "run": {"begin": 4,"end": 7,"speed": 300,"repeat": true},
+    "dash": {"begin": 10,"end": 15,"speed": 50,"repeat": false},
+    "jump": {"begin": 16,"end": 21,"speed": 150,"repeat": false},
+    "hit": {
+      "back": {"begin": 22,"end": 25,"speed": 100,"repeat": false},
+      "front": {"begin": 26,"end": 29,"speed": 100,"repeat": false}
+    }
+  }
+}
