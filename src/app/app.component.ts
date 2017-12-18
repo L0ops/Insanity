@@ -52,8 +52,8 @@ export class AppComponent implements AfterViewInit {
     Environment.getInstance().setScene(scene).createBackgroundPlan();
 
     // background music
-    // let bgMusic = new BABYLON.Sound("bgMusic", "../assets/Music/bgmusic.mp3", scene, null, { loop: true, autoplay: true });
-    // bgMusic.setVolume(0.5);
+    let bgMusic = new BABYLON.Sound("bgMusic", "../assets/Music/bgmusic.mp3", scene, null, { loop: true, autoplay: true });
+    bgMusic.setVolume(0.3);
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
