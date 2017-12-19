@@ -5,8 +5,8 @@ import Arbitre from '../Arbitre';
 export default class Hit extends Movement {
   public hitDirection: number;
 
-  constructor(player:Player, force:number, animations, scene) {
-    super('back front', player, force, animations, scene);
+  constructor(player:Player, force:number, animations) {
+    super('back front', player, force, animations);
   }
 
   public do() {

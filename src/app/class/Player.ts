@@ -18,6 +18,7 @@ export default class Player extends Block {
   private live: Boolean;
   private key: Key;
   private death: number;
+  private scene: BABYLON.Scene;
   public animationList;
   public movements = new Array<Movement>();
 
@@ -27,16 +28,17 @@ export default class Player extends Block {
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height / 2]
     });
+    this.scene = scene;
     this.generateShape();
     this.live = true;
     this.animationList = animations;
-    this.death = 0;
 
-    this.movements['idle'] = new Idle(this, 0, this.animationList.idle, scene);
-    this.movements['run'] = new Run(this, 4.5, this.animationList.run, scene);
-    this.movements['jump'] = new Jump(this, 5.25, this.animationList.jump, scene);
-    this.movements['dash'] = new Dash(this, 10, this.animationList.dash, scene);
-    this.movements['hit'] = new Hit(this, 14, this.animationList.hit, scene);
+    this.death = 0;
+    this.movements['idle'] = new Idle(this, 0, this.animationList.idle);
+    this.movements['run'] = new Run(this, 4.5, this.animationList.run);
+    this.movements['jump'] = new Jump(this, 5.25, this.animationList.jump);
+    this.movements['dash'] = new Dash(this, 10, this.animationList.dash);
+    this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();
   }
 
@@ -47,6 +49,9 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+  public getScene() {
+    return this.scene;
+  }
 
   public getKeys() {
     return this.key;

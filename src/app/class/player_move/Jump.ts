@@ -4,8 +4,8 @@ import Player from '../Player';
 export default class Jump extends Movement {
   public jumpUp: Boolean;
 
-  constructor(player:Player, force:number, animations, scene) {
-    super('jump', player, force, animations, scene);
+  constructor(player:Player, force:number, animations) {
+    super('jump', player, force, animations);
   }
 
   public do() {

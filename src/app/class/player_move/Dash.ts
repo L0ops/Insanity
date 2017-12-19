@@ -6,8 +6,8 @@ export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
 
-  constructor(player:Player, force:number, animations, scene) {
-    super('dash', player, force, animations, scene);
+  constructor(player:Player, force:number, animations) {
+    super('dash', player, force, animations);
   }
 
   public do() {

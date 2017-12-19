@@ -2,8 +2,8 @@ import Movement from './Movement';
 import Player from '../Player';
 
 export default class Run extends Movement {
-  constructor(player:Player, force:number, animations, scene) {
-    super('run', player, force, animations, scene);
+  constructor(player:Player, force:number, animations) {
+    super('run', player, force, animations);
   }
 
   public do() {
