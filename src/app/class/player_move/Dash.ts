@@ -28,8 +28,7 @@ export default class Dash extends Movement {
     let jump = this.player.movements['jump'];
 
     this.doSomething = true;
-    super.animate('dash');
-    Arbitre.getInstance().playSound('dash', 0.2);
+    super.animate('dash', 'dash', 0.2);
     setTimeout( () => {
       this.doSomething = false;
       if (jump.doSomething) {

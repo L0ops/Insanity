@@ -11,6 +11,6 @@ export default class Idle extends Movement {
   }
 
   public animate() {
-    super.animate('idle');
+    super.animate('idle', null, null);
   }
 }

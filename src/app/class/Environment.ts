@@ -14,30 +14,9 @@ export default class Environment {
     return Environment.instance;
   }
 
-  public createBackgroundPlan() {
-    const secondPlan = {
-      planPosition: 2,
-      sizePlan: 3,
-      path: '../assets/Sprites/DarkMontain.png',
-      spacePlan: 160,
-      positions: {x: -48, y: -8, z: 70},
-      sizeImage: {width: 2132, height: 786},
-      revert: true,
-      widthSprite: 170
-    };
-    const firstPlan = {
-      planPosition: 1,
-      sizePlan: 10,
-      path: '../assets/Sprites/WaterMontains.png',
-      spacePlan: 14,
-      positions: {x: -6, y: 0, z: 0},
-      sizeImage: {width: 1903, height: 1106},
-      revert: true,
-      widthSprite: 15
-    };
+  public createBackgroundPlan(background) {
     this.createBack('../assets/Sprites/MainBG.png');
-    this.pieceOfBackground(secondPlan);
-    this.pieceOfBackground(firstPlan);
+    Object.values(background).forEach(bg => this.pieceOfBackground(bg));
   }
 
   private createBack(path: string) {

@@ -42,8 +42,7 @@ export default class Hit extends Movement {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
 
-    super.animate('back');
-    Arbitre.getInstance().playSound('hit', 0.1);
+    super.animate('back', 'hit', 0.1);
     this.player.stopAnimation();
     this.player.playAnimation(
       this.player.animationList.hit.back.begin,
@@ -64,8 +63,7 @@ export default class Hit extends Movement {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
 
-    super.animate('front');
-    Arbitre.getInstance().playSound('hit', 0.2);
+    super.animate('front', 'hit', 0.2);
       setTimeout(() => {
         if (run.doRight || run.doLeft) {
           run.animate();
