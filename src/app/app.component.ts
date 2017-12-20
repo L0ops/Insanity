@@ -40,8 +40,9 @@ export class AppComponent implements AfterViewInit {
   initGame() {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '1200px';
-    this.canvas.style.height = '675px';
+    this.canvas.style.width = '80%';
+    this.canvas.style.height = '50%';
+    this.canvas.style.marginLeft = '10%';
     this.engine = new BABYLON.Engine(this.canvas, true);
     const scene = this.createScene();
     this.engine.runRenderLoop(function () {
@@ -207,7 +208,7 @@ export class AppComponent implements AfterViewInit {
       .setWorldDetails(blocks)
       .setWorld(world)
       .generate(scene, worldSpriteManager);
-    
+
     players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
       friction: 2.0
     })));
