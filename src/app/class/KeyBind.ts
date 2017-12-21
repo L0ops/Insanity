@@ -124,7 +124,6 @@ export default class KeyBind {
   }
 
   public resetBinds() {
-    console.log('resetBinds', this.player);
     this.unbind = true;
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
@@ -140,7 +139,6 @@ export default class KeyBind {
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
     for (let i in this.player.movements) {
-      console.log('set to false');
       if (i != 'jump') {
         this.player.movements[i].doSomething = false;
         this.player.movements[i].doRight = false;
