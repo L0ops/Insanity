@@ -65,7 +65,7 @@ export class AppComponent implements AfterViewInit {
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 2, -17), scene);
-    const camBoundary = new BABYLON.Vector2(12, 7.7);
+    const camBoundary = new BABYLON.Vector2(14.5, 8);
     const firstPosCamera = freeCamera.position.y;
     this.controlCamera(freeCamera);
 
@@ -107,8 +107,7 @@ export class AppComponent implements AfterViewInit {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
                 player.position.y + camBoundary.y < freeCamera.position.y ||
-                player.position.y - camBoundary.y > freeCamera.position.y ||
-                player.position.y < 0) {
+                player.position.y - camBoundary.y > freeCamera.position.y) {
                 player.die();
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {
