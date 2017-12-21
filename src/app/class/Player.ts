@@ -45,7 +45,6 @@ export default class Player extends Block {
   public setKeys(key: Key) {
     this.key = key;
     this.key.used = true;
-    console.log('set keys', key, 'player', this);
     this.keybind = new KeyBind(this.key, this);
   }
 

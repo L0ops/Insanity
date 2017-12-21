@@ -76,6 +76,7 @@ export class AppComponent implements AfterViewInit {
       gravity: [0, -9.82]
     });
     Arbitre.getInstance().newGame();
+    Arbitre.getInstance().setService(this.hudService);
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
@@ -92,7 +93,6 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players);
-    this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);

@@ -5,8 +5,21 @@ import Arbitre from '../class/Arbitre';
 
 @Injectable()
 export class HudService {
-
+  private images = new Array<BABYLON.GUI.Image>();
+  
   constructor() {
+  }
+
+  disposeHud() {
+    this.images.forEach(image => {
+      image.dispose();
+    })
+    delete this.images;
+    this.images = new Array<BABYLON.GUI.Image>();
+  }
+
+  containImages() {
+    return this.images.length > 0;
   }
 
   createHud() {
@@ -51,6 +64,7 @@ export class HudService {
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    this.images.push(image);
 
     return image;
   }
