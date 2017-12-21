@@ -67,6 +67,10 @@ export default class Arbitre {
     return this;
   }
 
+  public setService(hudService) {
+    this.getKeyGenerator().setHudService(hudService);
+  }
+
   public generateKeys() {
     this.getKeyGenerator().generate();
     return this;

@@ -1,9 +1,11 @@
 import Key from './Key'
 import Player from './Player'
+import {HudService} from '../services/hud.service';
 
 export default class KeyGenerator {
   public keys: Key[];
   public players: Player[];
+  private hudService: HudService;
   private static instance: KeyGenerator;
 
   private constructor() {
@@ -14,6 +16,10 @@ export default class KeyGenerator {
         KeyGenerator.instance = new KeyGenerator();
     }
     return KeyGenerator.instance;
+  }
+
+  public setHudService(hudService: HudService) {
+    this.hudService = hudService;
   }
 
   public addKeys(keys:Key[]) {
@@ -44,14 +50,16 @@ export default class KeyGenerator {
         }
       }
     }
+    if (this.hudService.containImages()) {
+      this.hudService.disposeHud();
+    }
+    this.hudService.createHud();
   }
 
   public clean() {
-    console.log('prepare to clean players binds');
     for (var i in this.players) {
       this.players[i].keybind.resetBinds();
     }
-    console.log('prepare to clean used keys');
     for (let j in this.keys) {
       this.keys[j].used = false;
     }
