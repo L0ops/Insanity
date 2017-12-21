@@ -20,7 +20,7 @@
       "sizePlan": 10,
       "path": "../assets/Sprites/WaterMontains.png",
       "spacePlan": 14,
-      "positions": {"x": -6, "y": 0, "z": 0},
+      "positions": {"x": -6, "y": -1, "z": 0},
       "sizeImage": {"width": 1903, "height": 1106},
       "revert": true,
       "widthSprite": 15

@@ -111,7 +111,7 @@ export default class Arbitre {
 
   public createPlayer(name: string, position: number) {
      const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
-     player.body.position = [position, 7, 0];
+     player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
    }

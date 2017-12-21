@@ -191,15 +191,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   createGround(world: p2.World, players: Player[], scene: BABYLON.Scene) {
-    const groundBody = new p2.Body({mass: 0});
-    groundBody.position[1] = -5.5;
-
-    const groundPlane = new p2.Plane();
-    const groundMaterial = new p2.Material();
-    groundPlane.material = groundMaterial;
-    groundBody.addShape(groundPlane);
-    world.addBody(groundBody);
-
     const {width, height, data: blocks} = this.map.layers[0];
     const worldSpriteManager = new BABYLON.SpriteManager('world-sprite', '../assets/Sprites/tile.png', width * height, 80, scene);
     const worldMap = WorldMapGenerator.getInstance()
@@ -207,10 +198,6 @@ export class AppComponent implements AfterViewInit {
       .setWorldDetails(blocks)
       .setWorld(world)
       .generate(scene, worldSpriteManager);
-
-    players.forEach(player => world.addContactMaterial(new p2.ContactMaterial(groundMaterial, player.material, {
-      friction: 2.0
-    })));
   }
 
   playerAction(player: Player) {
