@@ -57,7 +57,7 @@ export default class KeyGenerator {
   }
 
   public clean() {
-    for (var i in this.players) {
+    for (let i in this.players) {
       this.players[i].keybind.resetBinds();
     }
     for (let j in this.keys) {

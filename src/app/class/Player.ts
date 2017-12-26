@@ -1,4 +1,3 @@
-import mousetrap from 'mousetrap';
 import * as p2 from 'p2';
 
 import KeyBind from './KeyBind';
