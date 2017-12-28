@@ -93,6 +93,7 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players);
+    this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
