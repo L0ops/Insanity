@@ -5,9 +5,9 @@ import Arbitre from '../class/Arbitre';
 
 @Injectable()
 export class HudService {
-  private images = new Array<BABYLON.GUI.Image>();
+  private images = [];
   private pNameCreated: Boolean;
-  
+
   constructor() {
     this.pNameCreated = false;
   }
@@ -15,9 +15,9 @@ export class HudService {
   disposeHud() {
     this.images.forEach(image => {
       image.dispose();
-    })
+    });
     delete this.images;
-    this.images = new Array<BABYLON.GUI.Image>();
+    this.images = [];
   }
 
   containImages() {
