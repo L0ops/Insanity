@@ -50,10 +50,7 @@ export default class KeyGenerator {
         }
       }
     }
-    if (this.hudService.containImages()) {
-      this.hudService.disposeHud();
-    }
-    this.hudService.createHud();
+    this.hudService.reloadHudKeys();
   }
 
   public clean() {
