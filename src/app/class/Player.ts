@@ -23,7 +23,7 @@ export default class Player extends Block {
   public movements = new Array<Movement>();
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    super(name, scene, manager, false, true);
+    super(name, scene, manager, false, 'player');
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height / 2]

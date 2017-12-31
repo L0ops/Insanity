@@ -140,10 +140,19 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
+  collisionCheckpoint(bodyId) {
+    return bodyId.body.id == this;
+  }
+
   setCollision(world: p2.World, players: Player[]) {
+    const checkPoints = Arbitre.getInstance().getCheckpoint();
     world.on('beginContact', (evt) => {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
+      }
+      if (checkPoints.find(this.collisionCheckpoint, evt.bodyB.id) ||
+      checkPoints.find(this.collisionCheckpoint, evt.bodyA.id)) {
+        console.log('hit checkPoint');
       }
     });
 

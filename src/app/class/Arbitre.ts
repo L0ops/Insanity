@@ -4,6 +4,7 @@ import Player from './Player';
 import Ground from './Ground';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
+import Block from './Block';
 
 export default class Arbitre {
   private static instance: Arbitre;
@@ -16,6 +17,7 @@ export default class Arbitre {
   private players: Player[];
   private animationsPlayers;
   private overGame : Boolean;
+  private checkPoints = new Array<Block>();
 
   constructor() {
     this.players = [];
@@ -114,6 +116,26 @@ export default class Arbitre {
      player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
+   }
+
+   public addCheckpointBlock(block) {
+     this.checkPoints.push(block);
+   }
+
+   public getCheckpoint() {
+     return this.checkPoints;
+   }
+
+   public sortCheckpoint() {
+     this.checkPoints.sort((n1,n2) => {
+       const n1x = +n1.name.split('_')[1];
+       const n2x = +n2.name.split('_')[1];
+      if (n1x > n2x)
+          return 1;
+      if (n1x < n2x)
+          return -1;
+      return 0;
+     });
    }
 
   public getFirstPlayer() {
