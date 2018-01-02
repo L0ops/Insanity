@@ -5,20 +5,113 @@ import Arbitre from '../class/Arbitre';
 import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
 import Player from '../class/Player';
 
+namespace InsanityGUI {
+  export enum KeySide {
+    LEFT,
+    RIGHT
+  }
+  export class Key extends GUI.Container {
+    readonly image: BABYLON.GUI.Image;
+    readonly letter: BABYLON.GUI.TextBlock;
+
+    constructor(key: string) {
+      super();
+      this.image = Key.CreateImage();
+      this.addControl(this.image);
+
+      this.letter = Key.CreateLetter();
+      this.letter.text = key;
+      this.addControl(this.letter);
+    }
+
+    dispose(): void {
+      this.removeControl(this.image);
+      this.image.dispose();
+      this.removeControl(this.letter);
+      this.letter.dispose();
+      super.dispose();
+    }
+
+    static Create(letter: string, x?: number, y?: number): Key {
+      let key = new Key(letter);
+      key.left = (x != null ? x : 0);
+      key.top = (y != null ? y : 0);
+      return key;
+    }
+
+    private static CreateImage(): BABYLON.GUI.Image {
+      const image = new BABYLON.GUI.Image("image", '../assets/Sprites/Letters/lettera.png');
+
+      image.width = '20px';
+      image.height = '20px';
+      image.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+      image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+      image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+      return image;
+    }
+
+    private static CreateLetter(): BABYLON.GUI.TextBlock {
+      const letter = new BABYLON.GUI.TextBlock("this._letter");
+
+      letter.textWrapping = true;
+      letter.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+      letter.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+      letter.fontSize = 15;
+      letter.paddingLeft = '6px';
+      return letter;
+    }
+  }
+
+  export class KeyPair extends BABYLON.GUI.Container {
+    private _player: Player;
+    readonly leftKey: Key;
+    readonly rightKey: Key;
+
+    constructor(player: Player, leftX: number, rightX: number, allY: number) {
+      super();
+      this._player = player;
+      this.leftKey = Key.Create(this._player.getKeys().left, leftX, allY);
+      this.addControl(this.leftKey);
+      this.rightKey = Key.Create(this._player.getKeys().right, rightX, allY);
+      this.addControl(this.rightKey);
+    }
+
+    updateLetterKey(side?: KeySide) {
+      switch (side) {
+        case KeySide.LEFT:
+          this.leftKey.letter.text = this._player.getKeys().left;
+          break;
+        case KeySide.RIGHT:
+          this.rightKey.letter.text = this._player.getKeys().right;
+          break;
+        default:
+          this.leftKey.letter.text = this._player.getKeys().left;
+          this.rightKey.letter.text = this._player.getKeys().right;
+      }
+    }
+
+    dispose(): void {
+      this.removeControl(this.leftKey);
+      this.leftKey.dispose();
+      this.removeControl(this.rightKey);
+      this.rightKey.dispose();
+    }
+  }
+}
+
 @Injectable()
 export class HudService {
-  private heads: Array<GUI.Image> = [];
-  private keys: Array<GUI.Image> = [];
-  private scores: Array<GUI.TextBlock> = [];
+  private heads: Map<string, GUI.Image> = new Map<string, GUI.Image>();
+  private keys: Map<string, InsanityGUI.KeyPair> = new Map<string, InsanityGUI.KeyPair>();
+  private scores: Map<string, GUI.TextBlock> = new Map<string, GUI.TextBlock>();
   private advancedTexture: GUI.AdvancedDynamicTexture;
 
   disposeKeys(): void {
-    this.keys.forEach((key) => {
-      this.getTexture().removeControl(key);
-      key.dispose();
+    this.keys.forEach((pair) => {
+      pair.dispose();
+      this.getTexture().removeControl(pair)
     });
-    delete this.keys;
-    this.keys = [];
+    this.keys.clear();
   }
 
   disposeHeads(): void {
@@ -26,8 +119,7 @@ export class HudService {
       this.getTexture().removeControl(head);
       head.dispose();
     });
-    delete this.heads;
-    this.heads = [];
+    this.heads.clear();
   }
 
   disposeScores(): void {
@@ -35,13 +127,13 @@ export class HudService {
       this.getTexture().removeControl(score);
       score.dispose();
     });
-    delete this.scores;
-    this.scores = [];
+    this.scores.clear();
   }
 
   disposeHud(): void {
     this.disposeHeads();
     this.disposeKeys();
+    this.disposeScores();
   }
 
   createHud(): void {
@@ -62,45 +154,38 @@ export class HudService {
   }
 
   reloadHudKeys(): void {
-    this.disposeKeys();
-
-    let left = 5;
-    let right = 30;
     Arbitre.getInstance().getPlayers().forEach(player => {
-      this.addPlayerKeys(player, left, right);
-      left += 60;
-      right += 60;
+      if (this.keys.has(player.name)) {
+        this.keys.get(player.name).updateLetterKey();
+      }
     });
   }
 
   refreshScorePlayer(player: Player) {
-    if (this.scores[player.name] != null) {
-      this.scores[player.name].text = player.dead() + '';
+    if (this.scores.has(player.name)) {
+      this.scores.get(player.name).text = player.dead() + '';
     }
   }
 
   addPlayerHead(player: Player, head: number): void {
-    if (this.heads[player.name] == null) {
-      this.heads[player.name] = HudService.CreatePlayerHead(player.name, head, 5);
-      this.getTexture().addControl(this.heads[player.name]);
+    if (!this.heads.has(player.name)) {
+      this.heads.set(player.name, HudService.CreatePlayerHead(player.name, head, 5));
+      this.getTexture().addControl(this.heads.get(player.name));
     }
   }
 
   addPlayerKeys(player: Player, left: number, right: number): void {
-    if (this.keys[player.name + "_left"] == null) {
-      this.keys[player.name + "_left"] = HudService.CreatePlayerKey(player.getKeys().left, left, 35);
-      this.getTexture().addControl(this.keys[player.name + "_left"]);
-    }
-    if (this.keys[player.name + "_right"] == null) {
-      this.keys[player.name + "_right"] = HudService.CreatePlayerKey(player.getKeys().right, right, 35);
-      this.getTexture().addControl(this.keys[player.name + "_right"]);
+    if (!this.keys.has(player.name)) {
+      const pair = new InsanityGUI.KeyPair(player, left, right, 35);
+      this.keys.set(player.name, pair);
+      this.getTexture().addControl(pair);
     }
   }
 
   addPlayerScore(player: Player, left: number): void {
-    if (this.scores[player.name] == null) {
-      this.scores[player.name] = HudService.CreatePlayerScore(player.dead(), left, 55);
-      this.getTexture().addControl(this.scores[player.name]);
+    if (!this.scores.has(player.name)) {
+      this.scores.set(player.name, HudService.CreatePlayerScore(player.dead(), left, 55));
+      this.getTexture().addControl(this.scores.get(player.name));
     }
   }
 
@@ -109,19 +194,6 @@ export class HudService {
 
     image.width = '30px';
     image.height = '30px';
-    image.left = left;
-    image.top = top;
-    image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-
-    return image;
-  }
-
-  static CreatePlayerKey(keyPlayer: string, left: number, top: number): GUI.Image {
-    const image = new BABYLON.GUI.Image(keyPlayer, '../assets/Sprites/Letters/letter' + keyPlayer + '.png');
-
-    image.width = '20px';
-    image.height = '20px';
     image.left = left;
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;

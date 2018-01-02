@@ -17,7 +17,7 @@ export default class Arbitre {
   private animationsPlayers;
   private overGame : Boolean;
 
-  constructor() {
+  private constructor() {
     this.players = [];
   }
 
