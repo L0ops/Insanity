@@ -5,7 +5,6 @@ import Player from './class/Player';
 import Key from './class/Key';
 import Arbitre from './class/Arbitre';
 import Environment from './class/Environment';
-import Ground from './class/Ground';
 import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
 import mousetrap from 'mousetrap';

@@ -1,6 +1,5 @@
 import Movement from './Movement';
 import Player from '../Player';
-import Arbitre from '../Arbitre';
 
 export default class Dash extends Movement {
   public lastMoveR: number;

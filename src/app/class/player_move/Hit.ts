@@ -1,6 +1,5 @@
 import Movement from './Movement';
 import Player from '../Player';
-import Arbitre from '../Arbitre';
 
 export default class Hit extends Movement {
   public hitDirection: number;

@@ -5,7 +5,7 @@ export default class WorldMap {
   private _blocks: Array<Block>;
 
   public constructor() {
-    this._blocks = new Array();
+    this._blocks = [];
   }
 
   public addBlock(block: Block) {
