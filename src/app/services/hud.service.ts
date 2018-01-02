@@ -2,55 +2,109 @@ import {Injectable} from '@angular/core';
 import * as GUI from 'babylonjs-gui';
 import * as BABYLON from 'babylonjs';
 import Arbitre from '../class/Arbitre';
+import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
+import Player from '../class/Player';
 
 @Injectable()
 export class HudService {
-  private images = [];
-  private pNameCreated: Boolean;
+  private heads: Array<GUI.Image> = [];
+  private keys: Array<GUI.Image> = [];
+  private scores: Array<GUI.TextBlock> = [];
+  private advancedTexture: GUI.AdvancedDynamicTexture;
 
-  constructor() {
-    this.pNameCreated = false;
-  }
-
-  disposeHud() {
-    this.images.forEach(image => {
-      image.dispose();
+  disposeKeys(): void {
+    this.keys.forEach((key) => {
+      this.getTexture().removeControl(key);
+      key.dispose();
     });
-    delete this.images;
-    this.images = [];
+    delete this.keys;
+    this.keys = [];
   }
 
-  containImages() {
-    return this.images.length > 0;
+  disposeHeads(): void {
+    this.heads.forEach((head) => {
+      this.getTexture().removeControl(head);
+      head.dispose();
+    });
+    delete this.heads;
+    this.heads = [];
   }
 
-  createHud() {
-    const players = Arbitre.getInstance().getPlayers();
-    let lKey;
-    let rKey;
-    let pName;
+  disposeScores(): void {
+    this.scores.forEach((score) => {
+      this.getTexture().removeControl(score);
+      score.dispose();
+    });
+    delete this.scores;
+    this.scores = [];
+  }
+
+  disposeHud(): void {
+    this.disposeHeads();
+    this.disposeKeys();
+  }
+
+  createHud(): void {
     let left = 5;
     let right = 30;
     let head = 12;
+    let padding = 24;
 
-    players.forEach(player => {
-      lKey = this.keyHud(player.getKeys().left, left, 35);
-      rKey = this.keyHud(player.getKeys().right, right, 35);
-      if (!this.pNameCreated) {
-        pName = this.playerHud(player.name, head, 5);
-        this.fillHud(pName, lKey, rKey);
-      } else {
-        this.fillHud(undefined, lKey, rKey);
-      }
+    Arbitre.getInstance().getPlayers().forEach(player => {
+      this.addPlayerHead(player, head);
+      this.addPlayerKeys(player, left, right);
+      this.addPlayerScore(player, padding);
       left += 60;
       right += 60;
       head += 60;
+      padding += 60;
     });
-    if (!this.pNameCreated)
-      this.pNameCreated = true;
   }
 
-  playerHud(name, left, top) {
+  reloadHudKeys(): void {
+    this.disposeKeys();
+
+    let left = 5;
+    let right = 30;
+    Arbitre.getInstance().getPlayers().forEach(player => {
+      this.addPlayerKeys(player, left, right);
+      left += 60;
+      right += 60;
+    });
+  }
+
+  refreshScorePlayer(player: Player) {
+    if (this.scores[player.name] != null) {
+      this.scores[player.name].text = player.dead() + '';
+    }
+  }
+
+  addPlayerHead(player: Player, head: number): void {
+    if (this.heads[player.name] == null) {
+      this.heads[player.name] = HudService.CreatePlayerHead(player.name, head, 5);
+      this.getTexture().addControl(this.heads[player.name]);
+    }
+  }
+
+  addPlayerKeys(player: Player, left: number, right: number): void {
+    if (this.keys[player.name + "_left"] == null) {
+      this.keys[player.name + "_left"] = HudService.CreatePlayerKey(player.getKeys().left, left, 35);
+      this.getTexture().addControl(this.keys[player.name + "_left"]);
+    }
+    if (this.keys[player.name + "_right"] == null) {
+      this.keys[player.name + "_right"] = HudService.CreatePlayerKey(player.getKeys().right, right, 35);
+      this.getTexture().addControl(this.keys[player.name + "_right"]);
+    }
+  }
+
+  addPlayerScore(player: Player, left: number): void {
+    if (this.scores[player.name] == null) {
+      this.scores[player.name] = HudService.CreatePlayerScore(player.dead(), left, 55);
+      this.getTexture().addControl(this.scores[player.name]);
+    }
+  }
+
+  static CreatePlayerHead(name: string, left: number, top: number): GUI.Image {
     const image = new BABYLON.GUI.Image(name, '../assets/Sprites/Letters/' + name + '.png');
 
     image.width = '30px';
@@ -63,7 +117,7 @@ export class HudService {
     return image;
   }
 
-  keyHud(keyPlayer, left, top) {
+  static CreatePlayerKey(keyPlayer: string, left: number, top: number): GUI.Image {
     const image = new BABYLON.GUI.Image(keyPlayer, '../assets/Sprites/Letters/letter' + keyPlayer + '.png');
 
     image.width = '20px';
@@ -72,17 +126,28 @@ export class HudService {
     image.top = top;
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    this.images.push(image);
 
     return image;
   }
 
-  fillHud(name, lKey, rKey) {
-    const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
-    if (name) {
-      advancedTexture.addControl(name);
+  static CreatePlayerScore(score: number, left: number, top: number): GUI.TextBlock {
+    const scoreBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    scoreBlock.text = score + '';
+    scoreBlock.color = 'black';
+    scoreBlock.left = left;
+    scoreBlock.top = top;
+    scoreBlock.fontSize = 16;
+    scoreBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    scoreBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return scoreBlock;
+  }
+
+  private getTexture(): GUI.AdvancedDynamicTexture {
+    if (this.advancedTexture == null) {
+      this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
     }
-    advancedTexture.addControl(lKey);
-    advancedTexture.addControl(rKey);
+    return this.advancedTexture;
   }
 }

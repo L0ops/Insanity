@@ -92,6 +92,7 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players);
+    this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
@@ -102,12 +103,14 @@ export class AppComponent implements AfterViewInit {
           if (firstPlayer.position.y > firstPosCamera) {
             freeCamera.position.y = firstPlayer.position.y;
           }
+          // TODO: Maybe this code would be put in Arbiter class
           players.forEach(player => {
             if (player.isAlive()) {
               if (player.position.x + camBoundary.x < freeCamera.position.x ||
                 player.position.y + camBoundary.y < freeCamera.position.y ||
                 player.position.y - camBoundary.y > freeCamera.position.y) {
                 player.die();
+                this.hudService.refreshScorePlayer(player);
                 setTimeout(() => {
                   if (!Arbitre.getInstance().gameState()) {
                     const fp = Arbitre.getInstance().getFirstPlayer();

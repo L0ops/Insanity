@@ -70,6 +70,9 @@ export default class Player extends Block {
   public die() {
     this.live = false;
     this.death++;
-    console.log(this.name + ` died, ${this.death}`);
+  }
+
+  public dead(): number {
+    return this.death;
   }
 }
