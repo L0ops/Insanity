@@ -7,7 +7,7 @@ export default abstract class Movement extends PlayerAnimation{
   public doSomething: Boolean;
   public doRight: Boolean;
   public doLeft: Boolean;
-  public listAnimations;
+
   constructor (movementType:string, player:Player, force:number, animations) {
     super(movementType, animations);
     this.player = player;
@@ -20,7 +20,7 @@ export default abstract class Movement extends PlayerAnimation{
   }
 
   public animate(type:string, sound, volume) {
-    this.playSound(sound, volume, this.player.getScene());
+    PlayerAnimation.playSound(sound, volume, this.player.getScene());
     this.playMyAnimation(this.player, type);
   }
 }

@@ -1,7 +1,7 @@
 import * as p2 from 'p2';
-import Block from './Block';
+import * as BABYLON from 'babylonjs';
 
-export default class Ground {
+class Ground {
   private static _count = 0;
   private p_width = 0.025;
   private p_height = 0.025;
@@ -15,7 +15,7 @@ export default class Ground {
   private _shape:   p2.Box;
 
   public constructor(scene: BABYLON.Scene, manager: BABYLON.SpriteManager, countW: number = 1, countH: number = 1) {
-    this._blocks = new Array();
+    this._blocks = [];
     this._pos = new BABYLON.Vector2(0, 0);
 
     this._size = new BABYLON.Vector2(countW, countH);
