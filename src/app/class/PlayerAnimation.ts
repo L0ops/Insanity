@@ -1,10 +1,10 @@
 import Player from './Player';
 
 export default class PlayerAnimation {
-  public begin = new Array<number>();
-  public end = new Array<number>();
-  public speed = new Array<number>();
-  public repeat = new Array<number>();
+  public begin = [];
+  public end = [];
+  public speed = [];
+  public repeat = [];
   constructor(movementType:string, animations) {
     if (animations.hasOwnProperty("begin")) {
       this.begin[movementType] = animations.begin;
@@ -24,7 +24,7 @@ export default class PlayerAnimation {
     }
   }
 
-  public playSound(sound, volume, scene) {
+  public static playSound(sound, volume, scene) {
     if (sound && volume) {
       let s = new BABYLON.Sound("s", "../assets/Music/Sounds/" + sound +  ".wav", scene, null, {loop: false, autoplay: true});
       s.setVolume(volume);

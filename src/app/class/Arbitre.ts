@@ -1,7 +1,6 @@
 import KeyGenerator from './KeyGenerator';
 import Key from './Key';
 import Player from './Player';
-import Ground from './Ground';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
 import Block from './Block';

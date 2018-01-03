@@ -11,9 +11,6 @@ export default class WorldMapGenerator {
   private _world: p2.World;
   private static _instance: WorldMapGenerator;
 
-  private constructor() {
-  }
-
   public static getInstance(): WorldMapGenerator {
     return this._instance || (this._instance = new this());
   }
@@ -35,9 +32,9 @@ export default class WorldMapGenerator {
   }
 
   public generate(scene: BABYLON.Scene, manager: BABYLON.SpriteManager): WorldMap {
-    if (!this.fieldIsSet('width', this._width) ||
-      !this.fieldIsSet('height', this._height) ||
-      !this.fieldIsSet('world details ', this._details)) {
+    if (!WorldMapGenerator.fieldIsSet('width', this._width) ||
+      !WorldMapGenerator.fieldIsSet('height', this._height) ||
+      !WorldMapGenerator.fieldIsSet('world details ', this._details)) {
       return null;
     }
     const mapBlocks = _.chunk(this._details, this._width);
@@ -66,7 +63,7 @@ export default class WorldMapGenerator {
     return worldMap;
   }
 
-  private fieldIsSet(name: string, obj: Object): boolean {
+  private static fieldIsSet(name: string, obj: Object): boolean {
     if (typeof obj === 'undefined' || obj === null) {
       console.error(`Map generator: ${name} is not set`);
       return false;
