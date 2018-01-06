@@ -3,6 +3,7 @@ import * as GUI from 'babylonjs-gui';
 import * as BABYLON from 'babylonjs';
 import Arbitre from '../class/Arbitre';
 import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
+import Stopwatch from 'agstopwatch';
 import Player from '../class/Player';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class HudService {
   private keys: Array<GUI.Image> = [];
   private scores: Array<GUI.TextBlock> = [];
   private advancedTexture: GUI.AdvancedDynamicTexture;
+  private stopWatch: Stopwatch = new Stopwatch();
 
   disposeKeys(): void {
     this.keys.forEach((key) => {
@@ -19,6 +21,51 @@ export class HudService {
     });
     delete this.keys;
     this.keys = [];
+  }
+
+  startChrono() {
+    this.stopWatch.start();
+    this.showChrono();
+  }
+
+  ticTac() {
+    return this.stopWatch.running;
+  }
+
+  msToTime(s) {
+    let ms = s % 1000;
+    s = (s - ms) / 1000;
+    let secs = s % 60;
+    s = (s - secs) / 60;
+    let mins = s % 60;
+    let hrs = (s - mins) / 60;
+    let min: string;
+    let sec: string;
+    if (mins < 10) {
+      min = "0" + mins;
+    } else {
+      min = "" + mins;
+    }
+    if (secs < 10) {
+      sec = "0" + secs;
+    } else {
+      sec = "" + secs;
+    }
+    return min + ':' + sec;
+  }
+
+  showChrono() {
+    setTimeout(() => {
+      if (this.stopWatch.running) {
+        const time = this.stopWatch.elapsed;
+        console.log(this.msToTime(time));
+        this.showChrono();
+      }
+    }, 1000);
+  }
+
+  stopChrono() {
+    this.stopWatch.stop();
   }
 
   disposeHeads(): void {
