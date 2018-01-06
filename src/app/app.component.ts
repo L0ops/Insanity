@@ -243,13 +243,11 @@ export class AppComponent implements AfterViewInit {
   collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]): void {
     if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
-      console.log('first checkpoint');
       if (!this.hudService.ticTac()) {
         this.hudService.startChrono();
       }
     } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
-      console.log('last checkpoint');
       const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
       console.log(player);
       Arbitre.getInstance().winGameEvent(player);
