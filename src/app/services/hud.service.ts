@@ -36,13 +36,13 @@ export class HudService {
     return this.stopWatch.running;
   }
 
-  msToTime(s): string {
-    let ms = s % 1000;
+  msToTime(s:number): string {
+    const ms = s % 1000;
     s = (s - ms) / 1000;
-    let secs = s % 60;
+    const secs = s % 60;
     s = (s - secs) / 60;
-    let mins = s % 60;
-    let hrs = (s - mins) / 60;
+    const mins = s % 60;
+    const hrs = (s - mins) / 60;
     let min: string;
     let sec: string;
     if (mins < 10) {
