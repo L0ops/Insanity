@@ -12,39 +12,39 @@ export default class KeyGenerator {
   private constructor() {
   }
 
-  static getInstance() {
+  static getInstance(): KeyGenerator {
     if (!KeyGenerator.instance) {
         KeyGenerator.instance = new KeyGenerator();
     }
     return KeyGenerator.instance;
   }
 
-  public setHudService(hudService: HudService) {
+  public setHudService(hudService: HudService): void {
     this.hudService = hudService;
   }
 
-  public addKeys(keys:Key[]) {
+  public addKeys(keys:Key[]): KeyGenerator {
     this.keys = keys;
     return this;
   }
 
-  public addPlayers(players:Player[]) {
+  public addPlayers(players:Player[]): KeyGenerator {
     this.players = players;
     return this;
   }
 
-  public getRandomInt(min:number, max:number) {
+  public getRandomInt(min:number, max:number): number {
     var min = Math.ceil(min);
     var max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  public cleanPlayer(player: Player) {
+  public cleanPlayer(player: Player): void {
       player.keybind.resetBinds();
       this.hudService.clearPlayerKeys(player);
   }
 
-  public generate() {
+  public generate(): void {
     this.players.forEach(player => {
       let binded = false;
       let nb = 0;
@@ -65,7 +65,7 @@ export default class KeyGenerator {
     }
   }
 
-  public clean() {
+  public clean(): void {
     this.players.forEach(player => {
       if (player.keybind.key.used) {
         player.keybind.resetBinds();

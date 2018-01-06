@@ -42,25 +42,25 @@ export default class Player extends Block {
     this.movements['idle'].animate();
   }
 
-  public setKeys(key: Key) {
+  public setKeys(key: Key): void {
     this.key = key;
     this.key.used = true;
     this.keybind = new KeyBind(this.key, this);
   }
 
-  public getScene() {
+  public getScene(): BABYLON.Scene {
     return this.scene;
   }
 
-  public getKeys() {
+  public getKeys(): Key {
     return this.key;
   }
 
-  public isAlive() {
+  public isAlive(): Boolean {
     return this.live;
   }
 
-  public revive(firstPlayer: Player) {
+  public revive(firstPlayer: Player): void {
     this.live = true;
     console.log(this.name + ' revive');
     this.body.position[0] = firstPlayer.body.position[0];
@@ -68,16 +68,16 @@ export default class Player extends Block {
     super.update();
   }
 
-  public die() {
+  public die(): void {
     this.live = false;
     this.death++;
   }
 
-  public finishedLevel() {
+  public finishedLevel(): void {
     this.lvlComplete = true;
   }
 
-  public hasFinishedLvl() {
+  public hasFinishedLvl(): Boolean {
     return this.lvlComplete;
   }
 

@@ -21,7 +21,7 @@ export class HudService {
     this.keys = [];
   }
 
-  clearPlayerKeys(player: Player) {
+  clearPlayerKeys(player: Player): void {
     this.getTexture().removeControl(this.keys[player.name + "_left"]);
     this.keys[player.name + "_left"].dispose();
     this.getTexture().removeControl(this.keys[player.name + "_right"]);
@@ -82,7 +82,7 @@ export class HudService {
     });
   }
 
-  refreshScorePlayer(player: Player) {
+  refreshScorePlayer(player: Player): void {
     if (this.scores[player.name] != null) {
       this.scores[player.name].text = player.dead() + '';
     }
