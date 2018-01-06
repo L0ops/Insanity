@@ -132,6 +132,10 @@ export class AppComponent implements AfterViewInit {
           console.log('gameover');
           Arbitre.getInstance().gameOver();
         }
+      } else {
+        if (this.hudService.ticTac()) {
+          this.hudService.stopChrono();
+        }
       }
     });
 
@@ -240,6 +244,9 @@ export class AppComponent implements AfterViewInit {
     if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
       console.log('first checkpoint');
+      if (!this.hudService.ticTac()) {
+        this.hudService.startChrono();
+      }
     } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
       console.log('last checkpoint');
