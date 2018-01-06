@@ -12,6 +12,7 @@ export class HudService {
   private keys: Array<GUI.Image> = [];
   private scores: Array<GUI.TextBlock> = [];
   private advancedTexture: GUI.AdvancedDynamicTexture;
+  private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
 
   disposeKeys(): void {
@@ -23,16 +24,19 @@ export class HudService {
     this.keys = [];
   }
 
-  startChrono() {
+  startChrono(): void {
     this.stopWatch.start();
+    const time = this.stopWatch.elapsed;
+    this.chrono = HudService.CreateChrono(this.msToTime(time), 300, 15);
+    this.getTexture().addControl(this.chrono);
     this.showChrono();
   }
 
-  ticTac() {
+  ticTac(): boolean {
     return this.stopWatch.running;
   }
 
-  msToTime(s) {
+  msToTime(s): string {
     let ms = s % 1000;
     s = (s - ms) / 1000;
     let secs = s % 60;
@@ -54,17 +58,17 @@ export class HudService {
     return min + ':' + sec;
   }
 
-  showChrono() {
+  showChrono(): void {
     setTimeout(() => {
       if (this.stopWatch.running) {
         const time = this.stopWatch.elapsed;
-        console.log(this.msToTime(time));
+        this.chrono.text = this.msToTime(time);
         this.showChrono();
       }
     }, 1000);
   }
 
-  stopChrono() {
+  stopChrono(): void {
     this.stopWatch.stop();
   }
 
@@ -189,6 +193,21 @@ export class HudService {
     scoreBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
     return scoreBlock;
+  }
+
+  static CreateChrono(time: string, left:number, top:number): GUI.TextBlock {
+    const chronoBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    chronoBlock.text = time;
+    chronoBlock.color = 'black';
+    chronoBlock.left = left;
+    chronoBlock.top = top;
+    chronoBlock.fontSize = 20;
+    chronoBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    chronoBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return chronoBlock;
+
   }
 
   private getTexture(): GUI.AdvancedDynamicTexture {

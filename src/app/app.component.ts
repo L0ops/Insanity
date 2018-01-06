@@ -93,7 +93,7 @@ export class AppComponent implements AfterViewInit {
       .regenerate();
     this.setCollision(world, players);
     this.hudService.createHud();
-
+    this.hudService.startChrono();
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
       if (!Arbitre.getInstance().gameState()) {
