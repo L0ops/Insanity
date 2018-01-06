@@ -7,7 +7,7 @@
   "background" : {
     "second" : {
       "planPosition": 2,
-      "sizePlan": 3,
+      "sizePlan": 4,
       "path": "../assets/Sprites/DarkMontain.png",
       "spacePlan": 160,
       "positions": {"x": -48, "y": -8, "z": 70},
@@ -17,7 +17,7 @@
     },
     "first": {
       "planPosition": 1,
-      "sizePlan": 10,
+      "sizePlan": 25,
       "path": "../assets/Sprites/WaterMontains.png",
       "spacePlan": 14,
       "positions": {"x": -6, "y": -1, "z": 0},
@@ -35,5 +35,6 @@
       "back": {"begin": 22,"end": 25,"speed": 100,"repeat": false},
       "front": {"begin": 26,"end": 29,"speed": 100,"repeat": false}
     }
-  }
+  },
+  "tpEndLvl" : [293, 5]
 }

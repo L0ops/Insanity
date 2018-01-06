@@ -1,6 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
+import Block from './class/Block';
 import Player from './class/Player';
 import Key from './class/Key';
 import Arbitre from './class/Arbitre';
@@ -74,13 +75,17 @@ export class AppComponent implements AfterViewInit {
     const world = new p2.World({
       gravity: [0, -9.82]
     });
+
+    const checkPoints = Arbitre.getInstance().getCheckpoint();
+    const tpEndLvl = new BABYLON.Vector2(this.conf.tpEndLvl[0], this.conf.tpEndLvl[1]);
+
     Arbitre.getInstance().newGame();
     Arbitre.getInstance().setService(this.hudService);
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene, playersName.length);
     Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
     Arbitre.getInstance().setWorld(world);
-
+    Arbitre.getInstance().setTpEndLvl(tpEndLvl);
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
 
     const players = Arbitre.getInstance().getPlayers();
@@ -91,14 +96,14 @@ export class AppComponent implements AfterViewInit {
       .addPlayersToGenerate()
       .generateKeys()
       .regenerate();
-    this.setCollision(world, players);
+    this.setCollision(world, players, checkPoints);
     this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
-      if (!Arbitre.getInstance().gameState()) {
+      if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
         const firstPlayer = Arbitre.getInstance().getFirstPlayer();
-        if (firstPlayer) {
+        if (firstPlayer && !Arbitre.getInstance().isWinLvl()) {
           freeCamera.position.x = firstPlayer.position.x;
           if (firstPlayer.position.y > firstPosCamera) {
             freeCamera.position.y = firstPlayer.position.y;
@@ -142,19 +147,14 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  collisionCheckpoint(bodyId) {
-    return bodyId.body.id == this;
-  }
-
-  setCollision(world: p2.World, players: Player[]) {
-    const checkPoints = Arbitre.getInstance().getCheckpoint();
+  setCollision(world: p2.World, players: Player[], checkPoints: Block[]) {
     world.on('beginContact', (evt) => {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
       }
-      if (checkPoints.find(this.collisionCheckpoint, evt.bodyB.id) ||
-      checkPoints.find(this.collisionCheckpoint, evt.bodyA.id)) {
-        console.log('hit checkPoint');
+      if (checkPoints.find(Arbitre.getInstance().collisionCheckpoint, evt.bodyB) ||
+      checkPoints.find(Arbitre.getInstance().collisionCheckpoint, evt.bodyA)) {
+        this.collisionCheckpoint(evt, players, checkPoints);
       }
     });
 
@@ -233,6 +233,21 @@ export class AppComponent implements AfterViewInit {
     }
     if (!movement) {
       idle.do();
+    }
+  }
+
+  collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]) {
+    if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
+    checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
+      console.log('first checkpoint');
+    } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
+    checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
+      console.log('last checkpoint');
+      const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
+      console.log(player);
+      Arbitre.getInstance().winGameEvent(player);
+    } else {
+      console.log('hit checkPoint');
     }
   }
 
