@@ -13,12 +13,19 @@ export class HudService {
   private advancedTexture: GUI.AdvancedDynamicTexture;
 
   disposeKeys(): void {
-    this.keys.forEach((key) => {
-      this.getTexture().removeControl(key);
-      key.dispose();
-    });
+    for (let i in this.keys) {
+      this.getTexture().removeControl(this.keys[i]);
+      this.keys[i].dispose();
+    }
     delete this.keys;
     this.keys = [];
+  }
+
+  clearPlayerKeys(player: Player) {
+    this.getTexture().removeControl(this.keys[player.name + "_left"]);
+    this.keys[player.name + "_left"].dispose();
+    this.getTexture().removeControl(this.keys[player.name + "_right"]);
+    this.keys[player.name + "_right"].dispose();
   }
 
   disposeHeads(): void {
@@ -67,9 +74,11 @@ export class HudService {
     let left = 5;
     let right = 30;
     Arbitre.getInstance().getPlayers().forEach(player => {
-      this.addPlayerKeys(player, left, right);
-      left += 60;
-      right += 60;
+      if (!player.hasFinishedLvl()) {
+        this.addPlayerKeys(player, left, right);
+        left += 60;
+        right += 60;
+      }
     });
   }
 

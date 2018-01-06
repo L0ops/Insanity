@@ -17,6 +17,7 @@ export default class Player extends Block {
   private live: Boolean;
   private key: Key;
   private death: number;
+  private lvlComplete: Boolean = false;
   private scene: BABYLON.Scene;
   public animationList;
   public movements = new Array<Movement>();
@@ -70,6 +71,14 @@ export default class Player extends Block {
   public die() {
     this.live = false;
     this.death++;
+  }
+
+  public finishedLevel() {
+    this.lvlComplete = true;
+  }
+
+  public hasFinishedLvl() {
+    return this.lvlComplete;
   }
 
   public dead(): number {
