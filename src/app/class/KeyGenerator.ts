@@ -7,6 +7,7 @@ export default class KeyGenerator {
   public players: Player[];
   private hudService: HudService;
   private static instance: KeyGenerator;
+  private firstLaunch: boolean = true;
 
   private constructor() {
   }
@@ -38,25 +39,36 @@ export default class KeyGenerator {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
+  public cleanPlayer(player: Player) {
+      player.keybind.resetBinds();
+      this.hudService.clearPlayerKeys(player);
+  }
+
   public generate() {
-    for (let player of this.players) {
-      let binded = false;
+    this.players.forEach(player => {
       let nb = 0;
-      while (!binded) {
-        nb = this.getRandomInt(0, this.keys.length);
-        if (!this.keys[nb].used) {
-          player.setKeys(this.keys[nb]);
-          binded = true;
-        }
+      if (!player.hasFinishedLvl()) {
+        do {
+          nb = this.getRandomInt(0, this.keys.length);
+          if (!this.keys[nb].used) {
+            player.setKeys(this.keys[nb]);
+          }
+        } while(!player.getKeys());
       }
+    });
+    if (!this.firstLaunch) {
+      this.hudService.reloadHudKeys();
+    } else {
+      this.firstLaunch = false;
     }
-    this.hudService.reloadHudKeys();
   }
 
   public clean() {
-    for (let i in this.players) {
-      this.players[i].keybind.resetBinds();
-    }
+    this.players.forEach(player => {
+      if (player.keybind.key.used) {
+        player.keybind.resetBinds();
+      }
+    });
     for (let j in this.keys) {
       this.keys[j].used = false;
     }

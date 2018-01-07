@@ -3,6 +3,7 @@ import Key from './Key';
 import Player from './Player';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
+import Block from './Block';
 
 export default class Arbitre {
   private static instance: Arbitre;
@@ -15,8 +16,13 @@ export default class Arbitre {
   private players: Player[];
   private animationsPlayers;
   private overGame : Boolean;
+  private winLvl: Boolean;
+  private checkPoints = new Array<Block>();
+  private tpEndLvl: BABYLON.Vector2;
+  private countWinPlayer: number;
 
   constructor() {
+    this.countWinPlayer = 0;
     this.players = [];
   }
 
@@ -25,6 +31,10 @@ export default class Arbitre {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
+  }
+
+  public setTpEndLvl(tpEndLvl: BABYLON.Vector2) {
+    this.tpEndLvl = tpEndLvl;
   }
 
   public gameState() {
@@ -110,15 +120,66 @@ export default class Arbitre {
 
   public createPlayer(name: string, position: number) {
      const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
-     player.body.position = [position, 7, 0];
+     // To test winGameEvent Arbitre method
+    //  player.body.position = [290, -2, 0];
+     player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
+   }
+
+   public addCheckpointBlock(block) {
+     this.checkPoints.push(block);
+   }
+
+   public getCheckpoint() {
+     return this.checkPoints;
+   }
+
+   public collisionCheckpoint(body) {
+     return body.body === this;
+   }
+
+   public firstCheckPoint(body, index) {
+     return index === 0 && body.body === this;
+   }
+
+   public lastCheckPoint(body, index, checkPoints) {
+     return index === (checkPoints.length -1) && body.body === this;
+   }
+
+   public winGameEvent(player) {
+     player.finishedLevel();
+     this.getKeyGenerator().cleanPlayer(player);
+     player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
+     this.countWinPlayer++;
+
+     if (this.countWinPlayer == this.players.length) {
+       player.update();
+       this.winLvl = true;
+       console.log('lvl win');
+     }
+   }
+
+   public isWinLvl() {
+     return this.winLvl;
+   }
+
+   public sortCheckpoint() {
+     this.checkPoints.sort((n1,n2) => {
+       const n1x = +n1.name.split('_')[1];
+       const n2x = +n2.name.split('_')[1];
+      if (n1x > n2x)
+          return 1;
+      if (n1x < n2x)
+          return -1;
+      return 0;
+     });
    }
 
   public getFirstPlayer() {
     let firstPlayer;
     for (let player of this.players) {
-      if (player.isAlive()) {
+      if (player.isAlive() && !player.hasFinishedLvl()) {
         firstPlayer = player;
         break;
       }
@@ -126,7 +187,7 @@ export default class Arbitre {
     if (firstPlayer) {
       this.players.forEach(player => {
         if (player.position.x > firstPlayer.position.x &&
-          player.isAlive()) {
+          player.isAlive() && !player.hasFinishedLvl()) {
           firstPlayer = player;
         }
       });

@@ -17,12 +17,13 @@ export default class Player extends Block {
   private live: Boolean;
   private key: Key;
   private death: number;
+  private lvlComplete: Boolean = false;
   private scene: BABYLON.Scene;
   public animationList;
   public movements = new Array<Movement>();
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    super(name, scene, manager, false, true);
+    super(name, scene, manager, false, 'player');
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height / 2]
@@ -47,6 +48,9 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+  public removeKeys() {
+    delete this.key;
+  }
   public getScene() {
     return this.scene;
   }
@@ -70,6 +74,14 @@ export default class Player extends Block {
   public die() {
     this.live = false;
     this.death++;
+  }
+
+  public finishedLevel() {
+    this.lvlComplete = true;
+  }
+
+  public hasFinishedLvl() {
+    return this.lvlComplete;
   }
 
   public dead(): number {
