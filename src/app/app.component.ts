@@ -82,6 +82,7 @@ export class AppComponent implements AfterViewInit {
     Arbitre.getInstance().setWorld(world);
 
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
+    this.hudService.createHud();
 
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
@@ -92,7 +93,6 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players);
-    this.hudService.createHud();
 
     scene.registerBeforeRender(() => {
       world.step(1 / 60);

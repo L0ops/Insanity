@@ -29,8 +29,10 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
+    let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
+      if (keys) { keys.rightKey.pressed(); }
       if (!this.unbind) {
         this.releaseRight = false;
         let date = + new Date();
@@ -61,8 +63,10 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
+    let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
+      if (keys) { keys.rightKey.pressed(false); }
       this.releaseRight = true;
       if (!run.doLeft && !jump.doLeft) {
         run.doRight = false;
@@ -78,8 +82,10 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
+    let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
+      if (keys) { keys.leftKey.pressed(); }
       if (!this.unbind) {
         this.releaseLeft = false;
         let date = + new Date();
@@ -110,8 +116,10 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
+    let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
+      if (keys) { keys.leftKey.pressed(false); }
       this.releaseLeft = true;
       if (!run.doRight && !jump.doRight) {
         run.doLeft = false;
