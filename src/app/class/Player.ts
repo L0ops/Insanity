@@ -48,6 +48,10 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+  public removeKeys(): void {
+    delete this.key;
+  }
+
   public getScene(): BABYLON.Scene {
     return this.scene;
   }
