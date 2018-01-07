@@ -5,6 +5,7 @@ export default class PlayerAnimation {
   public end = [];
   public speed = [];
   public repeat = [];
+
   constructor(movementType:string, animations) {
     if (animations.hasOwnProperty("begin")) {
       this.begin[movementType] = animations.begin;
@@ -24,14 +25,14 @@ export default class PlayerAnimation {
     }
   }
 
-  public static playSound(sound, volume, scene) {
+  public static playSound(sound, volume, scene): void {
     if (sound && volume) {
       let s = new BABYLON.Sound("s", "../assets/Music/Sounds/" + sound +  ".wav", scene, null, {loop: false, autoplay: true});
       s.setVolume(volume);
     }
   }
 
-  public playMyAnimation(player: Player, type:string) {
+  public playMyAnimation(player: Player, type:string): void {
     player.stopAnimation();
     player.playAnimation(this.begin[type], this.end[type], this.repeat[type], this.speed[type], null);
   }

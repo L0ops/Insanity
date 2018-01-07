@@ -3,6 +3,7 @@ import * as GUI from 'babylonjs-gui';
 import * as BABYLON from 'babylonjs';
 import Arbitre from '../class/Arbitre';
 import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
+import Stopwatch from 'agstopwatch';
 import Player from '../class/Player';
 
 @Injectable()
@@ -11,14 +12,71 @@ export class HudService {
   private keys: Array<GUI.Image> = [];
   private scores: Array<GUI.TextBlock> = [];
   private advancedTexture: GUI.AdvancedDynamicTexture;
+  private chrono: GUI.TextBlock;
+  private stopWatch: Stopwatch = new Stopwatch();
 
   disposeKeys(): void {
-    this.keys.forEach((key) => {
-      this.getTexture().removeControl(key);
-      key.dispose();
-    });
+    for (let i in this.keys) {
+      this.getTexture().removeControl(this.keys[i]);
+      this.keys[i].dispose();
+    }
     delete this.keys;
     this.keys = [];
+  }
+
+  startChrono(): void {
+    this.stopWatch.start();
+    const time = this.stopWatch.elapsed;
+    this.chrono = HudService.CreateChrono(this.msToTime(time), 300, 15);
+    this.getTexture().addControl(this.chrono);
+    this.showChrono();
+  }
+
+  ticTac(): boolean {
+    return this.stopWatch.running;
+  }
+
+  msToTime(s:number): string {
+    const ms = s % 1000;
+    s = (s - ms) / 1000;
+    const secs = s % 60;
+    s = (s - secs) / 60;
+    const mins = s % 60;
+    const hrs = (s - mins) / 60;
+    let min: string;
+    let sec: string;
+    if (mins < 10) {
+      min = "0" + mins;
+    } else {
+      min = "" + mins;
+    }
+    if (secs < 10) {
+      sec = "0" + secs;
+    } else {
+      sec = "" + secs;
+    }
+    return min + ':' + sec;
+  }
+
+  showChrono(): void {
+    setTimeout(() => {
+      if (this.stopWatch.running) {
+        const time = this.stopWatch.elapsed;
+        this.chrono.text = this.msToTime(time);
+        this.showChrono();
+      }
+    }, 1000);
+  }
+
+  stopChrono(): void {
+    this.stopWatch.stop();
+  }
+
+  clearPlayerKeys(player: Player): void {
+    this.getTexture().removeControl(this.keys[player.name + "_left"]);
+    this.keys[player.name + "_left"].dispose();
+    this.getTexture().removeControl(this.keys[player.name + "_right"]);
+    this.keys[player.name + "_right"].dispose();
   }
 
   disposeHeads(): void {
@@ -67,13 +125,15 @@ export class HudService {
     let left = 5;
     let right = 30;
     Arbitre.getInstance().getPlayers().forEach(player => {
-      this.addPlayerKeys(player, left, right);
-      left += 60;
-      right += 60;
+      if (!player.hasFinishedLvl()) {
+        this.addPlayerKeys(player, left, right);
+        left += 60;
+        right += 60;
+      }
     });
   }
 
-  refreshScorePlayer(player: Player) {
+  refreshScorePlayer(player: Player): void {
     if (this.scores[player.name] != null) {
       this.scores[player.name].text = player.dead() + '';
     }
@@ -142,6 +202,21 @@ export class HudService {
     scoreBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
     return scoreBlock;
+  }
+
+  static CreateChrono(time: string, left:number, top:number): GUI.TextBlock {
+    const chronoBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    chronoBlock.text = time;
+    chronoBlock.color = 'black';
+    chronoBlock.left = left;
+    chronoBlock.top = top;
+    chronoBlock.fontSize = 20;
+    chronoBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    chronoBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return chronoBlock;
+
   }
 
   private getTexture(): GUI.AdvancedDynamicTexture {

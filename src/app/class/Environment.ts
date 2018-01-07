@@ -7,31 +7,31 @@ export default class Environment {
   constructor() {
   }
 
-  static getInstance() {
+  static getInstance(): Environment {
     if (!Environment.instance) {
       Environment.instance = new Environment();
     }
     return Environment.instance;
   }
 
-  public createBackgroundPlan(background) {
+  public createBackgroundPlan(background): void {
     this.createBack('../assets/Sprites/MainBG.png');
     Object.values(background).forEach(bg => this.pieceOfBackground(bg));
   }
 
-  private createBack(path: string) {
+  private createBack(path: string): void {
     const background2 = new BABYLON.Layer('back', path, this.scene);
     background2.isBackground = true;
     background2.texture.level = 0;
     background2.texture.wAng = 0;
   }
 
-  public setScene(scene: BABYLON.Scene) {
+  public setScene(scene: BABYLON.Scene): Environment {
     this.scene = scene;
     return this;
   }
 
-  public pieceOfBackground(plan) {
+  public pieceOfBackground(plan): void {
     const sizeImage = new BABYLON.Size(plan.sizeImage.width, plan.sizeImage.height);
     const planManager = new BABYLON.SpriteManager('manager', plan.path, plan.sizePlan, sizeImage, this.scene);
     let posX = plan.positions.x;

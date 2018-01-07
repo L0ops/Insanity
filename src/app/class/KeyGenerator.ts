@@ -7,56 +7,70 @@ export default class KeyGenerator {
   public players: Player[];
   private hudService: HudService;
   private static instance: KeyGenerator;
+  private firstLaunch: Boolean = true;
 
   private constructor() {
   }
 
-  static getInstance() {
+  static getInstance(): KeyGenerator {
     if (!KeyGenerator.instance) {
         KeyGenerator.instance = new KeyGenerator();
     }
     return KeyGenerator.instance;
   }
 
-  public setHudService(hudService: HudService) {
+  public setHudService(hudService: HudService): void {
     this.hudService = hudService;
   }
 
-  public addKeys(keys:Key[]) {
+  public addKeys(keys:Key[]): KeyGenerator {
     this.keys = keys;
     return this;
   }
 
-  public addPlayers(players:Player[]) {
+  public addPlayers(players:Player[]): KeyGenerator {
     this.players = players;
     return this;
   }
 
-  public getRandomInt(min:number, max:number) {
+  public getRandomInt(min:number, max:number): number {
     var min = Math.ceil(min);
     var max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  public generate() {
-    for (let player of this.players) {
-      let binded = false;
-      let nb = 0;
-      while (!binded) {
-        nb = this.getRandomInt(0, this.keys.length);
-        if (!this.keys[nb].used) {
-          player.setKeys(this.keys[nb]);
-          binded = true;
-        }
-      }
-    }
-    this.hudService.reloadHudKeys();
+  public cleanPlayer(player: Player): void {
+      player.keybind.resetBinds();
+      this.hudService.clearPlayerKeys(player);
   }
 
-  public clean() {
-    for (let i in this.players) {
-      this.players[i].keybind.resetBinds();
+  public generate(): void {
+    this.players.forEach(player => {
+      let binded = false;
+      let nb = 0;
+      if (!player.hasFinishedLvl()) {
+        while (!binded) {
+          nb = this.getRandomInt(0, this.keys.length);
+          if (!this.keys[nb].used) {
+            player.setKeys(this.keys[nb]);
+            binded = true;
+          }
+        }
+      }
+    });
+    if (!this.firstLaunch) {
+      this.hudService.reloadHudKeys();
+    } else {
+      this.firstLaunch = false;
     }
+  }
+
+  public clean(): void {
+    this.players.forEach(player => {
+      if (player.keybind.key.used) {
+        player.keybind.resetBinds();
+      }
+    });
     for (let j in this.keys) {
       this.keys[j].used = false;
     }
