@@ -22,16 +22,16 @@ export default class Block extends BABYLON.Sprite {
     }
   }
 
-  public update() {
+  public update(): void {
     this.position.x = this.body.position[0];
     this.position.y = this.body.position[1];
   }
 
-  public move(x: number) {
+  public move(x: number): void {
     this.body.velocity[0] = x;
   }
 
-  protected generateShape() {
+  protected generateShape(): void {
     const width = this.isPlayer === true ? this.width / 2 : this.isCheckpoint ? 0.1 : this.width;
     this.shape = new p2.Box({
       width: width,

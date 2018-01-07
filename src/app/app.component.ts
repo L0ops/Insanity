@@ -27,7 +27,7 @@ export class AppComponent implements AfterViewInit {
     console.log('Construct');
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.initJson();
   }
 
@@ -37,7 +37,7 @@ export class AppComponent implements AfterViewInit {
     this.initGame();
   };
 
-  initGame() {
+  initGame(): void {
     console.log('ngAfterViewInit');
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
     this.canvas.style.width = '80%';
@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  createScene() {
+  createScene(): BABYLON.Scene {
     const scene = new BABYLON.Scene(this.engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan(this.conf.background);
@@ -138,7 +138,7 @@ export class AppComponent implements AfterViewInit {
     return scene;
   }
 
-  controlCamera(camera: BABYLON.FreeCamera) {
+  controlCamera(camera: BABYLON.FreeCamera): void {
     mousetrap.bind('up', () => {
       camera.position.y = camera.position.y + .1;
     });
@@ -147,7 +147,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  setCollision(world: p2.World, players: Player[], checkPoints: Block[]) {
+  setCollision(world: p2.World, players: Player[], checkPoints: Block[]): void {
     world.on('beginContact', (evt) => {
       if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
         this.collisionDash(evt, players);
@@ -168,7 +168,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]) {
+  preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]): void {
     const player1 = bodyA.mass === 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
     const player2 = player1.body.id === bodyB.id ? null : players[bodyB.id - 1];
     if (player1 && !player2) {
@@ -191,7 +191,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]) {
+  collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]): void {
     const player1 = bodyA.mass === 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
     const player2 = player1.body.id === bodyB.id ? null : players[bodyB.id - 1];
     if (player1 && !player2) {
@@ -201,7 +201,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  createGround(world: p2.World, players: Player[], scene: BABYLON.Scene) {
+  createGround(world: p2.World, players: Player[], scene: BABYLON.Scene): void {
     const {width, height, data: blocks} = this.map.layers[0];
     const worldSpriteManager = new BABYLON.SpriteManager('world-sprite', '../assets/Sprites/tile.png', width * height, 80, scene);
     const worldMap = WorldMapGenerator.getInstance()
@@ -211,7 +211,7 @@ export class AppComponent implements AfterViewInit {
       .generate(scene, worldSpriteManager);
   }
 
-  playerAction(player: Player) {
+  playerAction(player: Player): void {
     const idle = player.movements['idle'];
     const run = player.movements['run'];
     const jump = player.movements['jump'];
@@ -236,7 +236,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]) {
+  collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]): void {
     if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
       console.log('first checkpoint');

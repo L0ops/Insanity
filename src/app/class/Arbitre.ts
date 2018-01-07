@@ -26,66 +26,66 @@ export default class Arbitre {
     this.players = [];
   }
 
-  static getInstance() {
+  static getInstance(): Arbitre {
     if (!Arbitre.instance) {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
   }
 
-  public setTpEndLvl(tpEndLvl: BABYLON.Vector2) {
+  public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
     this.tpEndLvl = tpEndLvl;
   }
 
-  public gameState() {
+  public gameState(): Boolean {
     return this.overGame;
   }
 
-  public gameOver() {
+  public gameOver(): void {
     this.overGame = true;
   }
 
-  public newGame() {
+  public newGame(): void {
     this.overGame = false;
   }
 
-  public setWorld(world: p2.World) {
+  public setWorld(world: p2.World): void {
     this.world = world;
   }
 
-  public getKeyGenerator() {
+  public getKeyGenerator(): KeyGenerator {
     return KeyGenerator.getInstance();
   }
 
-  public setTimerKeys(timerKeys: number) {
+  public setTimerKeys(timerKeys: number): Arbitre {
     this.timerKeys = timerKeys;
     return this;
   }
 
-  public setKeys(keys: Key[]) {
+  public setKeys(keys: Key[]): Arbitre {
     this.getKeyGenerator().addKeys(keys);
     return this;
   }
 
-  public setAnimationPlayers(animationsList) {
+  public setAnimationPlayers(animationsList): void {
     this.animationsPlayers = animationsList;
   }
 
-  public addPlayersToGenerate() {
+  public addPlayersToGenerate(): Arbitre {
     this.getKeyGenerator().addPlayers(this.players);
     return this;
   }
 
-  public setService(hudService) {
+  public setService(hudService): void {
     this.getKeyGenerator().setHudService(hudService);
   }
 
-  public generateKeys() {
+  public generateKeys(): Arbitre {
     this.getKeyGenerator().generate();
     return this;
   }
 
-  public regenerate() {
+  public regenerate(): void {
     setTimeout(() => {
       this.getKeyGenerator().clean();
       this.getKeyGenerator().generate();
@@ -93,32 +93,32 @@ export default class Arbitre {
     }, this.timerKeys);
   }
 
-  public parityDash(dasher: number, touched: number) {
+  public parityDash(dasher: number, touched: number): void {
     const rand = this.getKeyGenerator().getRandomInt(0, 2);
     this.dasher = (rand === 0 ? dasher : touched);
     this.touched = (rand === 0 ? touched : dasher);
   }
 
-  public getDasher() {
+  public getDasher(): number {
     return this.dasher;
   }
 
-  public getTouchedByDash() {
+  public getTouchedByDash(): number {
     return this.touched;
   }
 
-  public getPlayers() {
+  public getPlayers(): Player[] {
     return this.players;
   }
 
-  public setScene(scene: BABYLON.Scene, nbPlayers:number) {
+  public setScene(scene: BABYLON.Scene, nbPlayers:number): void {
     const playersPath = '../assets/Sprites/cosm.png';
     this.scene = scene;
     this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
     this.players = [];
   }
 
-  public createPlayer(name: string, position: number) {
+  public createPlayer(name: string, position: number): void {
      const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
      // To test winGameEvent Arbitre method
     //  player.body.position = [290, -2, 0];
@@ -127,27 +127,27 @@ export default class Arbitre {
      this.players.push(player);
    }
 
-   public addCheckpointBlock(block) {
+   public addCheckpointBlock(block): void {
      this.checkPoints.push(block);
    }
 
-   public getCheckpoint() {
+   public getCheckpoint(): Block[] {
      return this.checkPoints;
    }
 
-   public collisionCheckpoint(body) {
+   public collisionCheckpoint(body): boolean {
      return body.body === this;
    }
 
-   public firstCheckPoint(body, index) {
+   public firstCheckPoint(body, index): boolean {
      return index === 0 && body.body === this;
    }
 
-   public lastCheckPoint(body, index, checkPoints) {
+   public lastCheckPoint(body, index, checkPoints): boolean {
      return index === (checkPoints.length -1) && body.body === this;
    }
 
-   public winGameEvent(player) {
+   public winGameEvent(player): void {
      player.finishedLevel();
      this.getKeyGenerator().cleanPlayer(player);
      player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
@@ -160,11 +160,11 @@ export default class Arbitre {
      }
    }
 
-   public isWinLvl() {
+   public isWinLvl(): Boolean {
      return this.winLvl;
    }
 
-   public sortCheckpoint() {
+   public sortCheckpoint(): void {
      this.checkPoints.sort((n1,n2) => {
        const n1x = +n1.name.split('_')[1];
        const n2x = +n2.name.split('_')[1];
@@ -176,7 +176,7 @@ export default class Arbitre {
      });
    }
 
-  public getFirstPlayer() {
+  public getFirstPlayer(): Player {
     let firstPlayer;
     for (let player of this.players) {
       if (player.isAlive() && !player.hasFinishedLvl()) {
