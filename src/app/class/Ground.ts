@@ -43,7 +43,7 @@ class Ground {
     this.setPosition(this._pos.x, this._pos.y);
   }
 
-  public setPosition(toX: number, toY: number) {
+  public setPosition(toX: number, toY: number): void {
     this._pos = new BABYLON.Vector2(toX, toY);
 
     for (let y = 0; y < this._size.y; y++) {

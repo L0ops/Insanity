@@ -18,13 +18,14 @@ export default class Player extends Block {
   private live: Boolean;
   private key: Key;
   private death: number;
+  private lvlComplete: Boolean = false;
   private scene: BABYLON.Scene;
   public animationList;
   public movements = new Array<Movement>();
   public hudKeys: InsanityGUI.KeyPair;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
-    super(name, scene, manager, false, true);
+    super(name, scene, manager, false, 'player');
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
       position: [this.position.x, this.position.y + this.height / 2]
@@ -44,25 +45,29 @@ export default class Player extends Block {
     this.hudKeys = null;
   }
 
-  public setKeys(key: Key) {
+  public setKeys(key: Key): void {
     this.key = key;
     this.key.used = true;
     this.keybind = new KeyBind(this.key, this);
   }
 
-  public getScene() {
+  public removeKeys(): void {
+    delete this.key;
+  }
+
+  public getScene(): BABYLON.Scene {
     return this.scene;
   }
 
-  public getKeys() {
+  public getKeys(): Key {
     return this.key;
   }
 
-  public isAlive() {
+  public isAlive(): Boolean {
     return this.live;
   }
 
-  public revive(firstPlayer: Player) {
+  public revive(firstPlayer: Player): void {
     this.live = true;
     console.log(this.name + ' revive');
     this.body.position[0] = firstPlayer.body.position[0];
@@ -70,9 +75,17 @@ export default class Player extends Block {
     super.update();
   }
 
-  public die() {
+  public die(): void {
     this.live = false;
     this.death++;
+  }
+
+  public finishedLevel(): void {
+    this.lvlComplete = true;
+  }
+
+  public hasFinishedLvl(): Boolean {
+    return this.lvlComplete;
   }
 
   public dead(): number {

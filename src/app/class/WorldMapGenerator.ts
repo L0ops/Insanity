@@ -2,6 +2,7 @@ import _ from 'lodash';
 import p2 from 'p2';
 import Block from './Block';
 import WorldMap from './WorldMap';
+import Arbitre from './Arbitre';
 
 export default class WorldMapGenerator {
   private _width: number;
@@ -41,8 +42,13 @@ export default class WorldMapGenerator {
     mapBlocks.forEach((row, y) => {
       row.forEach((mapBlock, x) => {
         if (mapBlocks[y][x] !== 0) {
-          const block = new Block(`osef_${x}_${y}`, scene, manager, true);
+          let kind = mapBlocks[y][x] - 1 === 6 ? 'checkPoint' : '';
+          const block = new Block(`osef_${x}_${y}`, scene, manager, true, kind);
           block.cellIndex = mapBlocks[y][x] - 1;
+          if (kind === 'checkPoint') {
+            Arbitre.getInstance().addCheckpointBlock(block);
+            this._world.addBody(block.body);
+          }
           block.body.position[0] = x;
           block.body.position[1] = this._height - y;
           block.update();
@@ -53,6 +59,7 @@ export default class WorldMapGenerator {
         }
       });
     });
+    Arbitre.getInstance().sortCheckpoint();
     return worldMap;
   }
 

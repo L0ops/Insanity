@@ -75,8 +75,8 @@ export namespace InsanityGUI {
       this._player = player;
       this._player.hudKeys = this;
       const keys = this._player.getKeys();
-      this.leftKey = Key.Create((keys ? keys.left : null), leftX, allY);
-      this.rightKey = Key.Create((keys ? keys.right : null), rightX, allY);
+      this.leftKey = Key.Create((keys ? keys.left : ''), leftX, allY);
+      this.rightKey = Key.Create((keys ? keys.right : ''), rightX, allY);
       this.addControl(this.leftKey);
       this.addControl(this.rightKey);
     }

@@ -16,7 +16,7 @@ export default class KeyBind {
     this.setBinds(key);
   }
 
-  public setBinds(key: Key) {
+  public setBinds(key: Key): void {
     this.key = key;
     this.bindMoveRight(key.right);
     this.bindReleaseRight(key.right);
@@ -25,7 +25,7 @@ export default class KeyBind {
     this.unbind = false;
   }
 
-  public bindMoveRight(value: string) {
+  public bindMoveRight(value: string): void {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
@@ -58,7 +58,7 @@ export default class KeyBind {
     });
   }
 
-  public bindReleaseRight(value: string) {
+  public bindReleaseRight(value: string): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
@@ -78,7 +78,7 @@ export default class KeyBind {
     }, 'keyup');
   }
 
-  public bindMoveLeft(value: string) {
+  public bindMoveLeft(value: string): void {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
@@ -111,7 +111,7 @@ export default class KeyBind {
     });
   }
 
-  public bindReleaseLeft(value: string) {
+  public bindReleaseLeft(value: string): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
@@ -131,7 +131,7 @@ export default class KeyBind {
     }, 'keyup');
   }
 
-  public resetBinds() {
+  public resetBinds(): void {
     this.unbind = true;
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
@@ -146,8 +146,9 @@ export default class KeyBind {
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
+    this.player.removeKeys();
     for (let i in this.player.movements) {
-      if (i != 'jump') {
+      if (i != 'jump' || this.player.hasFinishedLvl()) {
         this.player.movements[i].doSomething = false;
         this.player.movements[i].doRight = false;
         this.player.movements[i].doLeft = false;
