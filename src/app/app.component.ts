@@ -98,7 +98,6 @@ export class AppComponent implements AfterViewInit {
       .regenerate();
     this.setCollision(world, players, checkPoints);
     this.hudService.createHud();
-    this.hudService.startChrono();
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
       if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
@@ -131,6 +130,10 @@ export class AppComponent implements AfterViewInit {
         } else {
           console.log('gameover');
           Arbitre.getInstance().gameOver();
+        }
+      } else {
+        if (this.hudService.ticTac()) {
+          this.hudService.stopChrono();
         }
       }
     });
@@ -239,7 +242,9 @@ export class AppComponent implements AfterViewInit {
   collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]): void {
     if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
-      console.log('first checkpoint');
+      if (!this.hudService.ticTac()) {
+        this.hudService.startChrono();
+      }
     } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
     checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
       console.log('last checkpoint');
