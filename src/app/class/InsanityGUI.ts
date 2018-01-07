@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import * as GUI from 'babylonjs-gui';
 import Player from './Player';
+import Key from './Key';
 
 export namespace InsanityGUI {
   export enum KeySide {
@@ -20,6 +21,10 @@ export namespace InsanityGUI {
       this.letter = Key.CreateLetter();
       this.letter.text = key;
       this.addControl(this.letter);
+    }
+
+    pressed(is = true): void {
+      this.alpha = is ? 0.2 : 1;
     }
 
     dispose(): void {
@@ -68,23 +73,29 @@ export namespace InsanityGUI {
     constructor(player: Player, leftX: number, rightX: number, allY: number) {
       super();
       this._player = player;
-      this.leftKey = Key.Create(this._player.getKeys().left, leftX, allY);
+      this._player.hudKeys = this;
+      const keys = this._player.getKeys();
+      this.leftKey = Key.Create((keys ? keys.left : null), leftX, allY);
+      this.rightKey = Key.Create((keys ? keys.right : null), rightX, allY);
       this.addControl(this.leftKey);
-      this.rightKey = Key.Create(this._player.getKeys().right, rightX, allY);
       this.addControl(this.rightKey);
     }
 
-    updateLetterKey(side?: KeySide) {
+    updateLetterKey(side?: KeySide): void {
+      const keys = this._player.getKeys();
+      if (keys == null) {
+        return;
+      }
       switch (side) {
         case KeySide.LEFT:
-          this.leftKey.letter.text = this._player.getKeys().left;
+          this.leftKey.letter.text = keys.left;
           break;
         case KeySide.RIGHT:
-          this.rightKey.letter.text = this._player.getKeys().right;
+          this.rightKey.letter.text = keys.right;
           break;
         default:
-          this.leftKey.letter.text = this._player.getKeys().left;
-          this.rightKey.letter.text = this._player.getKeys().right;
+          this.leftKey.letter.text = keys.left;
+          this.rightKey.letter.text = keys.right;
       }
     }
 
@@ -93,6 +104,9 @@ export namespace InsanityGUI {
       this.leftKey.dispose();
       this.removeControl(this.rightKey);
       this.rightKey.dispose();
+      if (this._player) {
+        this._player.hudKeys = null;
+      }
     }
   }
 }

@@ -68,7 +68,7 @@ export class HudService {
     });
   }
 
-  refreshScorePlayer(player: Player) {
+  refreshScorePlayer(player: Player): void {
     if (this.scores.has(player.name)) {
       this.scores.get(player.name).text = player.dead() + '';
     }
