@@ -138,6 +138,7 @@ export default class KeyBind {
     mousetrap.unbind(this.key.right, 'keyup');
     mousetrap.unbind(this.key.left, 'keyup');
     this.key.used = false;
+    this.player.removeKeys();
     for (let i in this.player.movements) {
       if (i != 'jump' || this.player.hasFinishedLvl()) {
         this.player.movements[i].doSomething = false;

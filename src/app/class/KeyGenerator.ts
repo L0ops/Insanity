@@ -7,7 +7,7 @@ export default class KeyGenerator {
   public players: Player[];
   private hudService: HudService;
   private static instance: KeyGenerator;
-  private firstLaunch: Boolean = true;
+  private firstLaunch: boolean = true;
 
   private constructor() {
   }
@@ -46,16 +46,14 @@ export default class KeyGenerator {
 
   public generate() {
     this.players.forEach(player => {
-      let binded = false;
       let nb = 0;
       if (!player.hasFinishedLvl()) {
-        while (!binded) {
+        do {
           nb = this.getRandomInt(0, this.keys.length);
           if (!this.keys[nb].used) {
             player.setKeys(this.keys[nb]);
-            binded = true;
           }
-        }
+        } while(!player.getKeys());
       }
     });
     if (!this.firstLaunch) {

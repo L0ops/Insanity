@@ -48,6 +48,9 @@ export default class Player extends Block {
     this.keybind = new KeyBind(this.key, this);
   }
 
+  public removeKeys() {
+    delete this.key;
+  }
   public getScene() {
     return this.scene;
   }
