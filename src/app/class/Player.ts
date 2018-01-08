@@ -10,6 +10,7 @@ import Run from './player_move/Run';
 import Jump from './player_move/Jump';
 import Dash from './player_move/Dash';
 import Hit from './player_move/Hit';
+import {InsanityGUI} from './InsanityGUI';
 
 export default class Player extends Block {
   public keybind: KeyBind;
@@ -21,6 +22,7 @@ export default class Player extends Block {
   private scene: BABYLON.Scene;
   public animationList;
   public movements = new Array<Movement>();
+  public hudKeys: InsanityGUI.KeyPair;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
@@ -40,6 +42,7 @@ export default class Player extends Block {
     this.movements['dash'] = new Dash(this, 10, this.animationList.dash);
     this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();
+    this.hudKeys = null;
   }
 
   public setKeys(key: Key): void {

@@ -21,7 +21,7 @@ export default class Arbitre {
   private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
 
-  constructor() {
+  private constructor() {
     this.countWinPlayer = 0;
     this.players = [];
   }

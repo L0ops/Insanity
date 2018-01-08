@@ -87,6 +87,7 @@ export class AppComponent implements AfterViewInit {
     Arbitre.getInstance().setWorld(world);
     Arbitre.getInstance().setTpEndLvl(tpEndLvl);
     playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
+    this.hudService.createHud();
 
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
@@ -97,7 +98,7 @@ export class AppComponent implements AfterViewInit {
       .generateKeys()
       .regenerate();
     this.setCollision(world, players, checkPoints);
-    this.hudService.createHud();
+
     scene.registerBeforeRender(() => {
       world.step(1 / 60);
       if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
