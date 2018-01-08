@@ -10,6 +10,9 @@ export namespace InsanityGUI {
   }
 
   export class Key extends BABYLON.GUI.Container {
+    private static image_count = 0;
+    private static letter_count = 0;
+
     readonly image: BABYLON.GUI.Image;
     readonly letter: BABYLON.GUI.TextBlock;
 
@@ -24,7 +27,7 @@ export namespace InsanityGUI {
     }
 
     pressed(is = true): void {
-      this.alpha = is ? 0.2 : 1;
+      this.image.cellId = is ? 1 : 0;
     }
 
     dispose(): void {
@@ -43,10 +46,14 @@ export namespace InsanityGUI {
     }
 
     private static CreateImage(): BABYLON.GUI.Image {
-      const image = new BABYLON.GUI.Image("image", '../assets/Sprites/Letters/lettera.png');
+      // TODO: Remplacer tileground.png par le fichier qui va représenter les touches
+      const image = new BABYLON.GUI.Image(`key_image_${this.image_count++}`, '../assets/Sprites/tileground.png');
 
       image.width = '20px';
       image.height = '20px';
+      image.cellId = 0;
+      image.cellWidth = 80;
+      image.cellHeight = 80;
       image.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
       image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
       image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -54,7 +61,7 @@ export namespace InsanityGUI {
     }
 
     private static CreateLetter(): BABYLON.GUI.TextBlock {
-      const letter = new BABYLON.GUI.TextBlock("this._letter");
+      const letter = new BABYLON.GUI.TextBlock(`key_letter_${this.letter_count++}`);
 
       letter.textWrapping = true;
       letter.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
