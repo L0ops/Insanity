@@ -67,11 +67,13 @@ export default class Player extends Block {
     return this.live;
   }
 
-  public revive(firstPlayer: Player): void {
+  public revive(firstPlayer: Player = null): void {
     this.live = true;
     console.log(this.name + ' revive');
-    this.body.position[0] = firstPlayer.body.position[0];
-    this.body.position[1] = firstPlayer.body.position[1] + (firstPlayer.shape.height + 0.2);
+    if (firstPlayer) {
+      this.body.position[0] = firstPlayer.body.position[0];
+      this.body.position[1] = firstPlayer.body.position[1] + (firstPlayer.shape.height + 0.2);
+    }
     super.update();
   }
 
