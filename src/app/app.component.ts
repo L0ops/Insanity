@@ -91,54 +91,58 @@ export class AppComponent implements AfterViewInit {
 
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
-    Arbitre.getInstance()
-      .setTimerKeys(10000)
-      .setKeys(keys)
-      .addPlayersToGenerate()
-      .generateKeys()
-      .regenerate();
+
     this.setCollision(world, players, checkPoints);
 
-    scene.registerBeforeRender(() => {
-      world.step(1 / 60);
-      if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
-        const firstPlayer = Arbitre.getInstance().getFirstPlayer();
-        if (firstPlayer && !Arbitre.getInstance().isWinLvl()) {
-          freeCamera.position.x = firstPlayer.position.x;
-          if (firstPlayer.position.y > firstPosCamera) {
-            freeCamera.position.y = firstPlayer.position.y;
-          }
-          // TODO: Maybe this code would be put in Arbiter class
-          players.forEach(player => {
-            if (player.isAlive()) {
-              if (player.position.x + camBoundary.x < freeCamera.position.x ||
-                player.position.y + camBoundary.y < freeCamera.position.y ||
-                player.position.y - camBoundary.y > freeCamera.position.y) {
-                player.die();
-                this.hudService.refreshScorePlayer(player);
-                setTimeout(() => {
-                  if (!Arbitre.getInstance().gameState()) {
-                    const fp = Arbitre.getInstance().getFirstPlayer();
-                    player.revive(fp);
-                  }
-                }, 1000);
-              } else {
-                this.playerAction(player);
-              }
+    const countDownTime = 6000;
+    this.hudService.startCountDown(countDownTime);
+    setTimeout(() => {
+      Arbitre.getInstance()
+        .setTimerKeys(10000)
+        .setKeys(keys)
+        .addPlayersToGenerate()
+        .generateKeys()
+        .regenerate();
+      scene.registerBeforeRender(() => {
+        world.step(1 / 60);
+        if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
+          const firstPlayer = Arbitre.getInstance().getFirstPlayer();
+          if (firstPlayer && !Arbitre.getInstance().isWinLvl()) {
+            freeCamera.position.x = firstPlayer.position.x;
+            if (firstPlayer.position.y > firstPosCamera) {
+              freeCamera.position.y = firstPlayer.position.y;
             }
-            player.update();
-          });
+            // TODO: Maybe this code would be put in Arbiter class
+            players.forEach(player => {
+              if (player.isAlive()) {
+                if (player.position.x + camBoundary.x < freeCamera.position.x ||
+                  player.position.y + camBoundary.y < freeCamera.position.y ||
+                  player.position.y - camBoundary.y > freeCamera.position.y) {
+                  player.die();
+                  this.hudService.refreshScorePlayer(player);
+                  setTimeout(() => {
+                    if (!Arbitre.getInstance().gameState()) {
+                      const fp = Arbitre.getInstance().getFirstPlayer();
+                      player.revive(fp);
+                    }
+                  }, 1000);
+                } else {
+                  this.playerAction(player);
+                }
+              }
+              player.update();
+            });
+          } else {
+            console.log('gameover');
+            Arbitre.getInstance().gameOver();
+          }
         } else {
-          console.log('gameover');
-          Arbitre.getInstance().gameOver();
+          if (this.hudService.ticTac()) {
+            this.hudService.stopChrono();
+          }
         }
-      } else {
-        if (this.hudService.ticTac()) {
-          this.hudService.stopChrono();
-        }
-      }
-    });
-
+      });
+    }, countDownTime);
     return scene;
   }
 
