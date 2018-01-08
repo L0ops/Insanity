@@ -15,6 +15,7 @@ export class HudService {
   private advancedTexture: GUI.AdvancedDynamicTexture;
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
+  private time: number = 0;
 
   disposeKeys(): void {
     this.keys.forEach((pair) => {
@@ -26,9 +27,14 @@ export class HudService {
 
   startChrono(): void {
     this.stopWatch.start();
-    const time = this.stopWatch.elapsed;
-    this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15);
-    this.getTexture().addControl(this.chrono);
+    let time = this.stopWatch.elapsed;
+    if (!this.chrono) {
+      this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15);
+      this.getTexture().addControl(this.chrono);
+    } else {
+      time = this.time > 0 ? time + this.time : time;
+      this.chrono.text = HudService.msToTime(time);
+    }
     this.showChrono();
   }
 
@@ -61,7 +67,8 @@ export class HudService {
   showChrono(): void {
     setTimeout(() => {
       if (this.stopWatch.running) {
-        const time = this.stopWatch.elapsed;
+        let time = this.stopWatch.elapsed;
+        time = this.time > 0 ? time + this.time : time;
         this.chrono.text = HudService.msToTime(time);
         this.showChrono();
       }
@@ -69,6 +76,7 @@ export class HudService {
   }
 
   stopChrono(): void {
+    this.time += this.stopWatch.elapsed;
     this.stopWatch.stop();
   }
 
