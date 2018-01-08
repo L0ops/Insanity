@@ -96,13 +96,17 @@ export namespace InsanityGUI {
       switch (side) {
         case KeySide.LEFT:
           this.leftKey.letter.text = keys.left;
+          this.leftKey.pressed(false);
           break;
         case KeySide.RIGHT:
           this.rightKey.letter.text = keys.right;
+          this.rightKey.pressed(false);
           break;
         default:
           this.leftKey.letter.text = keys.left;
+          this.leftKey.pressed(false);
           this.rightKey.letter.text = keys.right;
+          this.rightKey.pressed(false);
       }
     }
 
