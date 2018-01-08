@@ -18,6 +18,7 @@ export default class Arbitre {
   private overGame : Boolean;
   private winLvl: Boolean;
   private checkPoints = new Array<Block>();
+  private lastCheckTouch: Block;
   private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
 
@@ -121,10 +122,33 @@ export default class Arbitre {
   public createPlayer(name: string, position: number): void {
      const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
      // To test winGameEvent Arbitre method
-    //  player.body.position = [290, -2, 0];
+     //  player.body.position = [290, -2, 0];
+     //  To go to firstCheckPoint
+     //  player.body.position = [60, 3, 0];
      player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
+   }
+
+   public findCheckpoint(element): boolean {
+     return this === element.body;
+   }
+
+   public setCheckpoint(bodyPoint: p2.Body): void {
+     const pos = this.checkPoints.findIndex(this.findCheckpoint, bodyPoint);
+     if (pos > 0 && this.lastCheckTouch != this.checkPoints[pos]) {
+       this.lastCheckTouch = this.checkPoints[pos];
+     }
+   }
+
+   public repopPlayers(): void {
+     let i = 0;
+     this.players.forEach(player => {
+       player.body.position[0] = this.lastCheckTouch ? this.lastCheckTouch.body.position[0] : this.checkPoints[0].body.position[0];
+       player.body.position[1] = this.lastCheckTouch ? this.lastCheckTouch.body.position[1] : this.checkPoints[0].body.position[1];
+       player.revive();
+     });
+     this.newGame();
    }
 
    public addCheckpointBlock(block): void {
