@@ -131,6 +131,9 @@ export class AppComponent implements AfterViewInit {
         } else {
           console.log('gameover');
           Arbitre.getInstance().gameOver();
+          setTimeout(() => {
+            Arbitre.getInstance().repopPlayers();
+          }, 1000);
         }
       } else {
         if (this.hudService.ticTac()) {
@@ -253,7 +256,8 @@ export class AppComponent implements AfterViewInit {
       console.log(player);
       Arbitre.getInstance().winGameEvent(player);
     } else {
-      console.log('hit checkPoint');
+      const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodA;
+      Arbitre.getInstance().setCheckpoint(checkpoint);
     }
   }
 
