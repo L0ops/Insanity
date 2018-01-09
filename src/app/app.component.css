@@ -16,21 +16,55 @@ html, body {
   border-radius: 5px;
 }
 
-.upper {
-  text-align: center;
-  margin-top: 2%;
-  margin-bottom: 2%;
+.container-upper {
+  width: 100%;
 }
 
-.upper span {
+li {
+  list-style-type: none;
+  display: inline-block;
+  padding-left: 17%;
+}
+
+li a:hover {
+  color: #64cad2 !important;
+}
+
+.upper  {
+  margin-top: 2%;
+  margin-bottom: 2%;
+  width: 100%;
+}
+
+#play {
+
+}
+
+#gamename {
   font-family: '8bit';
   font-size: 40px;
   text-shadow: -1px 0px 2px rgba(255, 255, 255, 1);
   color: #c57695;
   text-transform: uppercase;
+  line-height: -1.5px;
+}
+
+#about {
+
+}
+
+.upper li a {
+  font-family: '8bit';
+  font-size: 30px;
+  text-shadow: -1px 0px 2px rgba(255, 255, 255, 1);
+  color: #c57695;
+  text-transform: uppercase;
+  list-style-type: none;
+  display: block;
 }
 
 .footer {
+  width: 100%;
   text-align: center;
   margin-top: 1%;
 }
