@@ -1,9 +1,12 @@
 import Movement from './Movement';
 import Player from '../Player';
+import {HudService} from '../../services/hud.service';
 
 export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
+  private cd: number = 3000;
+  private used: boolean = false;
 
   constructor(player:Player, force:number, animations) {
     super('dash', player, force, animations);
@@ -58,20 +61,30 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
+  public getCountDown(): number {
+    return this.cd;
+  }
+
   public dash(direction:number) {
     let run = this.player.movements['run'];
 
-    this.doRight = direction === 1 ? true : false;
-    this.doLeft = direction === -1 ? true : false;
-    this.animate();
-    setTimeout( () => {
-      if (run.doSomething) {
-        run.animate();
-      }
-      this.doRight = false;
-      this.doLeft = false;
-      delete this.lastMoveR;
-      delete this.lastMoveL;
-    }, 500);
+    if (!this.used) {
+      this.used = true;
+      this.doRight = direction === 1 ? true : false;
+      this.doLeft = direction === -1 ? true : false;
+      this.animate();
+      setTimeout( () => {
+        if (run.doSomething) {
+          run.animate();
+        }
+        this.doRight = false;
+        this.doLeft = false;
+        delete this.lastMoveR;
+        delete this.lastMoveL;
+      }, 500);
+      setTimeout(() => {
+        this.used = false;
+      }, this.cd);
+    }
   }
 }
