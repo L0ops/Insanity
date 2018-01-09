@@ -1,6 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
 
+export enum Side {
+  LEFT,
+  RIGHT
+}
+
 export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
@@ -58,11 +63,11 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
-  public dash(direction: number): void {
+  public dash(direction: Side): void {
     let run = this.player.movements['run'];
 
-    this.doRight = direction === 1 ? true : false;
-    this.doLeft = direction === -1 ? true : false;
+    this.doRight = direction === Side.RIGHT ? true : false;
+    this.doLeft = direction === Side.LEFT ? true : false;
     this.animate();
     setTimeout( () => {
       if (run.doSomething) {

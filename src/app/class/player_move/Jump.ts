@@ -1,6 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
 
+export enum Side {
+  LEFT,
+  RIGHT
+}
+
 export default class Jump extends Movement {
   public jumpUp: Boolean;
 
@@ -40,10 +45,10 @@ export default class Jump extends Movement {
     }, 600);
   }
 
-  public jump(direction: number): void {
+  public jump(direction: Side): void {
     if (this.player.grounded) {
-      this.doRight = direction === 1 ? true : false;
-      this.doLeft = direction === -1 ? true : false;
+      this.doRight = direction === Side.RIGHT ? true : false;
+      this.doLeft = direction === Side.LEFT ? true : false;
       this.animate();
       setTimeout(() => {
         this.jumpUp = false;
