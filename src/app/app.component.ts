@@ -139,21 +139,23 @@ export class AppComponent implements AfterViewInit {
                     this.playerAction(player);
                   }
                 }
-                player.update();
-              });
-            } else {
-              console.log('gameover');
-              Arbitre.getInstance().gameOver();
-            }
+              player.update();
+            });
           } else {
-            if (this.hudService.ticTac()) {
-              this.hudService.stopChrono();
-            }
+            console.log('gameover');
+            Arbitre.getInstance().gameOver();
+            setTimeout(() => {
+              Arbitre.getInstance().repopPlayers();
+            }, 1000);
           }
-        });
-
-        return scene;
-      }
+        } else {
+          if (this.hudService.ticTac()) {
+            this.hudService.stopChrono();
+          }
+        }
+      });
+      return scene;
+    }
 
       controlCamera(camera: BABYLON.FreeCamera): void {
         mousetrap.bind('up', () => {
@@ -266,7 +268,8 @@ export class AppComponent implements AfterViewInit {
           console.log(player);
           Arbitre.getInstance().winGameEvent(player);
         } else {
-          console.log('hit checkPoint');
+          const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;
+          Arbitre.getInstance().setCheckpoint(checkpoint);
         }
       }
 
