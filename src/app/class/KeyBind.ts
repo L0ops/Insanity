@@ -43,14 +43,14 @@ export default class KeyBind {
           if (!run.doRight && !dash.doSomething) {
             if (!run.doLeft && !jump.doLeft) {
               if (date - dash.lastMoveR < 300) {
-                dash.dashRight();
+                dash.dash(1);
               } else if (!jump.doSomething) {
-                run.runRight(date);
+                run.run(1,date);
               } else {
                 dash.lastMoveR = date;
               }
             } else if (!jump.doSomething) {
-              jump.jumpLeft();
+              jump.jump(-1);
             }
           }
         }
@@ -96,14 +96,14 @@ export default class KeyBind {
           if (!run.doLeft && !dash.doSomething) {
             if (!run.doRight && !jump.doRight) {
               if (date - dash.lastMoveL < 300 ) {
-                dash.dashLeft();
+                dash.dash(-1);
               } else if (!jump.doSomething) {
-                run.runLeft(date);
+                run.run(-1,date);
               } else {
                 dash.lastMoveL = date;
               }
             } else if (!jump.doSomething) {
-              jump.jumpRight();
+              jump.jump(1);
             }
           }
         }
@@ -137,9 +137,9 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     if (this.player.invertU == 0) {
-      jump.jumpLeft();
+      jump.jump(1);
     } else {
-      jump.jumpRight();
+      jump.jump(0);
     }
     mousetrap.unbind(this.key.right);
     mousetrap.unbind(this.key.left);

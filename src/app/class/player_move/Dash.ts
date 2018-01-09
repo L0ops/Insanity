@@ -58,30 +58,19 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
-  public dashRight() {
+  public dash(direction:number) {
     let run = this.player.movements['run'];
 
-    this.doRight = true;
+    this.doRight = direction === 1 ? true : false;
+    this.doLeft = direction === -1 ? true : false;
     this.animate();
     setTimeout( () => {
       if (run.doSomething) {
         run.animate();
       }
       this.doRight = false;
-      delete this.lastMoveR;
-    }, 500);
-  }
-
-  public dashLeft() {
-    let run = this.player.movements['run'];
-
-    this.doLeft = true;
-    this.animate();
-    setTimeout( () => {
-      if (run.doSomething) {
-        run.animate();
-      }
       this.doLeft = false;
+      delete this.lastMoveR;
       delete this.lastMoveL;
     }, 500);
   }
