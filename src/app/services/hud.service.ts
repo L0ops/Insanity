@@ -16,7 +16,6 @@ export class HudService {
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
   private btnMusic: GUI.Button;
-  private bgMusic: BABYLON.Sound;
 
   disposeKeys(): void {
     this.keys.forEach((pair) => {
