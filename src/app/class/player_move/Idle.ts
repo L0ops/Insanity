@@ -6,11 +6,11 @@ export default class Idle extends Movement {
     super('idle', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     this.player.body.velocity[0] = this.force;
   }
 
-  public animate() {
+  public animate(): void {
     super.animate('idle', null, null);
   }
 }

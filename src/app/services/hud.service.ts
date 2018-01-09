@@ -16,6 +16,8 @@ export class HudService {
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
   private countDown: GUI.TextBlock;
+  private time: number = 0;
+  private btnMusic: GUI.Button;
 
   disposeKeys(): void {
     this.keys.forEach((pair) => {
@@ -27,9 +29,14 @@ export class HudService {
 
   startChrono(): void {
     this.stopWatch.start();
-    const time = this.stopWatch.elapsed;
-    this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15);
-    this.getTexture().addControl(this.chrono);
+    let time = this.stopWatch.elapsed;
+    if (!this.chrono) {
+      this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15);
+      this.getTexture().addControl(this.chrono);
+    } else {
+      time = this.time > 0 ? time + this.time : time;
+      this.chrono.text = HudService.msToTime(time);
+    }
     this.showChrono();
   }
 
@@ -62,7 +69,8 @@ export class HudService {
   showChrono(): void {
     setTimeout(() => {
       if (this.stopWatch.running) {
-        const time = this.stopWatch.elapsed;
+        let time = this.stopWatch.elapsed;
+        time = this.time > 0 ? time + this.time : time;
         this.chrono.text = HudService.msToTime(time);
         this.showChrono();
       }
@@ -70,6 +78,7 @@ export class HudService {
   }
 
   stopChrono(): void {
+    this.time += this.stopWatch.elapsed;
     this.stopWatch.stop();
   }
 
@@ -113,10 +122,16 @@ export class HudService {
     this.scores.clear();
   }
 
+  disposeBtnMusic() : void {
+    this.btnMusic.dispose();
+    delete this.btnMusic;
+  }
+
   disposeHud(): void {
     this.disposeHeads();
     this.disposeKeys();
     this.disposeScores();
+    this.disposeBtnMusic();
   }
 
   createHud(): void {
@@ -134,6 +149,8 @@ export class HudService {
       head += 60;
       padding += 60;
     });
+
+    this.addButtonMusic(true);
   }
 
   reloadHudKeys(): void {
@@ -142,6 +159,11 @@ export class HudService {
         this.keys.get(player.name).updateLetterKey();
       }
     });
+  }
+
+  updateBtnMusic(bool): void {
+    this.disposeBtnMusic();
+    this.addButtonMusic(bool);
   }
 
   refreshScorePlayer(player: Player): void {
@@ -184,6 +206,11 @@ export class HudService {
     countBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
     return countBlock;
+  }
+  
+  addButtonMusic(bool) : void {
+    this.btnMusic = HudService.CreateButtonMusic(bool ? 'son' : 'soff');
+    this.getTexture().addControl(this.btnMusic);
   }
 
   static CreatePlayerHead(name: string, left: number, top: number): GUI.Image {
@@ -228,10 +255,28 @@ export class HudService {
 
   }
 
+  static CreateButtonMusic(imageName: string) : BABYLON.GUI.Button {
+    const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/' + imageName + '.png');
+
+    btnMusic.width = '30px';
+    btnMusic.height = '30px';
+    btnMusic.left = 960;
+    btnMusic.top = 5;
+    btnMusic.thickness = 0;
+    btnMusic.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    btnMusic.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return btnMusic;
+  }
+
   private getTexture(): GUI.AdvancedDynamicTexture {
     if (this.advancedTexture == null) {
       this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
     }
     return this.advancedTexture;
+  }
+
+  getBtnMusic() : BABYLON.GUI.Button {
+    return this.btnMusic;
   }
 }
