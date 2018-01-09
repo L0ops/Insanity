@@ -105,6 +105,7 @@ export class HudService {
     this.disposeHeads();
     this.disposeKeys();
     this.disposeScores();
+    this.disposeBtnMusic();
   }
 
   createHud(): void {
