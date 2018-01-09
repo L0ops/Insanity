@@ -168,11 +168,7 @@ export class HudService {
   }
 
   addButtonMusic(bool) : void {
-    if (bool) {
-      this.btnMusic = HudService.CreateButtonMusic();
-    } else {
-      this.btnMusic = HudService.CreateButtonMusicOff();
-    }
+    this.btnMusic = HudService.CreateButtonMusic(bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);
   }
 
@@ -218,22 +214,8 @@ export class HudService {
 
   }
 
-  static CreateButtonMusic() : BABYLON.GUI.Button {
-    const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/son.png');
-
-    btnMusic.width = '30px';
-    btnMusic.height = '30px';
-    btnMusic.left = 960;
-    btnMusic.top = 5;
-    btnMusic.thickness = 0;
-    btnMusic.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    btnMusic.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-
-    return btnMusic;
-  }
-
-  static CreateButtonMusicOff() : BABYLON.GUI.Button {
-    const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/soff.png');
+  static CreateButtonMusic(imageName: string) : BABYLON.GUI.Button {
+    const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/' + imageName + '.png');
 
     btnMusic.width = '30px';
     btnMusic.height = '30px';
