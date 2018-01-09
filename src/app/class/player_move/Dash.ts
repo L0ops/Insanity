@@ -4,7 +4,7 @@ import Player from '../Player';
 export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
-  private cd: number = 3000;
+  readonly cd: number = 3000;
   private used: boolean = false;
 
   constructor(player:Player, force:number, animations) {
