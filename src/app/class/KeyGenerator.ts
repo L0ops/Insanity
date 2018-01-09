@@ -56,11 +56,7 @@ export default class KeyGenerator {
         } while(!player.getKeys());
       }
     });
-    if (!this.firstLaunch) {
-      this.hudService.reloadHudKeys();
-    } else {
-      this.firstLaunch = false;
-    }
+    this.hudService.reloadHudKeys();
   }
 
   public clean(): void {
