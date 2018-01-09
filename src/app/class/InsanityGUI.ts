@@ -9,6 +9,54 @@ export namespace InsanityGUI {
     RIGHT
   }
 
+  export class CountDown extends BABYLON.GUI.Container {
+    private _player: Player;
+    private x: number;
+    private count: BABYLON.GUI.TextBlock;
+
+    constructor(player: Player, x: number) {
+      super();
+      this._player = player;
+      this.x = x;
+      this._player.hudDashCd = this;
+    }
+
+    createCountDown(time: number) {
+      const y = 5;
+      this.count = CountDown.CreateCount(''+(time / 1000), this.x, y);
+      this.addControl(this.count);
+      let interval = setInterval(() => {
+        time -= 1000;
+        if (time > 0) {
+          this.count.text = ''+(time / 1000);
+        } else {
+          clearInterval(interval);
+          this.dispose();
+        }
+      }, 1000);
+    }
+
+    dispose(): void {
+      this.removeControl(this.count);
+      this.count.dispose();
+      delete this.count;
+    }
+
+    private static CreateCount(time: string, left:number, top:number): BABYLON.GUI.TextBlock {
+      const count: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+      count.text = time;
+      count.color = 'black';
+      count.left = left;
+      count.top = top;
+      count.fontSize = 20;
+      count.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+      count.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+      return count;
+    }
+  }
+
   export class Key extends BABYLON.GUI.Container {
     private static image_count = 0;
     private static letter_count = 0;
