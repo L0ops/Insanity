@@ -9,6 +9,8 @@ export enum Side {
 export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
+  readonly cd: number = 3000;
+  private used: boolean = false;
 
   constructor(player:Player, force:number, animations) {
     super('dash', player, force, animations);
@@ -63,20 +65,28 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
-  public dash(direction: Side): void {
+
+  public dash(direction: Side) {
     let run = this.player.movements['run'];
 
-    this.doRight = direction === Side.RIGHT ? true : false;
-    this.doLeft = direction === Side.LEFT ? true : false;
-    this.animate();
-    setTimeout( () => {
-      if (run.doSomething) {
-        run.animate();
-      }
-      this.doRight = false;
-      this.doLeft = false;
-      delete this.lastMoveR;
-      delete this.lastMoveL;
-    }, 500);
+    if (!this.used) {
+      this.used = true;
+      this.player.hudDashCd.createCountDown(this.cd);
+      this.doRight = direction === Side.RIGHT ? true : false;
+      this.doLeft = direction === Side.LEFT ? true : false;
+      this.animate();
+      setTimeout( () => {
+        if (run.doSomething) {
+          run.animate();
+        }
+        this.doRight = false;
+        this.doLeft = false;
+        delete this.lastMoveR;
+        delete this.lastMoveL;
+      }, 500);
+      setTimeout(() => {
+        this.used = false;
+      }, this.cd);
+    }
   }
 }

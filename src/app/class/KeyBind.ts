@@ -142,9 +142,9 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     if (this.player.invertU == 0) {
-      jump.jump(1);
+      jump.jump(Side.RIGHT);
     } else {
-      jump.jump(0);
+      jump.jump(Side.LEFT);
     }
     mousetrap.unbind(this.key.right);
     mousetrap.unbind(this.key.left);

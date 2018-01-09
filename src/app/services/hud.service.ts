@@ -12,6 +12,7 @@ export class HudService {
   private heads: Map<string, GUI.Image> = new Map<string, GUI.Image>();
   private keys: Map<string, InsanityGUI.KeyPair> = new Map<string, InsanityGUI.KeyPair>();
   private scores: Map<string, GUI.TextBlock> = new Map<string, GUI.TextBlock>();
+  private cd: Map<string, InsanityGUI.CountDown> = new Map<string, InsanityGUI.CountDown>();
   private advancedTexture: GUI.AdvancedDynamicTexture;
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
@@ -144,6 +145,7 @@ export class HudService {
       this.addPlayerHead(player, head);
       this.addPlayerKeys(player, left, right);
       this.addPlayerScore(player, padding);
+      this.addPlayerCd(player, left+40);
       left += 60;
       right += 60;
       head += 60;
@@ -170,6 +172,12 @@ export class HudService {
     if (this.scores.has(player.name)) {
       this.scores.get(player.name).text = player.dead() + '';
     }
+  }
+
+  addPlayerCd(player: Player, left: number): void {
+    const cd = new InsanityGUI.CountDown(player, left);
+    this.cd.set(player.name, cd);
+    this.getTexture().addControl(cd);
   }
 
   addPlayerHead(player: Player, head: number): void {
