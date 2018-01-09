@@ -256,7 +256,7 @@ export class AppComponent implements AfterViewInit {
       console.log(player);
       Arbitre.getInstance().winGameEvent(player);
     } else {
-      const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodA;
+      const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;
       Arbitre.getInstance().setCheckpoint(checkpoint);
     }
   }
