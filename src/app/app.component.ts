@@ -89,16 +89,20 @@ export class AppComponent implements AfterViewInit {
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
       this.hudService.createHud();
 
-      const players = Arbitre.getInstance().getPlayers();
-      this.createGround(world, players, scene);
-      Arbitre.getInstance()
-      .setTimerKeys(10000)
-      .setKeys(keys)
-      .addPlayersToGenerate()
-      .generateKeys()
-      .regenerate();
-      this.setCollision(world, players, checkPoints);
+    const players = Arbitre.getInstance().getPlayers();
+    this.createGround(world, players, scene);
 
+    this.setCollision(world, players, checkPoints);
+
+    const countDownTime = 6000;
+    this.hudService.startCountDown(countDownTime);
+    setTimeout(() => {
+      Arbitre.getInstance()
+        .setTimerKeys(10000)
+        .setKeys(keys)
+        .addPlayersToGenerate()
+        .generateKeys()
+        .regenerate();
       scene.registerBeforeRender(() => {
         world.step(1 / 60);
         if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
@@ -154,8 +158,10 @@ export class AppComponent implements AfterViewInit {
           }
         }
       });
-      return scene;
-    }
+    }, countDownTime);
+    return scene;
+  }
+
 
       controlCamera(camera: BABYLON.FreeCamera): void {
         mousetrap.bind('up', () => {

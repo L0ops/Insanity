@@ -15,6 +15,7 @@ export class HudService {
   private advancedTexture: GUI.AdvancedDynamicTexture;
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
+  private countDown: GUI.TextBlock;
   private time: number = 0;
   private btnMusic: GUI.Button;
 
@@ -86,6 +87,24 @@ export class HudService {
       this.keys.get(player.name).dispose();
     }
   }
+
+  startCountDown(time: number): void {
+    let interval = setInterval(() => {
+      time -= 1000;
+      if (time > 0) {
+        if (!this.countDown) {
+          this.countDown = HudService.CreateCountDown(''+(time/1000),300, 15);
+          this.getTexture().addControl(this.countDown);
+        } else {
+          this.countDown.text = ''+(time/1000);
+        }
+      } else {
+        clearInterval(interval);
+        this.getTexture().removeControl(this.countDown);
+      }
+    }, 1000);
+  }
+
 
   disposeHeads(): void {
     this.heads.forEach((head) => {
@@ -175,6 +194,20 @@ export class HudService {
     }
   }
 
+  static CreateCountDown(time:string, left:number, top:number): GUI.TextBlock {
+    const countBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    countBlock.text = time;
+    countBlock.color = 'black';
+    countBlock.left = left;
+    countBlock.top = top;
+    countBlock.fontSize = 40;
+    countBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    countBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return countBlock;
+  }
+  
   addButtonMusic(bool) : void {
     this.btnMusic = HudService.CreateButtonMusic(bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);

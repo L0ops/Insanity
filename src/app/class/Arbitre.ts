@@ -128,6 +128,7 @@ export default class Arbitre {
      player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
+     player.update();
    }
 
    public findCheckpoint(element): boolean {
