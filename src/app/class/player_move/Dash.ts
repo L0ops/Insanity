@@ -1,6 +1,5 @@
 import Movement from './Movement';
 import Player from '../Player';
-import {HudService} from '../../services/hud.service';
 
 export default class Dash extends Movement {
   public lastMoveR: number;
@@ -70,6 +69,7 @@ export default class Dash extends Movement {
 
     if (!this.used) {
       this.used = true;
+      this.player.hudDashCd.createCountDown(this.cd);
       this.doRight = direction === 1 ? true : false;
       this.doLeft = direction === -1 ? true : false;
       this.animate();

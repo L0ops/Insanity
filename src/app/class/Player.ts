@@ -23,6 +23,8 @@ export default class Player extends Block {
   public animationList;
   public movements = new Array<Movement>();
   public hudKeys: InsanityGUI.KeyPair;
+  public hudDashCd: InsanityGUI.CountDown;
+
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
@@ -43,6 +45,7 @@ export default class Player extends Block {
     this.movements['hit'] = new Hit(this, 14, this.animationList.hit);
     this.movements['idle'].animate();
     this.hudKeys = null;
+    this.hudDashCd = null;
   }
 
   public setKeys(key: Key): void {
