@@ -1,6 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
 
+export enum Side {
+  LEFT,
+  RIGHT
+}
+
 export default class Dash extends Movement {
   public lastMoveR: number;
   public lastMoveL: number;
@@ -11,7 +16,7 @@ export default class Dash extends Movement {
     super('dash', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     let jump = this.player.movements['jump'];
 
     const direction = this.doLeft ? -1 : 1;
@@ -23,7 +28,7 @@ export default class Dash extends Movement {
     }
   }
 
-  public animate() {
+  public animate(): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
@@ -45,7 +50,7 @@ export default class Dash extends Movement {
     }, 500);
   }
 
-  public stopDash() {
+  public stopDash(): void {
     let idle = this.player.movements['idle'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
@@ -60,18 +65,15 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
-  public getCountDown(): number {
-    return this.cd;
-  }
 
-  public dash(direction:number) {
+  public dash(direction: Side) {
     let run = this.player.movements['run'];
 
     if (!this.used) {
       this.used = true;
       this.player.hudDashCd.createCountDown(this.cd);
-      this.doRight = direction === 1 ? true : false;
-      this.doLeft = direction === -1 ? true : false;
+      this.doRight = direction === Side.RIGHT ? true : false;
+      this.doLeft = direction === Side.LEFT ? true : false;
       this.animate();
       setTimeout( () => {
         if (run.doSomething) {

@@ -1,6 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
 
+export enum Side {
+  LEFT,
+  RIGHT
+}
+
 export default class Jump extends Movement {
   public jumpUp: Boolean;
 
@@ -8,7 +13,7 @@ export default class Jump extends Movement {
     super('jump', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     let dash = this.player.movements['dash'];
 
     if (!dash.doSomething) {
@@ -19,7 +24,7 @@ export default class Jump extends Movement {
       }
     }
   }
-  public animate() {
+  public animate(): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
@@ -40,10 +45,10 @@ export default class Jump extends Movement {
     }, 600);
   }
 
-  public jump(direction) {
+  public jump(direction: Side): void {
     if (this.player.grounded) {
-      this.doRight = direction === 1 ? true : false;
-      this.doLeft = direction === -1 ? true : false;
+      this.doRight = direction === Side.RIGHT ? true : false;
+      this.doLeft = direction === Side.LEFT ? true : false;
       this.animate();
       setTimeout(() => {
         this.jumpUp = false;

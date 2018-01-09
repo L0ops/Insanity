@@ -1,12 +1,16 @@
-<div class="upper">
-  <span>insanity</span>
+<div class="container-upper">
+  <div class="upper">
+    <li><a id="play">play</a></li>
+    <li><a id="gamename">insanity</a></li>
+    <li><a id="about">about</a></li>
+  </div>
 </div>
 
 <canvas id="renderCanvas"></canvas>
 <script>
-  window.addEventListener('resize', function () {
-    engine.resize();
-  });
+window.addEventListener('resize', function () {
+  engine.resize();
+});
 </script>
 
 <div class="footer">

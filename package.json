@@ -8,7 +8,11 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-insanity": "docker build -t insanity .",
+    "install-insanity-all": "docker run --rm -it -v $PWD:/app --user $UID:$(id -g $UID) insanity install",
+    "install-insanity-mac": "docker run --rm -it -v $PWD:/app insanity install",
+    "insanity": "docker run --rm -it -v $PWD:/app -p 4200:4200 insanity"
   },
   "private": true,
   "dependencies": {

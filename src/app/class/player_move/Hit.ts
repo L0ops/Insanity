@@ -1,6 +1,11 @@
 import Movement from './Movement';
 import Player from '../Player';
 
+export enum Side {
+  BACK,
+  FRONT
+}
+
 export default class Hit extends Movement {
   public hitDirection: number;
 
@@ -8,12 +13,12 @@ export default class Hit extends Movement {
     super('back front', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     const force = this.force * this.hitDirection;
     this.player.body.velocity[0] = force;
   }
 
-  public hitByDash(direction: number) {
+  public hitByDash(direction: number): void {
     let dash = this.player.movements['dash'];
     let hit = this.player.movements['hit'];
 
@@ -23,13 +28,13 @@ export default class Hit extends Movement {
     hit.doSomething = true;
     hit.hitDirection = direction; // 1 droite || -1 gauche
     if (this.player.invertU > 0 && hit.hitDirection < 0) {
-      this.hitAnim(-1);
+      this.hitAnim(Side.BACK);
     } else if (this.player.invertU == 0 && hit.hitDirection > 0) {
-      this.hitAnim(1);
+      this.hitAnim(Side.FRONT);
     } else if (this.player.invertU > 0 && hit.hitDirection > 0) {
-      this.hitAnim(1);
+      this.hitAnim(Side.FRONT);
     } else if (this.player.invertU == 0 && hit.hitDirection < 0) {
-      this.hitAnim(-1);
+      this.hitAnim(Side.BACK);
     }
     setTimeout( () => {
       hit.doSomething = false;
@@ -37,13 +42,13 @@ export default class Hit extends Movement {
     }, 300);
   }
 
-  public hitAnim(direction) {
+  public hitAnim(direction: Side): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
 
-    if (direction == 1) {
+    if (direction == Side.FRONT) {
       super.animate('front', 'hit', 0.2);
-    } else if (direction == -1) {
+    } else if (direction == Side.BACK) {
       super.animate('back', 'hit', 0.1);
     }
     setTimeout(() => {

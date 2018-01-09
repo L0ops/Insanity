@@ -2,6 +2,11 @@ import mousetrap from 'mousetrap';
 import Player from './Player';
 import Key from './Key';
 
+export enum Side {
+  LEFT,
+  RIGHT
+}
+
 export default class KeyBind {
   public player: Player;
   public key: Key;
@@ -43,14 +48,14 @@ export default class KeyBind {
           if (!run.doRight && !dash.doSomething) {
             if (!run.doLeft && !jump.doLeft) {
               if (date - dash.lastMoveR < 300) {
-                dash.dash(1);
+                dash.dash(Side.RIGHT);
               } else if (!jump.doSomething) {
-                run.run(1,date);
+                run.run(Side.RIGHT,date);
               } else {
                 dash.lastMoveR = date;
               }
             } else if (!jump.doSomething) {
-              jump.jump(-1);
+              jump.jump(Side.LEFT);
             }
           }
         }
@@ -96,14 +101,14 @@ export default class KeyBind {
           if (!run.doLeft && !dash.doSomething) {
             if (!run.doRight && !jump.doRight) {
               if (date - dash.lastMoveL < 300 ) {
-                dash.dash(-1);
+                dash.dash(Side.LEFT);
               } else if (!jump.doSomething) {
-                run.run(-1,date);
+                run.run(Side.LEFT,date);
               } else {
                 dash.lastMoveL = date;
               }
             } else if (!jump.doSomething) {
-              jump.jump(1);
+              jump.jump(Side.RIGHT);
             }
           }
         }
@@ -137,9 +142,9 @@ export default class KeyBind {
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
     if (this.player.invertU == 0) {
-      jump.jump(1);
+      jump.jump(Side.RIGHT);
     } else {
-      jump.jump(0);
+      jump.jump(Side.LEFT);
     }
     mousetrap.unbind(this.key.right);
     mousetrap.unbind(this.key.left);
