@@ -16,10 +16,10 @@ export default abstract class Movement extends PlayerAnimation{
     this.doRight = false;
     this.doLeft = false;
   }
-  public do() {
+  public do(): void {
   }
 
-  public animate(type:string, sound, volume) {
+  public animate(type:string, sound, volume): void {
     PlayerAnimation.playSound(sound, volume, this.player.getScene());
     this.playMyAnimation(this.player, type);
   }

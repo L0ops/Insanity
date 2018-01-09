@@ -9,7 +9,7 @@ export default class Dash extends Movement {
     super('dash', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     let jump = this.player.movements['jump'];
 
     const direction = this.doLeft ? -1 : 1;
@@ -21,7 +21,7 @@ export default class Dash extends Movement {
     }
   }
 
-  public animate() {
+  public animate(): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
     let jump = this.player.movements['jump'];
@@ -43,7 +43,7 @@ export default class Dash extends Movement {
     }, 500);
   }
 
-  public stopDash() {
+  public stopDash(): void {
     let idle = this.player.movements['idle'];
     let jump = this.player.movements['jump'];
     let dash = this.player.movements['dash'];
@@ -58,7 +58,7 @@ export default class Dash extends Movement {
     idle.animate();
   }
 
-  public dash(direction:number) {
+  public dash(direction: number): void {
     let run = this.player.movements['run'];
 
     this.doRight = direction === 1 ? true : false;

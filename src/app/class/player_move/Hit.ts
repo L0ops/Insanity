@@ -8,12 +8,12 @@ export default class Hit extends Movement {
     super('back front', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     const force = this.force * this.hitDirection;
     this.player.body.velocity[0] = force;
   }
 
-  public hitByDash(direction: number) {
+  public hitByDash(direction: number): void {
     let dash = this.player.movements['dash'];
     let hit = this.player.movements['hit'];
 
@@ -37,7 +37,7 @@ export default class Hit extends Movement {
     }, 300);
   }
 
-  public hitAnim(direction) {
+  public hitAnim(direction: number): void {
     let idle = this.player.movements['idle'];
     let run = this.player.movements['run'];
 

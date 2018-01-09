@@ -6,17 +6,17 @@ export default class Run extends Movement {
     super('run', player, force, animations);
   }
 
-  public do() {
+  public do(): void {
     const direction = this.doLeft ? -1 : 1;
     const force = this.force * direction;
     this.player.body.velocity[0] = force;
   }
 
-  public animate() {
+  public animate(): void {
     super.animate('run', 'run', 0.1);
   }
 
-  public run(direction, date) {
+  public run(direction: number, date: number): void {
     let dash = this.player.movements['dash'];
 
     dash.lastMoveR = direction === 1 ? date : dash.lastMoveR;
