@@ -95,7 +95,7 @@ export namespace InsanityGUI {
 
     private static CreateImage(): BABYLON.GUI.Image {
       // TODO: Remplacer tileground.png par le fichier qui va représenter les touches
-      const image = new BABYLON.GUI.Image(`key_image_${this.image_count++}`, '../assets/Sprites/tileground.png');
+      const image = new BABYLON.GUI.Image(`key_image_${this.image_count++}`, '../assets/Sprites/Button/buttonTile.png');
 
       image.width = '20px';
       image.height = '20px';
@@ -114,8 +114,9 @@ export namespace InsanityGUI {
       letter.textWrapping = true;
       letter.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
       letter.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-      letter.fontSize = 15;
-      letter.paddingLeft = '6px';
+      letter.fontSize = 10;
+      letter.paddingLeft = '7px';
+      letter.paddingTop = '3px';
       return letter;
     }
   }
