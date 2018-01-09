@@ -64,3 +64,29 @@ Otherwise, you can use the base image if you don't want node_modules/ folder.
 ```bash
 $ docker run --rm -it -p 4200:4200 insanity
 ```
+
+## Npm
+
+If you want to use npm script to use docker commands
+
+#### Build
+```bash
+npm run-script build-insanity
+```
+
+#### Install
+mac user
+
+```bash
+npm run-script install-insanity-mac
+```
+
+other user
+```bash
+npm run-script install-insanity-all
+```
+
+#### Run
+```bash
+npm run-script insanity
+```
