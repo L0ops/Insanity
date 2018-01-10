@@ -5,6 +5,7 @@ import {AppComponent} from './app.component';
 import {JsonReaderService} from './services/json-reader.service';
 import {HttpClientModule} from '@angular/common/http';
 import {HudService} from './services/hud.service';
+import {MenuService} from './services/menu.service';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {HudService} from './services/hud.service';
   ],
   providers: [
     JsonReaderService,
-    HudService
+    HudService,
+    MenuService
   ],
   bootstrap: [AppComponent]
 })
