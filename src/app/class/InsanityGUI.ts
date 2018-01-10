@@ -29,9 +29,9 @@ export namespace InsanityGUI {
       this.addControl(this.count);
       let interval = setInterval(() => {
         time -= 1000;
-        if (time > 0) {
+        if (time > 0 && this.count && !this._player.hasFinishedLvl()) {
           this.count.text = ''+(time / 1000);
-        } else {
+        } else if (time <= 0 || this._player.hasFinishedLvl()){
           clearInterval(interval);
           this.dispose();
         }

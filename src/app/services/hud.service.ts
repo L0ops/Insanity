@@ -9,10 +9,12 @@ import {InsanityGUI} from '../class/InsanityGUI';
 
 @Injectable()
 export class HudService {
+  private canvas: HTMLCanvasElement;
   private heads: Map<string, GUI.Image> = new Map<string, GUI.Image>();
   private keys: Map<string, InsanityGUI.KeyPair> = new Map<string, InsanityGUI.KeyPair>();
   private scores: Map<string, GUI.TextBlock> = new Map<string, GUI.TextBlock>();
   private cd: Map<string, InsanityGUI.CountDown> = new Map<string, InsanityGUI.CountDown>();
+  private ranking: Map<string, GUI.TextBlock> = new Map<string, GUI.TextBlock>();
   private advancedTexture: GUI.AdvancedDynamicTexture;
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
@@ -26,6 +28,54 @@ export class HudService {
       this.getTexture().removeControl(pair)
     });
     this.keys.clear();
+  }
+
+  setCanvas(canvas:HTMLCanvasElement) {
+    this.canvas = canvas;
+  }
+
+  setRankPosition(paddingTop: number): void {
+    const players = Arbitre.getInstance().getPlayers();
+    let i = 0;
+    const left = (this.canvas.width / 2) + (this.canvas.width / 3) - (this.canvas.width / 20);
+    let top = (this.canvas.height / 2) - (this.canvas.height / 5) + (this.canvas.height / 50);
+
+    players.forEach(player => {
+      const rank = HudService.CreateRank(i + 1, left, top);
+      this.ranking.set(player.name, rank);
+      this.getTexture().addControl(rank);
+      top += paddingTop;
+      i++;
+    });
+  }
+
+  resetScorePosition(paddingTop: number): void {
+    const players = Arbitre.getInstance().getPlayers();
+    const left = (this.canvas.width / 2) + (this.canvas.width / 4) + (this.canvas.width / 6);
+    let top = (this.canvas.height / 2) - (this.canvas.height / 5) + (this.canvas.height / 50);
+    players.forEach(player => {
+      this.scores.get(player.name).left = left;
+      this.scores.get(player.name).top = top;
+      top+= paddingTop;
+    });
+  }
+
+  resetHeadsPosition(paddingTop: number): void {
+    const players = Arbitre.getInstance().getPlayers();
+    const left = (this.canvas.width / 2) + (this.canvas.width / 3);
+    let top = (this.canvas.height / 2) - (this.canvas.height / 5);
+    players.forEach(player => {
+      this.heads.get(player.name).left = left;
+      this.heads.get(player.name).top = top;
+      top+= paddingTop;
+    });
+  }
+
+  resetChronoPosition(): void {
+    if (this.chrono) {
+      this.chrono.left = (this.canvas.width / 2) + (this.canvas.width / 3);
+      this.chrono.top = (this.canvas.height / 2) + (this.canvas.height / 4);
+    }
   }
 
   startChrono(): void {
@@ -69,7 +119,7 @@ export class HudService {
 
   showChrono(): void {
     setTimeout(() => {
-      if (this.stopWatch.running) {
+      if (this.stopWatch.running && this.chrono) {
         let time = this.stopWatch.elapsed;
         time = this.time > 0 ? time + this.time : time;
         this.chrono.text = HudService.msToTime(time);
@@ -99,13 +149,12 @@ export class HudService {
         } else {
           this.countDown.text = ''+(time/1000);
         }
-      } else {
+      } else if (time <= 0 || !Arbitre.getInstance().gameState()) {
         clearInterval(interval);
         this.getTexture().removeControl(this.countDown);
       }
     }, 1000);
   }
-
 
   disposeHeads(): void {
     this.heads.forEach((head) => {
@@ -261,6 +310,21 @@ export class HudService {
 
     return chronoBlock;
 
+  }
+
+  static CreateRank(score: number, left: number, top: number): GUI.TextBlock {
+    const rankBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    rankBlock.text = score + '';
+    rankBlock.color = 'black';
+    rankBlock.left = left;
+    rankBlock.top = top;
+    rankBlock.fontSize = 16;
+    rankBlock.fontFamily = 'courrier';
+    rankBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    rankBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return rankBlock;
   }
 
   static CreateButtonMusic(imageName: string) : BABYLON.GUI.Button {

@@ -112,7 +112,7 @@ export default class Arbitre {
     return this.players;
   }
 
-  public setScene(scene: BABYLON.Scene, nbPlayers:number): void {
+  public setScene(scene: BABYLON.Scene, nbPlayers: number): void {
     const playersPath = '../assets/Sprites/cosm.png';
     this.scene = scene;
     this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
@@ -172,17 +172,35 @@ export default class Arbitre {
      return index === (checkPoints.length -1) && body.body === this;
    }
 
-   public winGameEvent(player): void {
+   public winGameEvent(player: Player): void {
      player.finishedLevel();
      this.getKeyGenerator().cleanPlayer(player);
+     player.hudDashCd.dispose();
      player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
      this.countWinPlayer++;
 
      if (this.countWinPlayer == this.players.length) {
        player.update();
+       this.getKeyGenerator().getHudService().disposeKeys();
        this.winLvl = true;
+       this.lvlRanking();
        console.log('lvl win');
      }
+   }
+
+   private lvlRanking(): void {
+     this.players.sort((p1, p2) => {
+       if (p1.dead() > p2.dead()) {
+         return 1;
+       } else if (p1.dead() < p2.dead()) {
+         return -1;
+       }
+       return 0;
+     });
+     this.getKeyGenerator().getHudService().resetHeadsPosition(50);
+     this.getKeyGenerator().getHudService().resetScorePosition(50);
+     this.getKeyGenerator().getHudService().setRankPosition(50);
+     this.getKeyGenerator().getHudService().resetChronoPosition();
    }
 
    public isWinLvl(): Boolean {
