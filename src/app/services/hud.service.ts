@@ -82,7 +82,7 @@ export class HudService {
     this.stopWatch.start();
     let time = this.stopWatch.elapsed;
     if (!this.chrono) {
-      this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15);
+      this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15, this.canvas);
       this.getTexture().addControl(this.chrono);
     } else {
       time = this.time > 0 ? time + this.time : time;
@@ -144,7 +144,7 @@ export class HudService {
       time -= 1000;
       if (time > 0) {
         if (!this.countDown) {
-          this.countDown = HudService.CreateCountDown(''+(time/1000),300, 15);
+          this.countDown = HudService.CreateCountDown(''+(time/1000),300, 15, this.canvas);
           this.getTexture().addControl(this.countDown);
         } else {
           this.countDown.text = ''+(time/1000);
@@ -185,20 +185,19 @@ export class HudService {
   }
 
   createHud(): void {
-    let left = 5;
-    let right = 30;
-    let head = 12;
-    let padding = 24;
-
+    let left = this.canvas.width / 25;
+    let right = this.canvas.width / 15;
+    let head = this.canvas.width / 20;
+    let padding = this.canvas.width / 17;
     Arbitre.getInstance().getPlayers().forEach(player => {
       this.addPlayerHead(player, head);
       this.addPlayerKeys(player, left, right);
       this.addPlayerScore(player, padding);
       this.addPlayerCd(player, left+40);
-      left += 60;
-      right += 60;
-      head += 60;
-      padding += 60;
+      left += (this.canvas.width / 15) * 1.5;
+      right += (this.canvas.width / 15) * 1.5;
+      head += (this.canvas.width / 15) * 1.5;
+      padding += (this.canvas.width / 15) * 1.5;
     });
 
     this.addButtonMusic(true);
@@ -251,12 +250,12 @@ export class HudService {
     }
   }
 
-  static CreateCountDown(time:string, left:number, top:number): GUI.TextBlock {
+  static CreateCountDown(time:string, left:number, top:number, canvas: HTMLCanvasElement): GUI.TextBlock {
     const countBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
 
     countBlock.text = time;
     countBlock.color = 'black';
-    countBlock.left = left;
+    countBlock.left = canvas.width / 2;
     countBlock.top = top;
     countBlock.fontSize = 40;
     countBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -264,9 +263,9 @@ export class HudService {
 
     return countBlock;
   }
-  
+
   addButtonMusic(bool) : void {
-    this.btnMusic = HudService.CreateButtonMusic(bool ? 'son' : 'soff');
+    this.btnMusic = HudService.CreateButtonMusic(this.canvas.width - ((this.canvas.width / 25) * 2), bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);
   }
 
@@ -297,12 +296,12 @@ export class HudService {
     return scoreBlock;
   }
 
-  static CreateChrono(time: string, left:number, top:number): GUI.TextBlock {
+  static CreateChrono(time: string, left:number, top:number, canvas: HTMLCanvasElement): GUI.TextBlock {
     const chronoBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
 
     chronoBlock.text = time;
     chronoBlock.color = 'black';
-    chronoBlock.left = left;
+    chronoBlock.left = canvas.width / 2;
     chronoBlock.top = top;
     chronoBlock.fontSize = 20;
     chronoBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -327,12 +326,12 @@ export class HudService {
     return rankBlock;
   }
 
-  static CreateButtonMusic(imageName: string) : BABYLON.GUI.Button {
+  static CreateButtonMusic(left:number, imageName: string) : BABYLON.GUI.Button {
     const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/' + imageName + '.png');
 
     btnMusic.width = '30px';
     btnMusic.height = '30px';
-    btnMusic.left = 960;
+    btnMusic.left = left;
     btnMusic.top = 5;
     btnMusic.thickness = 0;
     btnMusic.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
