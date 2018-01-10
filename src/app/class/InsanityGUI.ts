@@ -2,11 +2,13 @@ import * as BABYLON from 'babylonjs';
 import * as GUI from 'babylonjs-gui';
 import Player from './Player';
 import Key from './Key';
+import Arbitre from './Arbitre';
 
 export namespace InsanityGUI {
   export enum KeySide {
     LEFT,
-    RIGHT
+    RIGHT,
+    NONE
   }
 
   export class CountDown extends BABYLON.GUI.Container {
@@ -37,9 +39,11 @@ export namespace InsanityGUI {
     }
 
     dispose(): void {
-      this.removeControl(this.count);
-      this.count.dispose();
-      delete this.count;
+      if (this.count) {
+        this.count.dispose();
+        this.removeControl(this.count);
+        delete this.count;
+      }
     }
 
     private static CreateCount(time: string, left:number, top:number): BABYLON.GUI.TextBlock {
@@ -139,7 +143,7 @@ export namespace InsanityGUI {
 
     updateLetterKey(side?: KeySide): void {
       const keys = this._player.getKeys();
-      if (keys == null) {
+      if (keys == null && !side) {
         return;
       }
       switch (side) {
@@ -151,6 +155,12 @@ export namespace InsanityGUI {
           this.rightKey.letter.text = keys.right;
           this.rightKey.pressed(false);
           break;
+        case KeySide.NONE:
+          this.leftKey.letter.text = '';
+          this.leftKey.pressed(false);
+          this.rightKey.letter.text = '';
+          this.rightKey.pressed(false);
+          break;
         default:
           this.leftKey.letter.text = keys.left;
           this.leftKey.pressed(false);
@@ -159,13 +169,17 @@ export namespace InsanityGUI {
       }
     }
 
-    dispose(): void {
-      this.removeControl(this.leftKey);
-      this.leftKey.dispose();
-      this.removeControl(this.rightKey);
-      this.rightKey.dispose();
-      if (this._player) {
-        this._player.hudKeys = null;
+    dispose(endGame?: boolean): void {
+      if (!endGame) {
+        this.removeControl(this.leftKey);
+        this.leftKey.dispose();
+        this.removeControl(this.rightKey);
+        this.rightKey.dispose();
+        if (this._player) {
+          this._player.hudKeys = null;
+        }
+      } else {
+        this.updateLetterKey(KeySide.NONE);
       }
     }
   }

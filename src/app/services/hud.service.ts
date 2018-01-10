@@ -85,7 +85,7 @@ export class HudService {
 
   clearPlayerKeys(player: Player): void {
     if (this.keys.has(player.name)) {
-      this.keys.get(player.name).dispose();
+      this.keys.get(player.name).dispose(true);
     }
   }
 
