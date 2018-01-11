@@ -17,6 +17,7 @@ export class HudService {
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
   private countDown: GUI.TextBlock;
+  private gameOver: GUI.TextBlock;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
@@ -41,6 +42,11 @@ export class HudService {
       this.chrono.text = HudService.msToTime(time);
     }
     this.showChrono();
+  }
+
+  gameOverHUD(): void {
+    this.gameOver = HudService.CreateGameOver();
+    this.getTexture().addControl(this.gameOver);
   }
 
   ticTac(): boolean {
@@ -220,6 +226,20 @@ export class HudService {
     }
   }
 
+  static CreateGameOver(): GUI.TextBlock {
+
+    const gameOverBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    gameOverBlock.text = 'GAME OVER';
+    gameOverBlock.color = 'black';
+    gameOverBlock.left = 300;
+    gameOverBlock.top = 150;
+    gameOverBlock.fontSize = 42;
+    gameOverBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    gameOverBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return gameOverBlock;
+  }
   static CreateCountDown(time:string, left:number, top:number): GUI.TextBlock {
     const countBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
 

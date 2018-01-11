@@ -86,6 +86,7 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
       Arbitre.getInstance().setWorld(world);
       Arbitre.getInstance().setTpEndLvl(tpEndLvl);
+      Arbitre.getInstance().setMaxRepop(this.conf.maxRepop);
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
       this.hudService.createHud(bgMusic);
 
@@ -136,11 +137,14 @@ export class AppComponent implements AfterViewInit {
               player.update();
             });
           } else {
-            console.log('gameover');
             Arbitre.getInstance().gameOver();
-            setTimeout(() => {
-              Arbitre.getInstance().repopPlayers();
-            }, 1000);
+            if (Arbitre.getInstance().getMaxRepop() >= 0) {
+              setTimeout(() => {
+                Arbitre.getInstance().repopPlayers();
+              }, 1000);
+            } else {
+              this.hudService.gameOverHUD();
+            }
           }
         } else {
           if (this.hudService.ticTac()) {
