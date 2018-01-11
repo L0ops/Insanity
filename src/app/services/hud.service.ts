@@ -43,6 +43,20 @@ export class HudService {
     this.showChrono();
   }
 
+  gameOverHUD(): void {
+    const gameOverBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    gameOverBlock.text = 'GAME OVER';
+    gameOverBlock.color = 'black';
+    gameOverBlock.left = 300;
+    gameOverBlock.top = 150;
+    gameOverBlock.fontSize = 42;
+    gameOverBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    gameOverBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    this.getTexture().addControl(gameOverBlock);
+
+  }
+
   ticTac(): boolean {
     return this.stopWatch.running;
   }

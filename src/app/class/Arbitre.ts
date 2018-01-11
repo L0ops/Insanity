@@ -21,10 +21,11 @@ export default class Arbitre {
   private lastCheckTouch: Block;
   private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
-
+  private maxRepop: number;
   private constructor() {
     this.countWinPlayer = 0;
     this.players = [];
+    this.maxRepop = 0;
   }
 
   static getInstance(): Arbitre {
@@ -38,12 +39,21 @@ export default class Arbitre {
     this.tpEndLvl = tpEndLvl;
   }
 
+  public setMaxRepop(maxRepop: number): void {
+    this.maxRepop = maxRepop
+  }
+
+  public getMaxRepop(): number {
+    return this.maxRepop;
+  }
+
   public gameState(): Boolean {
     return this.overGame;
   }
 
   public gameOver(): void {
     this.overGame = true;
+    this.maxRepop -= 1;
   }
 
   public newGame(): void {
