@@ -4,6 +4,7 @@ import Player from './Player';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
 import Block from './Block';
+import Ping from './Ping';
 
 export default class Arbitre {
   private static instance: Arbitre;
@@ -13,7 +14,9 @@ export default class Arbitre {
   private world: p2.World;
   private scene: BABYLON.Scene;
   private spriteManagerPlayer: BABYLON.SpriteManager;
+  private spriteManagerPing: BABYLON.SpriteManager;
   private players: Player[];
+  private pingPlayers: Ping[]
   private animationsPlayers;
   private overGame : Boolean;
   private winLvl: Boolean;
@@ -114,13 +117,16 @@ export default class Arbitre {
 
   public setScene(scene: BABYLON.Scene, nbPlayers:number): void {
     const playersPath = '../assets/Sprites/cosm.png';
+    const pingPath = '../assets/Sprites/pingsplayer.png';
     this.scene = scene;
     this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
+    this.spriteManagerPing = new BABYLON.SpriteManager('pingM', pingPath, nbPlayers, 80, this.scene);
     this.players = [];
+    this.pingPlayers= [];
   }
 
   public createPlayer(name: string, position: number): void {
-     const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer);
+     const player = new Player(name, this.scene, this.animationsPlayers, this.spriteManagerPlayer, this.spriteManagerPing);
      // To test winGameEvent Arbitre method
      //  player.body.position = [290, -2, 0];
      //  To go to firstCheckPoint
@@ -128,6 +134,8 @@ export default class Arbitre {
      player.body.position = [position, 1, 0];
      this.world.addBody(player.body);
      this.players.push(player);
+     this.pingPlayers.push(player.ping);
+     console.log(this.pingPlayers);
      player.update();
    }
 

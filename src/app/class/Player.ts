@@ -3,6 +3,7 @@ import * as p2 from 'p2';
 import KeyBind from './KeyBind';
 import Key from './Key';
 import Block from './Block';
+import Ping from './Ping';
 
 import Movement from './player_move/Movement';
 import Idle from './player_move/Idle';
@@ -24,9 +25,10 @@ export default class Player extends Block {
   public movements = new Array<Movement>();
   public hudKeys: InsanityGUI.KeyPair;
   public hudDashCd: InsanityGUI.CountDown;
+  public ping: Ping;
 
 
-  constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager) {
+  constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager, pingManager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
     this.body = new p2.Body({
       mass: 1, fixedRotation: true,
@@ -46,6 +48,8 @@ export default class Player extends Block {
     this.movements['idle'].animate();
     this.hudKeys = null;
     this.hudDashCd = null;
+
+    this.ping = new Ping('ping', this.scene, pingManager, this);
   }
 
   public setKeys(key: Key): void {
