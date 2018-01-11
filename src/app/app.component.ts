@@ -102,7 +102,7 @@ export class AppComponent implements AfterViewInit {
     Arbitre.getInstance().setWorld(world);
     Arbitre.getInstance().setTpEndLvl(tpEndLvl);
     for (let i = 0; i < this.playerNumber; i++) {
-      Arbitre.getInstance().createPlayer(`Player ${i}`, i);
+      Arbitre.getInstance().createPlayer(`player${i + 1}`, i);
     }
     // playersName.forEach((pn, i) => );
     this.hudService.createHud();
