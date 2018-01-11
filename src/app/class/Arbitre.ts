@@ -197,10 +197,11 @@ export default class Arbitre {
        }
        return 0;
      });
-     this.getKeyGenerator().getHudService().resetHeadsPosition(50);
-     this.getKeyGenerator().getHudService().resetScorePosition(50);
-     this.getKeyGenerator().getHudService().setRankPosition(50);
-     this.getKeyGenerator().getHudService().resetChronoPosition();
+     this.getKeyGenerator().getHudService()
+      .resetHeadsPosition(50)
+      .resetScorePosition(50)
+      .setRankPosition(50)
+      .resetChronoPosition();
    }
 
    public isWinLvl(): Boolean {

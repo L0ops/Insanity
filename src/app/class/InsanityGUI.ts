@@ -8,7 +8,8 @@ export namespace InsanityGUI {
   export enum KeySide {
     LEFT,
     RIGHT,
-    NONE
+    NONE,
+    ALL
   }
 
   export class CountDown extends BABYLON.GUI.Container {
@@ -141,7 +142,7 @@ export namespace InsanityGUI {
       this.addControl(this.rightKey);
     }
 
-    updateLetterKey(side?: KeySide): void {
+    updateLetterKey(side: KeySide): void {
       const keys = this._player.getKeys();
       if (keys == null && !side) {
         return;
@@ -169,17 +170,13 @@ export namespace InsanityGUI {
       }
     }
 
-    dispose(endGame?: boolean): void {
-      if (!endGame) {
-        this.removeControl(this.leftKey);
-        this.leftKey.dispose();
-        this.removeControl(this.rightKey);
-        this.rightKey.dispose();
-        if (this._player) {
-          this._player.hudKeys = null;
-        }
-      } else {
-        this.updateLetterKey(KeySide.NONE);
+    dispose(): void {
+      this.removeControl(this.leftKey);
+      this.leftKey.dispose();
+      this.removeControl(this.rightKey);
+      this.rightKey.dispose();
+      if (this._player) {
+        this._player.hudKeys = null;
       }
     }
   }

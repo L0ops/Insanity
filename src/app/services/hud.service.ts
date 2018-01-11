@@ -34,7 +34,7 @@ export class HudService {
     this.canvas = canvas;
   }
 
-  setRankPosition(paddingTop: number): void {
+  setRankPosition(paddingTop: number): HudService {
     const players = Arbitre.getInstance().getPlayers();
     let i = 0;
     const left = (this.canvas.width / 2) + (this.canvas.width / 3) - (this.canvas.width / 20);
@@ -47,9 +47,10 @@ export class HudService {
       top += paddingTop;
       i++;
     });
+    return this;
   }
 
-  resetScorePosition(paddingTop: number): void {
+  resetScorePosition(paddingTop: number): HudService {
     const players = Arbitre.getInstance().getPlayers();
     const left = (this.canvas.width / 2) + (this.canvas.width / 4) + (this.canvas.width / 6);
     let top = (this.canvas.height / 2) - (this.canvas.height / 5) + (this.canvas.height / 50);
@@ -58,9 +59,10 @@ export class HudService {
       this.scores.get(player.name).top = top;
       top+= paddingTop;
     });
+    return this;
   }
 
-  resetHeadsPosition(paddingTop: number): void {
+  resetHeadsPosition(paddingTop: number): HudService {
     const players = Arbitre.getInstance().getPlayers();
     const left = (this.canvas.width / 2) + (this.canvas.width / 3);
     let top = (this.canvas.height / 2) - (this.canvas.height / 5);
@@ -69,6 +71,7 @@ export class HudService {
       this.heads.get(player.name).top = top;
       top+= paddingTop;
     });
+    return this;
   }
 
   resetChronoPosition(): void {
@@ -135,7 +138,7 @@ export class HudService {
 
   clearPlayerKeys(player: Player): void {
     if (this.keys.has(player.name)) {
-      this.keys.get(player.name).dispose(true);
+      this.keys.get(player.name).updateLetterKey(InsanityGUI.KeySide.NONE);
     }
   }
 
@@ -206,7 +209,7 @@ export class HudService {
   reloadHudKeys(): void {
     Arbitre.getInstance().getPlayers().forEach(player => {
       if (!player.hasFinishedLvl() && this.keys.has(player.name)) {
-        this.keys.get(player.name).updateLetterKey();
+        this.keys.get(player.name).updateLetterKey(InsanityGUI.KeySide.ALL);
       }
     });
   }
