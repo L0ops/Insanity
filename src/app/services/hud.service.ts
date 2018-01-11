@@ -18,6 +18,8 @@ export class HudService {
   private stopWatch: Stopwatch = new Stopwatch();
   private countDown: GUI.TextBlock;
   private gameOver: GUI.TextBlock;
+  private retryGameButton: GUI.Button;
+  private leaveGameButton: GUI.Button;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
@@ -47,6 +49,14 @@ export class HudService {
   gameOverHUD(): void {
     this.gameOver = HudService.CreateGameOver();
     this.getTexture().addControl(this.gameOver);
+
+    this.retryGameButton = HudService.CreateRetryGameButton();
+    this.getTexture().addControl(this.retryGameButton);
+    this.createBtnRetryGameObservable();
+
+    this.leaveGameButton = HudService.CreateLeaveGameButton();
+    this.getTexture().addControl(this.leaveGameButton);
+    this.createBtnLeaveGameObservable();
   }
 
   ticTac(): boolean {
@@ -180,7 +190,35 @@ export class HudService {
     this.addButtonMusic(bool);
   }
 
-  createObservable() {
+  createBtnLeaveGameObservable(): void {
+    this.leaveGameButton.onPointerDownObservable.add(() => {
+      console.log('leave');
+    })
+  }
+
+  createBtnRetryGameObservable(): void {
+    this.retryGameButton.onPointerDownObservable.add(() => {
+      Arbitre.getInstance().restartGame();
+      this.disposeBtnGameOver();
+    });
+  }
+
+  disposeBtnGameOver(): void {
+    this.gameOver.dispose();
+    this.getTexture().removeControl(this.gameOver);
+
+    this.retryGameButton.dispose();
+    this.getTexture().removeControl(this.retryGameButton);
+
+    this.leaveGameButton.dispose();
+    this.getTexture().removeControl(this.leaveGameButton);
+
+    if (this.chrono) {
+      this.chrono.text = '';
+    }
+  }
+
+  createBtnMusicObservable() {
     this.btnMusic.onPointerDownObservable.add(() => {
       if (this.bgMusic.isPlaying) {
         this.updateBtnMusic(false);
@@ -257,7 +295,7 @@ export class HudService {
   addButtonMusic(bool) : void {
     this.btnMusic = HudService.CreateButtonMusic(bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);
-    this.createObservable();
+    this.createBtnMusicObservable();
   }
 
   static CreatePlayerHead(name: string, left: number, top: number): GUI.Image {
@@ -300,6 +338,34 @@ export class HudService {
 
     return chronoBlock;
 
+  }
+
+  static CreateLeaveGameButton(): BABYLON.GUI.Button {
+    const leaveButton = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/Button/LeaveGame.png');
+
+    leaveButton.width = '30px';
+    leaveButton.height = '30px';
+    leaveButton.left = 300;
+    leaveButton.top = 200;
+    leaveButton.thickness = 0;
+    leaveButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    leaveButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return leaveButton;
+  }
+
+  static CreateRetryGameButton(): BABYLON.GUI.Button {
+    const retryButton = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/Button/RetryGame.png');
+
+    retryButton.width = '50px';
+    retryButton.height = '40px';
+    retryButton.left = 520;
+    retryButton.top = 195;
+    retryButton.thickness = 0;
+    retryButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    retryButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return retryButton;
   }
 
   static CreateButtonMusic(imageName: string) : BABYLON.GUI.Button {

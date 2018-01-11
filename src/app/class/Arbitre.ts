@@ -35,6 +35,15 @@ export default class Arbitre {
     return Arbitre.instance;
   }
 
+  public restartGame(): void {
+    this.players.forEach((player, i) => {
+      player.body.position = [i, 1, 0];
+      player.body.velocity = [0, 0, 0];
+      player.revive();
+    });
+    this.newGame();
+  }
+
   public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
     this.tpEndLvl = tpEndLvl;
   }

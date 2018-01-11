@@ -138,7 +138,7 @@ export class AppComponent implements AfterViewInit {
             });
           } else {
             Arbitre.getInstance().gameOver();
-            if (Arbitre.getInstance().getMaxRepop() >= 0) {
+            if (Arbitre.getInstance().getMaxRepop() > 0) {
               setTimeout(() => {
                 Arbitre.getInstance().repopPlayers();
               }, 1000);
