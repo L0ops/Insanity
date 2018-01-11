@@ -53,7 +53,7 @@ export default class Arbitre {
 
   public gameOver(): void {
     this.overGame = true;
-    this.maxRepop -= 1;
+    this.maxRepop --;
   }
 
   public newGame(): void {
