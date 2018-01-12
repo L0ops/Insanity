@@ -14,6 +14,6 @@ export default class Ping extends BABYLON.Sprite {
 
   public update(): void {
     this.position.x = this._player.position[0];
-    this.position.y = this._player.position[1] + 10;
+    this.position.y = this._player.position[1] + 40;
   }
 }
