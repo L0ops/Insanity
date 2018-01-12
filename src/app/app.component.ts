@@ -11,6 +11,7 @@ import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
 import mousetrap from 'mousetrap';
 import {HudService} from './services/hud.service';
+import {ParticleService} from './services/particles.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ export class AppComponent implements AfterViewInit {
   private conf;
 
   constructor(private jsonReader: JsonReaderService,
-    private hudService: HudService) {
+    private hudService: HudService, private particleService: ParticleService) {
       console.log('Construct');
     }
 
@@ -122,6 +123,7 @@ export class AppComponent implements AfterViewInit {
                   player.position.y + camBoundary.y < freeCamera.position.y ||
                   player.position.y - camBoundary.y > freeCamera.position.y) {
                     player.die();
+                    this.particleService.startParticle(scene, player, "flare");
                     this.hudService.refreshScorePlayer(player);
                     setTimeout(() => {
                       if (!Arbitre.getInstance().gameState()) {
