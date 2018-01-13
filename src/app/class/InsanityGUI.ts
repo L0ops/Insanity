@@ -142,9 +142,9 @@ export namespace InsanityGUI {
       this.addControl(this.rightKey);
     }
 
-    updateLetterKey(side: KeySide): void {
+    updateLetterKey(side: KeySide = KeySide.ALL): void {
       const keys = this._player.getKeys();
-      if (keys == null && !side) {
+      if (keys == null && side != KeySide.NONE) {
         return;
       }
       switch (side) {

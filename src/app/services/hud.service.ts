@@ -209,7 +209,7 @@ export class HudService {
   reloadHudKeys(): void {
     Arbitre.getInstance().getPlayers().forEach(player => {
       if (!player.hasFinishedLvl() && this.keys.has(player.name)) {
-        this.keys.get(player.name).updateLetterKey(InsanityGUI.KeySide.ALL);
+        this.keys.get(player.name).updateLetterKey();
       }
     });
   }
