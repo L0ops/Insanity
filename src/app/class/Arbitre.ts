@@ -219,7 +219,7 @@ export default class Arbitre {
      this.getKeyGenerator().getHudService()
       .resetHeadsPosition(50)
       .resetScorePosition(50)
-      .setRankPosition(50)
+      .configTextRankPosition(50)
       .resetChronoPosition();
    }
 
