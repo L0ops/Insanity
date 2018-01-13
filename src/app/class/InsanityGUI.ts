@@ -2,11 +2,14 @@ import * as BABYLON from 'babylonjs';
 import * as GUI from 'babylonjs-gui';
 import Player from './Player';
 import Key from './Key';
+import Arbitre from './Arbitre';
 
 export namespace InsanityGUI {
   export enum KeySide {
     LEFT,
-    RIGHT
+    RIGHT,
+    NONE,
+    ALL
   }
 
   export class CountDown extends BABYLON.GUI.Container {
@@ -27,9 +30,9 @@ export namespace InsanityGUI {
       this.addControl(this.count);
       let interval = setInterval(() => {
         time -= 1000;
-        if (time > 0) {
+        if (time > 0 && this.count && !this._player.hasFinishedLvl()) {
           this.count.text = ''+(time / 1000);
-        } else {
+        } else if (time <= 0 || this._player.hasFinishedLvl()){
           clearInterval(interval);
           this.dispose();
         }
@@ -37,9 +40,11 @@ export namespace InsanityGUI {
     }
 
     dispose(): void {
-      this.removeControl(this.count);
-      this.count.dispose();
-      delete this.count;
+      if (this.count) {
+        this.count.dispose();
+        this.removeControl(this.count);
+        delete this.count;
+      }
     }
 
     private static CreateCount(time: string, left:number, top:number): BABYLON.GUI.TextBlock {
@@ -137,9 +142,9 @@ export namespace InsanityGUI {
       this.addControl(this.rightKey);
     }
 
-    updateLetterKey(side?: KeySide): void {
+    updateLetterKey(side: KeySide = KeySide.ALL): void {
       const keys = this._player.getKeys();
-      if (keys == null) {
+      if (keys == null && side != KeySide.NONE) {
         return;
       }
       switch (side) {
@@ -149,6 +154,12 @@ export namespace InsanityGUI {
           break;
         case KeySide.RIGHT:
           this.rightKey.letter.text = keys.right;
+          this.rightKey.pressed(false);
+          break;
+        case KeySide.NONE:
+          this.leftKey.letter.text = '';
+          this.leftKey.pressed(false);
+          this.rightKey.letter.text = '';
           this.rightKey.pressed(false);
           break;
         default:

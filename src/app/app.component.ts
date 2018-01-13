@@ -87,6 +87,7 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getInstance().setWorld(world);
       Arbitre.getInstance().setTpEndLvl(tpEndLvl);
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
+      this.hudService.setCanvas(this.canvas);
       this.hudService.createHud(bgMusic);
 
     const players = Arbitre.getInstance().getPlayers();
@@ -112,9 +113,6 @@ export class AppComponent implements AfterViewInit {
             if (firstPlayer.position.y > firstPosCamera) {
               freeCamera.position.y = firstPlayer.position.y;
             }
-
-
-
             // TODO: Maybe this code would be put in Arbiter class
             players.forEach(player => {
               if (player.isAlive()) {
@@ -259,9 +257,7 @@ export class AppComponent implements AfterViewInit {
           }
         } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
         checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
-          console.log('last checkpoint');
           const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
-          console.log(player);
           Arbitre.getInstance().winGameEvent(player);
         } else {
           const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;
