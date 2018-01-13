@@ -21,6 +21,7 @@ export class HudService {
   private countDown: GUI.TextBlock;
   private time: number = 0;
   private btnMusic: GUI.Button;
+  private bgMusic: BABYLON.Sound;
 
   disposeKeys(): void {
     this.keys.forEach((pair) => {
@@ -87,6 +88,7 @@ export class HudService {
     if (!this.chrono) {
       this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15, this.canvas);
       this.getTexture().addControl(this.chrono);
+      this.updateBtnMusic(this.bgMusic.isPlaying ? true : false);
     } else {
       time = this.time > 0 ? time + this.time : time;
       this.chrono.text = HudService.msToTime(time);
@@ -155,6 +157,8 @@ export class HudService {
       } else if (time <= 0 || !Arbitre.getInstance().gameState()) {
         clearInterval(interval);
         this.getTexture().removeControl(this.countDown);
+        this.addButtonMusic(true);
+        this.bgMusic.play();
       }
     }, 1000);
   }
@@ -187,7 +191,10 @@ export class HudService {
     this.disposeBtnMusic();
   }
 
-  createHud(): void {
+  createHud(bgMusic: BABYLON.Sound = null): void {
+    if (bgMusic) {
+      this.bgMusic = bgMusic;
+    }
     let left = this.canvas.width / 25;
     let right = this.canvas.width / 15;
     let head = this.canvas.width / 20;
@@ -202,8 +209,6 @@ export class HudService {
       head += (this.canvas.width / 15) * 1.5;
       padding += (this.canvas.width / 15) * 1.5;
     });
-
-    this.addButtonMusic(true);
   }
 
   reloadHudKeys(): void {
@@ -217,6 +222,18 @@ export class HudService {
   updateBtnMusic(bool): void {
     this.disposeBtnMusic();
     this.addButtonMusic(bool);
+  }
+
+  createObservable() {
+    this.btnMusic.onPointerDownObservable.add(() => {
+      if (this.bgMusic.isPlaying) {
+        this.updateBtnMusic(false);
+        this.bgMusic.pause();
+      } else {
+        this.updateBtnMusic(true);
+        this.bgMusic.play();
+      }
+    });
   }
 
   refreshScorePlayer(player: Player): void {
@@ -270,6 +287,7 @@ export class HudService {
   addButtonMusic(bool) : void {
     this.btnMusic = HudService.CreateButtonMusic(this.canvas.width - ((this.canvas.width / 25) * 2), bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);
+    this.createObservable();
   }
 
   static CreatePlayerHead(name: string, left: number, top: number): GUI.Image {

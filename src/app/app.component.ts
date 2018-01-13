@@ -58,7 +58,7 @@ export class AppComponent implements AfterViewInit {
 
       let bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {
         loop: true,
-        autoplay: true
+        autoplay: false
       });
       bgMusic.setVolume(0.3);
 
@@ -88,7 +88,7 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getInstance().setTpEndLvl(tpEndLvl);
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
       this.hudService.setCanvas(this.canvas);
-      this.hudService.createHud();
+      this.hudService.createHud(bgMusic);
 
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
@@ -113,19 +113,6 @@ export class AppComponent implements AfterViewInit {
             if (firstPlayer.position.y > firstPosCamera) {
               freeCamera.position.y = firstPlayer.position.y;
             }
-
-            let hud = this.hudService;
-            let btnMusic = hud.getBtnMusic();
-            btnMusic.onPointerDownObservable.add(function() {
-              if (bgMusic.isPlaying) {
-                hud.updateBtnMusic(false);
-                bgMusic.pause();
-              } else {
-                hud.updateBtnMusic(true);
-                bgMusic.play();
-              }
-            });
-
             // TODO: Maybe this code would be put in Arbiter class
             players.forEach(player => {
               if (player.isAlive()) {
