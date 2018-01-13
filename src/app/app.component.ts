@@ -5,7 +5,7 @@ import Block from './class/Block';
 import * as GUI from 'babylonjs-gui';
 import Player from './class/Player';
 import Key from './class/Key';
-import Arbitre from './class/Arbitre';
+import Arbitre from './class/Arbitres';
 import Environment from './class/Environment';
 import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
@@ -76,29 +76,30 @@ export class AppComponent implements AfterViewInit {
         gravity: [0, -9.82]
       });
 
-      const checkPoints = Arbitre.getInstance().getCheckpoint();
+      const checkPoints = Arbitre.getArbitreGame().getCheckpoint();
       const tpEndLvl = new BABYLON.Vector2(this.conf.tpEndLvl[0], this.conf.tpEndLvl[1]);
 
-      Arbitre.getInstance().newGame();
-      Arbitre.getInstance().setService(this.hudService);
+      Arbitre.getArbitreGame().newGame();
+      Arbitre.getArbitreGame().setService(this.hudService);
       const playersName = ['player1', 'player2', 'player3', 'player4'];
-      Arbitre.getInstance().setScene(scene, playersName.length);
-      Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
+      Arbitre.getInstance().setScene(scene);
+      Arbitre.getArbitrePlayer().setSpriteManager(playersName.length);
+      Arbitre.getArbitrePlayer().setAnimationPlayers(this.conf.animations);
       Arbitre.getInstance().setWorld(world);
-      Arbitre.getInstance().setTpEndLvl(tpEndLvl);
-      Arbitre.getInstance().setMaxRepop(this.conf.maxRepop);
-      playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
+      Arbitre.getArbitreGame().setTpEndLvl(tpEndLvl);
+      Arbitre.getArbitreGame().setMaxRepop(this.conf.maxRepop);
+      playersName.forEach((pn, i) => Arbitre.getArbitrePlayer().createPlayer(pn, i));
       this.hudService.setCanvas(this.canvas);
       this.hudService.createHud(bgMusic);
-      freeCamera.position.x = Arbitre.getInstance().getFirstPlayer().position.x;
-    const players = Arbitre.getInstance().getPlayers();
+      freeCamera.position.x = Arbitre.getArbitrePlayer().getFirstPlayer().position.x;
+    const players = Arbitre.getArbitrePlayer().getPlayers();
     this.createGround(world, players, scene);
 
     this.setCollision(world, players, checkPoints);
     const countDownTime = 6000;
     this.hudService.startCountDown(countDownTime);
     setTimeout(() => {
-      Arbitre.getInstance()
+      Arbitre.getArbitreGame()
         .setTimerKeys(10000)
         .setKeys(keys)
         .addPlayersToGenerate()
@@ -106,9 +107,9 @@ export class AppComponent implements AfterViewInit {
         .regenerate();
       scene.registerBeforeRender(() => {
         world.step(1 / 60);
-        if (!Arbitre.getInstance().gameState() && !Arbitre.getInstance().isWinLvl()) {
-          const firstPlayer = Arbitre.getInstance().getFirstPlayer();
-          if (firstPlayer && !Arbitre.getInstance().isWinLvl()) {
+        if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl()) {
+          const firstPlayer = Arbitre.getArbitrePlayer().getFirstPlayer();
+          if (firstPlayer && !Arbitre.getArbitreGame().isWinLvl()) {
             freeCamera.position.x = firstPlayer.position.x;
             if (firstPlayer.position.y > firstPosCamera) {
               freeCamera.position.y = firstPlayer.position.y;
@@ -122,8 +123,8 @@ export class AppComponent implements AfterViewInit {
                     player.die();
                     this.hudService.refreshScorePlayer(player);
                     setTimeout(() => {
-                      if (!Arbitre.getInstance().gameState()) {
-                        const fp = Arbitre.getInstance().getFirstPlayer();
+                      if (!Arbitre.getArbitreGame().gameState()) {
+                        const fp = Arbitre.getArbitrePlayer().getFirstPlayer();
                         player.revive(fp);
                       }
                     }, 1000);
@@ -134,10 +135,10 @@ export class AppComponent implements AfterViewInit {
               player.update();
             });
           } else {
-            Arbitre.getInstance().gameOver();
-            if (Arbitre.getInstance().getMaxRepop() > 0) {
+            Arbitre.getArbitreGame().gameOver();
+            if (Arbitre.getArbitreGame().getMaxRepop() > 0) {
               setTimeout(() => {
-                Arbitre.getInstance().repopPlayers();
+                Arbitre.getArbitreGame().repopPlayers();
               }, 1000);
             } else {
               this.hudService.gameOverHUD();
@@ -168,8 +169,8 @@ export class AppComponent implements AfterViewInit {
           if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
             this.collisionDash(evt, players);
           }
-          if (checkPoints.find(Arbitre.getInstance().collisionCheckpoint, evt.bodyB) ||
-          checkPoints.find(Arbitre.getInstance().collisionCheckpoint, evt.bodyA)) {
+          if (checkPoints.find(Arbitre.getArbitreGame().collisionCheckpoint, evt.bodyB) ||
+          checkPoints.find(Arbitre.getArbitreGame().collisionCheckpoint, evt.bodyA)) {
             this.collisionCheckpoint(evt, players, checkPoints);
           }
         });
@@ -253,18 +254,18 @@ export class AppComponent implements AfterViewInit {
       }
 
       collisionCheckpoint(evt: p2.EventEmitter, players: Player[], checkPoints: Block[]): void {
-        if (checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyA) ||
-        checkPoints.find(Arbitre.getInstance().firstCheckPoint, evt.bodyB)) {
+        if (checkPoints.find(Arbitre.getArbitreGame().firstCheckPoint, evt.bodyA) ||
+        checkPoints.find(Arbitre.getArbitreGame().firstCheckPoint, evt.bodyB)) {
           if (!this.hudService.ticTac()) {
             this.hudService.startChrono();
           }
-        } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
-        checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
+        } else if (checkPoints.find(Arbitre.getArbitreGame().lastCheckPoint, evt.bodyA) ||
+        checkPoints.find(Arbitre.getArbitreGame().lastCheckPoint, evt.bodyB)) {
           const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
-          Arbitre.getInstance().winGameEvent(player);
+          Arbitre.getArbitreGame().winGameEvent(player);
         } else {
           const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;
-          Arbitre.getInstance().setCheckpoint(checkpoint);
+          Arbitre.getArbitreGame().setCheckpoint(checkpoint);
         }
       }
 
@@ -277,9 +278,9 @@ export class AppComponent implements AfterViewInit {
           dasher = players[idA].movements['dash'].doSomething ? idA : idB;
           touched = players[idA].movements['dash'].doSomething ? idB : idA;
           if (players[dasher].movements['dash'].doSomething && players[touched].movements['dash'].doSomething) {
-            Arbitre.getInstance().parityDash(idA, idB);
-            dasher = Arbitre.getInstance().getDasher();
-            touched = Arbitre.getInstance().getTouchedByDash();
+            Arbitre.getArbitrePlayer().parityDash(idA, idB);
+            dasher = Arbitre.getArbitrePlayer().getDasher();
+            touched = Arbitre.getArbitrePlayer().getTouchedByDash();
           }
         }
         if (dasher != null && touched != null) {

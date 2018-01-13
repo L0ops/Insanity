@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as GUI from 'babylonjs-gui';
 import * as BABYLON from 'babylonjs';
-import Arbitre from '../class/Arbitre';
+import Arbitre from '../class/Arbitres';
 import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
 import Stopwatch from 'agstopwatch';
 import Player from '../class/Player';
@@ -39,7 +39,7 @@ export class HudService {
   }
 
   setRankPosition(paddingTop: number): HudService {
-    const players = Arbitre.getInstance().getPlayers();
+    const players = Arbitre.getArbitrePlayer().getPlayers();
     let i = 0;
     const left = (this.canvas.width / 2) + (this.canvas.width / 3) - (this.canvas.width / 20);
     let top = (this.canvas.height / 2) - (this.canvas.height / 5) + (this.canvas.height / 50);
@@ -55,7 +55,7 @@ export class HudService {
   }
 
   resetScorePosition(paddingTop: number): HudService {
-    const players = Arbitre.getInstance().getPlayers();
+    const players = Arbitre.getArbitrePlayer().getPlayers();
     const left = (this.canvas.width / 2) + (this.canvas.width / 4) + (this.canvas.width / 6);
     let top = (this.canvas.height / 2) - (this.canvas.height / 5) + (this.canvas.height / 50);
     players.forEach(player => {
@@ -67,7 +67,7 @@ export class HudService {
   }
 
   resetHeadsPosition(paddingTop: number): HudService {
-    const players = Arbitre.getInstance().getPlayers();
+    const players = Arbitre.getArbitrePlayer().getPlayers();
     const left = (this.canvas.width / 2) + (this.canvas.width / 3);
     let top = (this.canvas.height / 2) - (this.canvas.height / 5);
     players.forEach(player => {
@@ -180,7 +180,7 @@ export class HudService {
         } else {
           this.countDown.text = ''+(time/1000);
         }
-      } else if (time <= 0 || !Arbitre.getInstance().gameState()) {
+      } else if (time <= 0 || !Arbitre.getArbitreGame().gameState()) {
         clearInterval(interval);
         this.getTexture().removeControl(this.countDown);
         this.addButtonMusic(true);
@@ -225,7 +225,7 @@ export class HudService {
     let right = this.canvas.width / 15;
     let head = this.canvas.width / 20;
     let padding = this.canvas.width / 17;
-    Arbitre.getInstance().getPlayers().forEach(player => {
+    Arbitre.getArbitrePlayer().getPlayers().forEach(player => {
       this.addPlayerHead(player, head);
       this.addPlayerKeys(player, left, right);
       this.addPlayerScore(player, padding);
@@ -238,7 +238,7 @@ export class HudService {
   }
 
   reloadHudKeys(): void {
-    Arbitre.getInstance().getPlayers().forEach(player => {
+    Arbitre.getArbitrePlayer().getPlayers().forEach(player => {
       if (!player.hasFinishedLvl() && this.keys.has(player.name)) {
         this.keys.get(player.name).updateLetterKey();
       }
@@ -258,7 +258,7 @@ export class HudService {
 
   createBtnRetryGameObservable(): void {
     this.retryGameButton.onPointerDownObservable.add(() => {
-      Arbitre.getInstance().restartGame();
+      Arbitre.getArbitreGame().restartGame();
       this.disposeBtnGameOver();
     });
   }
