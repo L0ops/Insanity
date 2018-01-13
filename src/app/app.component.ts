@@ -90,12 +90,11 @@ export class AppComponent implements AfterViewInit {
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
       this.hudService.setCanvas(this.canvas);
       this.hudService.createHud(bgMusic);
-
+      freeCamera.position.x = Arbitre.getInstance().getFirstPlayer().position.x;
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
 
     this.setCollision(world, players, checkPoints);
-
     const countDownTime = 6000;
     this.hudService.startCountDown(countDownTime);
     setTimeout(() => {
