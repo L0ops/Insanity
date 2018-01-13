@@ -21,10 +21,11 @@ export default class Arbitre {
   private lastCheckTouch: Block;
   private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
-
+  private maxRepop: number;
   private constructor() {
     this.countWinPlayer = 0;
     this.players = [];
+    this.maxRepop = 0;
   }
 
   static getInstance(): Arbitre {
@@ -34,8 +35,25 @@ export default class Arbitre {
     return Arbitre.instance;
   }
 
+  public restartGame(): void {
+    this.players.forEach((player, i) => {
+      player.body.position = [i, 1, 0];
+      player.body.velocity = [0, 0, 0];
+      player.revive();
+    });
+    this.newGame();
+  }
+
   public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
     this.tpEndLvl = tpEndLvl;
+  }
+
+  public setMaxRepop(maxRepop: number): void {
+    this.maxRepop = maxRepop
+  }
+
+  public getMaxRepop(): number {
+    return this.maxRepop;
   }
 
   public gameState(): Boolean {
@@ -44,6 +62,7 @@ export default class Arbitre {
 
   public gameOver(): void {
     this.overGame = true;
+    this.maxRepop --;
   }
 
   public newGame(): void {

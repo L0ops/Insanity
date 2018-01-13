@@ -19,6 +19,9 @@ export class HudService {
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
   private countDown: GUI.TextBlock;
+  private gameOver: GUI.TextBlock;
+  private retryGameButton: GUI.Button;
+  private leaveGameButton: GUI.Button;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
@@ -86,7 +89,9 @@ export class HudService {
     this.stopWatch.start();
     let time = this.stopWatch.elapsed;
     if (!this.chrono) {
-      this.chrono = HudService.CreateChrono(HudService.msToTime(time), 300, 15, this.canvas);
+      const left = this.canvas.width / 2;
+      const top = this.canvas.height / 30;
+      this.chrono = HudService.CreateChrono(HudService.msToTime(time), left, top);
       this.getTexture().addControl(this.chrono);
       this.updateBtnMusic(this.bgMusic.isPlaying ? true : false);
     } else {
@@ -94,6 +99,25 @@ export class HudService {
       this.chrono.text = HudService.msToTime(time);
     }
     this.showChrono();
+  }
+
+  gameOverHUD(): void {
+    let left = (this.canvas.width / 2) - (this.canvas.width / 8);
+    let top = (this.canvas.height / 2) - (this.canvas.height / 6);
+    this.gameOver = HudService.CreateGameOver(left, top);
+    this.getTexture().addControl(this.gameOver);
+
+    left = (this.canvas.width / 2);
+    top = (this.canvas.height / 2);
+    this.retryGameButton = HudService.CreateRetryGameButton(left, top);
+    this.getTexture().addControl(this.retryGameButton);
+    this.createBtnRetryGameObservable();
+
+    left = (this.canvas.width / 2) - (this.canvas.width / 40);
+    top = (this.canvas.height / 2) + (this.canvas.height / 70);
+    this.leaveGameButton = HudService.CreateLeaveGameButton(left, top);
+    this.getTexture().addControl(this.leaveGameButton);
+    this.createBtnLeaveGameObservable();
   }
 
   ticTac(): boolean {
@@ -149,7 +173,9 @@ export class HudService {
       time -= 1000;
       if (time > 0) {
         if (!this.countDown) {
-          this.countDown = HudService.CreateCountDown(''+(time/1000),300, 15, this.canvas);
+          const left = this.canvas.width / 2;
+          const top = this.canvas.height / 2 - (this.canvas.height / 10);
+          this.countDown = HudService.CreateCountDown(''+(time/1000), left, top);
           this.getTexture().addControl(this.countDown);
         } else {
           this.countDown.text = ''+(time/1000);
@@ -224,7 +250,35 @@ export class HudService {
     this.addButtonMusic(bool);
   }
 
-  createObservable() {
+  createBtnLeaveGameObservable(): void {
+    this.leaveGameButton.onPointerDownObservable.add(() => {
+      console.log('leave');
+    })
+  }
+
+  createBtnRetryGameObservable(): void {
+    this.retryGameButton.onPointerDownObservable.add(() => {
+      Arbitre.getInstance().restartGame();
+      this.disposeBtnGameOver();
+    });
+  }
+
+  disposeBtnGameOver(): void {
+    this.gameOver.dispose();
+    this.getTexture().removeControl(this.gameOver);
+
+    this.retryGameButton.dispose();
+    this.getTexture().removeControl(this.retryGameButton);
+
+    this.leaveGameButton.dispose();
+    this.getTexture().removeControl(this.leaveGameButton);
+
+    if (this.chrono) {
+      this.chrono.text = '';
+    }
+  }
+
+  createBtnMusicObservable() {
     this.btnMusic.onPointerDownObservable.add(() => {
       if (this.bgMusic.isPlaying) {
         this.updateBtnMusic(false);
@@ -270,12 +324,26 @@ export class HudService {
     }
   }
 
-  static CreateCountDown(time:string, left:number, top:number, canvas: HTMLCanvasElement): GUI.TextBlock {
+  static CreateGameOver(left: number, top: number): GUI.TextBlock {
+
+    const gameOverBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
+
+    gameOverBlock.text = 'GAME OVER';
+    gameOverBlock.color = 'black';
+    gameOverBlock.left = left;
+    gameOverBlock.top = top;
+    gameOverBlock.fontSize = 42;
+    gameOverBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    gameOverBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return gameOverBlock;
+  }
+  static CreateCountDown(time:string, left:number, top:number): GUI.TextBlock {
     const countBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
 
     countBlock.text = time;
     countBlock.color = 'black';
-    countBlock.left = canvas.width / 2;
+    countBlock.left = left;
     countBlock.top = top;
     countBlock.fontSize = 40;
     countBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -285,9 +353,11 @@ export class HudService {
   }
 
   addButtonMusic(bool) : void {
-    this.btnMusic = HudService.CreateButtonMusic(this.canvas.width - ((this.canvas.width / 25) * 2), bool ? 'son' : 'soff');
+    const left = this.canvas.width - ((this.canvas.width / 25) * 2);
+    const top = (this.canvas.height / 30);
+    this.btnMusic = HudService.CreateButtonMusic(left, top, bool ? 'son' : 'soff');
     this.getTexture().addControl(this.btnMusic);
-    this.createObservable();
+    this.createBtnMusicObservable();
   }
 
   static CreatePlayerHead(name: string, left: number, top: number): GUI.Image {
@@ -317,12 +387,12 @@ export class HudService {
     return scoreBlock;
   }
 
-  static CreateChrono(time: string, left:number, top:number, canvas: HTMLCanvasElement): GUI.TextBlock {
+  static CreateChrono(time: string, left:number, top:number): GUI.TextBlock {
     const chronoBlock: BABYLON.GUI.TextBlock = new BABYLON.GUI.TextBlock();
 
     chronoBlock.text = time;
     chronoBlock.color = 'black';
-    chronoBlock.left = canvas.width / 2;
+    chronoBlock.left = left;
     chronoBlock.top = top;
     chronoBlock.fontSize = 20;
     chronoBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -330,6 +400,34 @@ export class HudService {
 
     return chronoBlock;
 
+  }
+
+  static CreateLeaveGameButton(left: number, top: number): BABYLON.GUI.Button {
+    const leaveButton = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/Button/LeaveGame.png');
+
+    leaveButton.width = '30px';
+    leaveButton.height = '30px';
+    leaveButton.left = left;
+    leaveButton.top = top;
+    leaveButton.thickness = 0;
+    leaveButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    leaveButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return leaveButton;
+  }
+
+  static CreateRetryGameButton(left: number, top: number): BABYLON.GUI.Button {
+    const retryButton = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/Button/RetryGame.png');
+
+    retryButton.width = '50px';
+    retryButton.height = '40px';
+    retryButton.left = left;
+    retryButton.top = top;
+    retryButton.thickness = 0;
+    retryButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    retryButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+    return retryButton;
   }
 
   static CreateRank(score: number, left: number, top: number): GUI.TextBlock {
@@ -347,13 +445,14 @@ export class HudService {
     return rankBlock;
   }
 
-  static CreateButtonMusic(left:number, imageName: string) : BABYLON.GUI.Button {
+  static CreateButtonMusic(left:number, top: number, imageName: string) : BABYLON.GUI.Button {
+
     const btnMusic = BABYLON.GUI.Button.CreateImageOnlyButton("on", '../assets/Sprites/' + imageName + '.png');
 
     btnMusic.width = '30px';
     btnMusic.height = '30px';
     btnMusic.left = left;
-    btnMusic.top = 5;
+    btnMusic.top = top;
     btnMusic.thickness = 0;
     btnMusic.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     btnMusic.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
