@@ -60,7 +60,7 @@ export default class KeyGenerator {
         } while(!player.getKeys());
       }
     });
-    this.hudService.reloadHudKeys();
+    this.hudService.updateHudKeys();
   }
 
   public clean(): void {

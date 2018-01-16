@@ -11,6 +11,7 @@ import WorldMapGenerator from './class/WorldMapGenerator';
 import {JsonReaderService} from './services/json-reader.service';
 import mousetrap from 'mousetrap';
 import {HudService} from './services/hud.service';
+import {ParticleService} from './services/particles.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ export class AppComponent implements AfterViewInit {
   private conf;
 
   constructor(private jsonReader: JsonReaderService,
-    private hudService: HudService) {
+    private hudService: HudService, private particleService: ParticleService) {
       console.log('Construct');
     }
 
@@ -90,9 +91,10 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getArbitreGame().setMaxRepop(this.conf.maxRepop);
       playersName.forEach((pn, i) => Arbitre.getArbitrePlayer().createPlayer(pn, i));
       this.hudService.setCanvas(this.canvas);
-      this.hudService.createHud(bgMusic);
+      this.hudService.setBgMusic(bgMusic);
+      this.hudService.playersHud();
       freeCamera.position.x = Arbitre.getArbitrePlayer().getFirstPlayer().position.x;
-    const players = Arbitre.getArbitrePlayer().getPlayers();
+      const players = Arbitre.getArbitrePlayer().getPlayers();
     this.createGround(world, players, scene);
 
     this.setCollision(world, players, checkPoints);
@@ -121,7 +123,8 @@ export class AppComponent implements AfterViewInit {
                   player.position.y + camBoundary.y < freeCamera.position.y ||
                   player.position.y - camBoundary.y > freeCamera.position.y) {
                     player.die();
-                    this.hudService.refreshScorePlayer(player);
+                    this.hudService.updateScorePlayer(player);
+                    this.particleService.startParticle(scene, player, "flare");
                     setTimeout(() => {
                       if (!Arbitre.getArbitreGame().gameState()) {
                         const fp = Arbitre.getArbitrePlayer().getFirstPlayer();
@@ -133,6 +136,7 @@ export class AppComponent implements AfterViewInit {
                   }
                 }
               player.update();
+              player.getPing().update();
             });
           } else {
             Arbitre.getArbitreGame().gameOver();
@@ -141,7 +145,7 @@ export class AppComponent implements AfterViewInit {
                 Arbitre.getArbitreGame().repopPlayers();
               }, 1000);
             } else {
-              this.hudService.gameOverHUD();
+              this.hudService.gameOverHud();
             }
           }
         } else {

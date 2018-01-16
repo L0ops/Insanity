@@ -140,7 +140,7 @@ class ArbitreGame {
     this.getKeyGenerator().getHudService()
      .resetHeadsPosition(50)
      .resetScorePosition(50)
-     .setRankPosition(50)
+     .configTextRankPosition(50)
      .resetChronoPosition();
   }
 
@@ -193,6 +193,7 @@ class ArbitrePlayer {
   private players: Player[];
   private animationsPlayers;
   private spriteManagerPlayer: BABYLON.SpriteManager;
+  private spriteManagerPing: BABYLON.SpriteManager;
   private dasher: number;
   private touched: number;
 
@@ -215,19 +216,21 @@ class ArbitrePlayer {
 
   public setSpriteManager(nbPlayers: number): void{
     const playersPath = '../assets/Sprites/cosm.png';
+    const pingPath = '../assets/Sprites/Pings/pingplayers.png';
     const scene = Arbitre.getInstance().getScene();
-    const spriteManagerPlayer1 = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, scene);
-    this.spriteManagerPlayer = spriteManagerPlayer1;
+    this.spriteManagerPing = new BABYLON.SpriteManager('pingM', pingPath, nbPlayers, 80, scene);
+    this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, scene);
   }
 
   public createPlayer(name: string, position: number): void {
     const scene = Arbitre.getInstance().getScene();
-    const player = new Player(name, scene, this.animationsPlayers, this.spriteManagerPlayer);
+    const player = new Player(name, scene, this.animationsPlayers, this.spriteManagerPlayer, this.spriteManagerPing);
     //  To test winGameEvent Arbitre method
     // player.body.position = [286 + position, -2, 0];
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
     player.body.position = [position, 1, 0];
+    player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players.push(player);
     player.update();
