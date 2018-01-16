@@ -5,19 +5,22 @@ import Player from '../class/Player';
 
 @Injectable()
 export class ParticleService {
-  private particleSystem: BABYLON.ParticleSystem;
+  private particlesSystem: Array<BABYLON.ParticleSystem> = new Array<BABYLON.ParticleSystem>();
 
-  startParticle(scene: BABYLON.Scene, player: Player, type: string, emitRate?: number, nbPlay?: number) : void {
-    this.particleSystem = ParticleService.CreateParticleSystem(scene);
+  startParticle(scene: BABYLON.Scene, player: Player, type: string, emitRate?: number, nbPlay: number = 5000) : void {
+    const particleSystem = ParticleService.CreateParticleSystem(scene);
 
-    this.particleSystem.particleTexture = new BABYLON.Texture("../assets/Sprites/Particles/particle-" + type + ".png", scene);
-    this.particleSystem.emitRate = emitRate ? emitRate : 5; // Speed of emitting
-    this.particleSystem.emitter = player.position; // Emitter (if added to loop, particles follows the player)
+    particleSystem.particleTexture = new BABYLON.Texture("../assets/Sprites/Particles/particle-" + type + ".png", scene);
+    particleSystem.emitRate = emitRate ? emitRate : 5; // Speed of emitting
+    particleSystem.emitter = player.position; // Emitter (if added to loop, particles follows the player)
+    this.particlesSystem.push(particleSystem);
 
-    this.particleSystem.start();
+    const length = this.particlesSystem.length - 1;
+    this.particlesSystem[length].start();
     setTimeout(() => {
-      this.particleSystem.stop(); // Stop after x seconds
-    }, nbPlay ? nbPlay : 5000);
+      console.log('end');
+      this.particlesSystem[length].stop(); // Stop after x seconds
+    }, nbPlay); // x is nbPlay or 5s by default
   }
 
   static CreateParticleSystem(scene: BABYLON.Scene) : BABYLON.ParticleSystem {
