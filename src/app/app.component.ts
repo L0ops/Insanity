@@ -144,6 +144,7 @@ export class AppComponent implements AfterViewInit {
                   }
                 }
               player.update();
+              player.getPing().update();
             });
           } else {
             console.log('gameover');

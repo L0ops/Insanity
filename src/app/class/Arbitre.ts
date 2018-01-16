@@ -117,12 +117,11 @@ export default class Arbitre {
 
   public setScene(scene: BABYLON.Scene, nbPlayers:number): void {
     const playersPath = '../assets/Sprites/cosm.png';
-    const pingPath = '../assets/Sprites/pingsplayer.png';
+    const pingPath = '../assets/Sprites/Pings/pingplayers.png';
     this.scene = scene;
     this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
     this.spriteManagerPing = new BABYLON.SpriteManager('pingM', pingPath, nbPlayers, 80, this.scene);
     this.players = [];
-    this.pingPlayers= [];
   }
 
   public createPlayer(name: string, position: number): void {
@@ -132,10 +131,9 @@ export default class Arbitre {
      //  To go to firstCheckPoint
      //  player.body.position = [60, 3, 0];
      player.body.position = [position, 1, 0];
+     player.initPing(position);
      this.world.addBody(player.body);
      this.players.push(player);
-     this.pingPlayers.push(player.ping);
-     console.log(this.pingPlayers);
      player.update();
    }
 

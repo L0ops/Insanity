@@ -21,12 +21,12 @@ export default class Player extends Block {
   private death: number;
   private lvlComplete: Boolean = false;
   private scene: BABYLON.Scene;
+  private ping: Ping;
   public animationList;
   public movements = new Array<Movement>();
   public hudKeys: InsanityGUI.KeyPair;
   public hudDashCd: InsanityGUI.CountDown;
-  public ping: Ping;
-
+  public pingManager: BABYLON.SpriteManager;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager, pingManager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
@@ -48,10 +48,17 @@ export default class Player extends Block {
     this.movements['idle'].animate();
     this.hudKeys = null;
     this.hudDashCd = null;
-
-    this.ping = new Ping('ping', this.scene, pingManager, this);
+    this.pingManager = pingManager;
   }
 
+  public getPing(): Ping {
+    return this.ping;
+  }
+
+  public initPing(nbPing: number) : void {
+    this.ping = new Ping('ping', this.scene, this.pingManager, nbPing, this);
+  }
+  
   public setKeys(key: Key): void {
     this.key = key;
     this.key.used = true;
