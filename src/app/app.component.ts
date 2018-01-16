@@ -134,6 +134,7 @@ export class AppComponent implements AfterViewInit {
                   }
                 }
               player.update();
+              player.getPing().update();
             });
           } else {
             Arbitre.getInstance().gameOver();
