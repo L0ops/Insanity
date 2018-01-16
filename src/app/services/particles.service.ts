@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as BABYLON from 'babylonjs';
-import Arbitre from '../class/Arbitre';
 import Player from '../class/Player';
 
 @Injectable()
@@ -18,7 +17,6 @@ export class ParticleService {
     const length = this.particlesSystem.length - 1;
     this.particlesSystem[length].start();
     setTimeout(() => {
-      console.log('end');
       this.particlesSystem[length].stop(); // Stop after x seconds
     }, nbPlay); // x is nbPlay or 5s by default
   }

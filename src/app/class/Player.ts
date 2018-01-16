@@ -58,7 +58,7 @@ export default class Player extends Block {
   public initPing(nbPing: number) : void {
     this.ping = new Ping('ping', this.scene, this.pingManager, nbPing, this);
   }
-  
+
   public setKeys(key: Key): void {
     this.key = key;
     this.key.used = true;
