@@ -87,14 +87,15 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getInstance().setAnimationPlayers(this.conf.animations);
       Arbitre.getInstance().setWorld(world);
       Arbitre.getInstance().setTpEndLvl(tpEndLvl);
+      Arbitre.getInstance().setMaxRepop(this.conf.maxRepop);
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
+      this.hudService.setCanvas(this.canvas);
       this.hudService.createHud(bgMusic);
-
+      freeCamera.position.x = Arbitre.getInstance().getFirstPlayer().position.x;
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
 
     this.setCollision(world, players, checkPoints);
-
     const countDownTime = 6000;
     this.hudService.startCountDown(countDownTime);
     setTimeout(() => {
@@ -113,9 +114,6 @@ export class AppComponent implements AfterViewInit {
             if (firstPlayer.position.y > firstPosCamera) {
               freeCamera.position.y = firstPlayer.position.y;
             }
-
-
-
             // TODO: Maybe this code would be put in Arbiter class
             players.forEach(player => {
               if (player.isAlive()) {
@@ -138,11 +136,14 @@ export class AppComponent implements AfterViewInit {
               player.update();
             });
           } else {
-            console.log('gameover');
             Arbitre.getInstance().gameOver();
-            setTimeout(() => {
-              Arbitre.getInstance().repopPlayers();
-            }, 1000);
+            if (Arbitre.getInstance().getMaxRepop() > 0) {
+              setTimeout(() => {
+                Arbitre.getInstance().repopPlayers();
+              }, 1000);
+            } else {
+              this.hudService.gameOverHUD();
+            }
           }
         } else {
           if (this.hudService.ticTac()) {
@@ -261,9 +262,7 @@ export class AppComponent implements AfterViewInit {
           }
         } else if (checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyA) ||
         checkPoints.find(Arbitre.getInstance().lastCheckPoint, evt.bodyB)) {
-          console.log('last checkpoint');
           const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
-          console.log(player);
           Arbitre.getInstance().winGameEvent(player);
         } else {
           const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;

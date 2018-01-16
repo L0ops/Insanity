@@ -21,10 +21,11 @@ export default class Arbitre {
   private lastCheckTouch: Block;
   private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
-
+  private maxRepop: number;
   private constructor() {
     this.countWinPlayer = 0;
     this.players = [];
+    this.maxRepop = 0;
   }
 
   static getInstance(): Arbitre {
@@ -34,8 +35,25 @@ export default class Arbitre {
     return Arbitre.instance;
   }
 
+  public restartGame(): void {
+    this.players.forEach((player, i) => {
+      player.body.position = [i, 1, 0];
+      player.body.velocity = [0, 0, 0];
+      player.revive();
+    });
+    this.newGame();
+  }
+
   public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
     this.tpEndLvl = tpEndLvl;
+  }
+
+  public setMaxRepop(maxRepop: number): void {
+    this.maxRepop = maxRepop
+  }
+
+  public getMaxRepop(): number {
+    return this.maxRepop;
   }
 
   public gameState(): Boolean {
@@ -44,6 +62,7 @@ export default class Arbitre {
 
   public gameOver(): void {
     this.overGame = true;
+    this.maxRepop --;
   }
 
   public newGame(): void {
@@ -112,7 +131,7 @@ export default class Arbitre {
     return this.players;
   }
 
-  public setScene(scene: BABYLON.Scene, nbPlayers:number): void {
+  public setScene(scene: BABYLON.Scene, nbPlayers: number): void {
     const playersPath = '../assets/Sprites/cosm.png';
     this.scene = scene;
     this.spriteManagerPlayer = new BABYLON.SpriteManager('pm', playersPath, nbPlayers, 80, this.scene);
@@ -172,17 +191,36 @@ export default class Arbitre {
      return index === (checkPoints.length -1) && body.body === this;
    }
 
-   public winGameEvent(player): void {
+   public winGameEvent(player: Player): void {
      player.finishedLevel();
      this.getKeyGenerator().cleanPlayer(player);
+     player.hudDashCd.dispose();
      player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
      this.countWinPlayer++;
 
      if (this.countWinPlayer == this.players.length) {
        player.update();
+       this.getKeyGenerator().getHudService().disposeKeys();
        this.winLvl = true;
+       this.lvlRanking();
        console.log('lvl win');
      }
+   }
+
+   private lvlRanking(): void {
+     this.players.sort((p1, p2) => {
+       if (p1.dead() > p2.dead()) {
+         return 1;
+       } else if (p1.dead() < p2.dead()) {
+         return -1;
+       }
+       return 0;
+     });
+     this.getKeyGenerator().getHudService()
+      .resetHeadsPosition(50)
+      .resetScorePosition(50)
+      .setRankPosition(50)
+      .resetChronoPosition();
    }
 
    public isWinLvl(): Boolean {

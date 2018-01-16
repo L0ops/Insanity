@@ -19,6 +19,10 @@ export default class KeyGenerator {
     return KeyGenerator.instance;
   }
 
+  public getHudService(): HudService {
+    return this.hudService;
+  }
+
   public setHudService(hudService: HudService): void {
     this.hudService = hudService;
   }
