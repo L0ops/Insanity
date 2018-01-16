@@ -90,7 +90,8 @@ export class AppComponent implements AfterViewInit {
       Arbitre.getInstance().setMaxRepop(this.conf.maxRepop);
       playersName.forEach((pn, i) => Arbitre.getInstance().createPlayer(pn, i));
       this.hudService.setCanvas(this.canvas);
-      this.hudService.createHud(bgMusic);
+      this.hudService.setBgMusic(bgMusic);
+      this.hudService.playersHud();
       freeCamera.position.x = Arbitre.getInstance().getFirstPlayer().position.x;
     const players = Arbitre.getInstance().getPlayers();
     this.createGround(world, players, scene);
@@ -121,8 +122,8 @@ export class AppComponent implements AfterViewInit {
                   player.position.y + camBoundary.y < freeCamera.position.y ||
                   player.position.y - camBoundary.y > freeCamera.position.y) {
                     player.die();
+                    this.hudService.updateScorePlayer(player);
                     this.particleService.startParticle(scene, player, "flare");
-                    this.hudService.refreshScorePlayer(player);
                     setTimeout(() => {
                       if (!Arbitre.getInstance().gameState()) {
                         const fp = Arbitre.getInstance().getFirstPlayer();
@@ -143,7 +144,7 @@ export class AppComponent implements AfterViewInit {
                 Arbitre.getInstance().repopPlayers();
               }, 1000);
             } else {
-              this.hudService.gameOverHUD();
+              this.hudService.gameOverHud();
             }
           }
         } else {
