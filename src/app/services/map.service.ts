@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import WorldMapGenerator from '../class/WorldMapGenerator';
 import Arbitre from '../class/Arbitres';
 import Player from '../class/Player';
-import {SceneService} from './scene.service';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
 
