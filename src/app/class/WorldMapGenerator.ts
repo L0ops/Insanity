@@ -42,7 +42,7 @@ export default class WorldMapGenerator {
     mapBlocks.forEach((row, y) => {
       row.forEach((mapBlock, x) => {
         if (mapBlocks[y][x] !== 0) {
-          let kind = mapBlocks[y][x] - 1 === 6 ? 'checkPoint' : '';
+          let kind = mapBlocks[y][x] - 1 === 6 ? 'checkPoint' : mapBlocks[y][x] - 1 === 9 ? 'tree' : '';
           const block = new Block(`osef_${x}_${y}`, scene, manager, true, kind);
           block.cellIndex = mapBlocks[y][x] - 1;
           if (kind === 'checkPoint') {
@@ -50,9 +50,12 @@ export default class WorldMapGenerator {
             this._world.addBody(block.body);
           }
           block.body.position[0] = x;
-          block.body.position[1] = this._height - y;
+          block.body.position[1] = kind === 'tree' ? (this._height - y) - 0.1 : this._height - y;
           block.update();
-          if (this._world != null && _.inRange(block.cellIndex, 1, 4)) {
+          block.body.position[1] = kind === 'tree' ? block.body.position[1] - 0.2 :
+            kind === 'checkPoint' ? block.body.position[1] - 0.15 :
+            block.body.position[1];
+          if (this._world != null && _.inRange(block.cellIndex, 1, 4) || kind === 'tree') {
             this._world.addBody(block.body);
           }
           worldMap.addBlock(block);
