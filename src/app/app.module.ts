@@ -6,6 +6,8 @@ import {JsonReaderService} from './services/json-reader.service';
 import {HttpClientModule} from '@angular/common/http';
 import {HudService} from './services/hud.service';
 import {ParticleService} from './services/particles.service';
+import {SceneService} from './services/scene.service';
+import {MapService} from './services/map.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import {ParticleService} from './services/particles.service';
   providers: [
     JsonReaderService,
     HudService,
-    ParticleService
+    ParticleService,
+    SceneService,
+    MapService
   ],
   bootstrap: [AppComponent]
 })
