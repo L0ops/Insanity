@@ -30,7 +30,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   initMenuScene() {
-    const scene = this.menuService.createMenuScene(this.engine, this.canvas, this);
+    const scene = this.menuService.createMenuScene(this.engine, this.canvas, 1, this);
     this.engine.runRenderLoop(() => {
       scene.render();
     });
@@ -57,9 +57,9 @@ export class AppComponent implements AfterViewInit {
     this.canvas.style.marginLeft = '10%';
   }
 
-  launchGame(playerNumber: number): void {
+  launchGame({playerNumber, level}: {playerNumber: number, level: number}): void {
     this.playerNumber = playerNumber;
-    console.log(this.playerNumber);
+    console.log(playerNumber, level);
     this.initJson();
   }
 }
