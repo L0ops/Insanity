@@ -8,6 +8,7 @@ import {HudService} from './services/hud.service';
 import {ParticleService} from './services/particles.service';
 import {SceneService} from './services/scene.service';
 import {MapService} from './services/map.service';
+import {MenuService} from './services/menu.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {MapService} from './services/map.service';
     HudService,
     ParticleService,
     SceneService,
-    MapService
+    MapService,
+    MenuService
   ],
   bootstrap: [AppComponent]
 })

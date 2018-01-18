@@ -326,7 +326,6 @@ export class HudService {
     this.getTexture().addControl(this.cancelButton);
 
     this.createButtonObservable(this.cancelButton, (service: HudService) => {
-      console.log('cancel');
       this.startChrono();
       this.validateButton.dispose();
       this.cancelButton.dispose();
