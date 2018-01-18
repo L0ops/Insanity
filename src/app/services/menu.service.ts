@@ -18,13 +18,6 @@ export class MenuService {
   constructor() {
   }
 
-<<<<<<< HEAD
-  startMenu() {
-    this.component.initMenuScene();
-  }
-
-=======
->>>>>>> 15578af5c353d0da924c8e1b63335067d984250d
   createMenuScene(engine: BABYLON.Engine, canvas: HTMLElement, menuLevel: number, component: AppComponent = null): BABYLON.Scene {
     this.component = component;
 
