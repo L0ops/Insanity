@@ -21,10 +21,16 @@ export class HudService {
   private countDown: GUI.TextBlock;
   private gameOver: GUI.TextBlock;
   private retryGameButton: GUI.Button;
+  private validateButton: GUI.Button;
   private leaveGameButton: GUI.Button;
+  private cancelButton: GUI.Button;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
+
+  constructor() {
+
+  }
 
   setCanvas(canvas:HTMLCanvasElement) {
     this.canvas = canvas;
@@ -58,10 +64,21 @@ export class HudService {
     });
   }
 
+  LeaveButtonHud(): HudService {
+    const leftLeave = (this.canvas.width / 15);
+    const topLeave = this.canvas.height - (this.canvas.height / 10);
+    this.configButtonLeave(leftLeave, topLeave);
+    return this;
+  }
+
   gameOverHud(): void {
     this.configTextGameOver();
     this.configButtonRetry();
-    this.configButtonLeave();
+    const leftLeave = ((this.canvas.width / 2) - (this.canvas.width / 40));
+    const topLeave = ((this.canvas.height / 2) + (this.canvas.height / 70));
+    this.leaveGameButton.dispose();
+    this.getTexture().removeControl(this.leaveGameButton);
+    this.configButtonLeave(leftLeave, topLeave);
   }
 
   startChrono(): void {
@@ -88,8 +105,10 @@ export class HudService {
   }
 
   stopChrono(): void {
-    this.time += this.stopWatch.elapsed;
-    this.stopWatch.stop();
+    if (this.stopWatch && this.stopWatch.running) {
+      this.time += this.stopWatch.elapsed;
+      this.stopWatch.stop();
+    }
   }
 
   ticTac(): boolean {
@@ -130,7 +149,7 @@ export class HudService {
       } else if (time <= 0 || !Arbitre.getArbitreGame().gameState()) {
         clearInterval(interval);
         this.getTexture().removeControl(this.countDown);
-        this.configButtonMusic(true);
+        this.LeaveButtonHud().configButtonMusic(true);
         this.bgMusic.play();
       }
     }, 1000);
@@ -281,18 +300,54 @@ export class HudService {
     this.getTexture().addControl(this.gameOver);
   }
 
-  configButtonLeave(): void {
+  configButtonValidate(): void {
+    const configuration = new Map<string, string>();
+
+    configuration.set('path', '../assets/Sprites/Button/ValidateButton.png');
+    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 10)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
+
+    this.validateButton = HudService.CreateGuiImageButton(configuration);
+    this.getTexture().addControl(this.validateButton);
+
+    this.createButtonObservable(this.validateButton, (service: HudService) => {
+      console.log('validateButton');
+    });
+  }
+
+  configButtonCancel(): void {
+    const configuration = new Map<string, string>();
+
+    configuration.set('path', '../assets/Sprites/Button/CancelButton.png');
+    configuration.set('left_position', ''+((this.canvas.width / 2) + (this.canvas.width / 10)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
+
+    this.cancelButton = HudService.CreateGuiImageButton(configuration);
+    this.getTexture().addControl(this.cancelButton);
+
+    this.createButtonObservable(this.cancelButton, (service: HudService) => {
+      console.log('cancel');
+      this.startChrono();
+      this.validateButton.dispose();
+      this.cancelButton.dispose();
+    });
+  }
+
+  configButtonLeave(left: number, top: number): void {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/LeaveGame.png');
-    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 40)));
-    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 70)));
+    configuration.set('left_position', ''+left);
+    configuration.set('top_position', ''+top);
 
     this.leaveGameButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.leaveGameButton);
 
     this.createButtonObservable(this.leaveGameButton, (service: HudService) => {
       console.log('leave');
+      this.stopChrono();
+      this.configButtonValidate();
+      this.configButtonCancel();
     });
   }
 
@@ -311,6 +366,7 @@ export class HudService {
     this.createButtonObservable(this.retryGameButton, (service: HudService) => {
       Arbitre.getArbitreGame().restartGame();
       service.disposeGameOverHud();
+      service.LeaveButtonHud();
     });
   }
 
