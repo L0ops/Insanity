@@ -51,6 +51,23 @@ export default class Player extends Block {
     this.pingManager = pingManager;
   }
 
+  public clear(): void {
+    this.keybind.clear();
+    delete this.keybind;
+    delete this.grounded;
+    delete this.live;
+    delete this.key;
+    delete this.death;
+    this.lvlComplete = false;
+    delete this.scene;
+    delete this.ping;
+    delete this.animationList;
+    this.movements = new Array<Movement>();
+    delete this.hudKeys;
+    delete this.hudDashCd;
+    delete this.pingManager;
+  }
+
   public getPing(): Ping {
     return this.ping;
   }

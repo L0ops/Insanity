@@ -7,6 +7,7 @@ import Block from './Block';
 
 class ArbitreGame {
   private static instance: ArbitreGame;
+  private id: number;
   private overGame : boolean;
   private maxRepop: number;
   private checkPoints = new Array<Block>();
@@ -20,6 +21,31 @@ class ArbitreGame {
     this.maxRepop = 1;
     this.countWinPlayer = 0;
     this.timerKeys = 10000;
+  }
+
+  public setInstanceId(id: number): void {
+    this.id = id;
+    KeyGenerator.getInstance().setInstanceId(id);
+  }
+
+  public clear(): void {
+    delete this.id;
+    KeyGenerator.getInstance().clear();
+    delete this.overGame;
+    delete this.maxRepop;
+    delete this.checkPoints;
+    delete this.lastCheckTouch;
+    delete this.tpEndLvl;
+    delete this.countWinPlayer;
+    delete this.winLvl;
+    delete this.timerKeys;
+    ArbitreGame.deleteInstance();
+  }
+
+  static deleteInstance(): void {
+    if (ArbitreGame.instance) {
+      delete this.instance;
+    }
   }
 
   static getInstance(): ArbitreGame {
@@ -190,13 +216,13 @@ class ArbitreGame {
 
 class ArbitrePlayer {
   private static instance: ArbitrePlayer;
+  private id: number;
   private players: Player[];
   private animationsPlayers;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private spriteManagerPing: BABYLON.SpriteManager;
   private dasher: number;
   private touched: number;
-
   constructor() {
     this.players = [];
     this.dasher = 0;
@@ -208,6 +234,34 @@ class ArbitrePlayer {
       this.instance = new ArbitrePlayer();
     }
     return ArbitrePlayer.instance;
+  }
+
+  public setInstanceId(id: number): void {
+      this.id = id;
+  }
+
+  public clear() {
+    this.clearPlayers();
+    delete this.animationsPlayers;
+    delete this.spriteManagerPlayer;
+    delete this.spriteManagerPing;
+    delete this.dasher;
+    delete this.touched;
+    ArbitrePlayer.deleteInstance();
+  }
+
+  private clearPlayers(): void {
+    this.players.forEach(player => {
+      player.clear();
+    })
+    this.players = [];
+  }
+
+
+  static deleteInstance() {
+    if (ArbitrePlayer.instance) {
+      delete this.instance;
+    }
   }
 
   public setAnimationPlayers(animationList) {
@@ -277,9 +331,23 @@ class ArbitrePlayer {
 
 export default class Arbitre {
   private static instance: Arbitre;
+  private id: number;
   private world: p2.World;
   private scene: BABYLON.Scene;
+
   private constructor() {
+  }
+
+  clear() {
+    delete this.world;
+    delete this.scene;
+    Arbitre.deleteInstance();
+  }
+
+  public setInstanceId(id: number): void {
+    this.id = id;
+    ArbitreGame.getInstance().setInstanceId(id);
+    ArbitrePlayer.getInstance().setInstanceId(id);
   }
 
   static getArbitrePlayer(): ArbitrePlayer {
@@ -295,6 +363,12 @@ export default class Arbitre {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
+  }
+
+  static deleteInstance(): void {
+    if (this.instance) {
+      delete this.instance;
+    }
   }
 
   public getWorld(): p2.World {

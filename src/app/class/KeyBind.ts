@@ -21,6 +21,14 @@ export default class KeyBind {
     this.setBinds(key);
   }
 
+  public clear(): void {
+    delete this.player;
+    delete this.key;
+    delete this.releaseLeft;
+    delete this.releaseRight;
+    delete this.unbind;
+  }
+
   public setBinds(key: Key): void {
     this.key = key;
     this.bindMoveRight(key.right);

@@ -7,9 +7,29 @@ export default class KeyGenerator {
   public players: Player[];
   private hudService: HudService;
   private static instance: KeyGenerator;
+  private id: number;
   private firstLaunch: boolean = true;
 
   private constructor() {
+  }
+
+  public setInstanceId(id: number): void {
+    this.id = id;
+  }
+
+  clear(): void {
+    this.clean();
+    delete this.keys;
+    delete this.players;
+    delete this.hudService;
+    this.firstLaunch = true;
+    KeyGenerator.deleteInstance();
+  }
+
+  static deleteInstance(): void {
+    if (KeyGenerator.instance) {
+      delete this.instance;
+    }
   }
 
   static getInstance(): KeyGenerator {
@@ -35,6 +55,10 @@ export default class KeyGenerator {
   public addPlayers(players:Player[]): KeyGenerator {
     this.players = players;
     return this;
+  }
+
+  public getPlayers(): Player[] {
+    return this.players;
   }
 
   public getRandomInt(min:number, max:number): number {

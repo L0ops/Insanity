@@ -18,6 +18,11 @@ export class MenuService {
   constructor() {
   }
 
+  startMenu() {
+    this.component.clearGame();
+    this.component.initMenuScene();
+  }
+
   createMenuScene(engine: BABYLON.Engine, canvas: HTMLElement, menuLevel: number, component: AppComponent = null): BABYLON.Scene {
     this.component = component;
 
@@ -51,11 +56,19 @@ export class MenuService {
     this.disposePanel();
   }
 
+  disposeSecondMenu() {
+    this.levels.dispose();
+    this.button.dispose();
+    delete this.button;
+    delete this.levels;
+  }
+
   showSecondMenu(): void {
     this.disposeFirstMenu();
     this.addLevels();
     this.addButton(this.levels);
     this.button.onPointerDownObservable.add(() => {
+      this.disposeSecondMenu();
       const playerNumber = this.count;
       const level = this.selectedLevel;
       this.component.launchGame({playerNumber, level});

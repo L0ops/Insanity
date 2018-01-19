@@ -16,12 +16,21 @@ const COUNTDOWN_TIME = 6000;
 
 @Injectable()
 export class SceneService {
+  private _instanceId: number;
 
   constructor(private hudService: HudService,
               private particleService: ParticleService) {
+    this._instanceId = 0;
+  }
+
+  clear(): void {
+    Arbitre.getArbitrePlayer().clear();
+    Arbitre.getArbitreGame().clear();
+    Arbitre.getInstance().clear();
   }
 
   createGameScene(engine: Engine, canvas: HTMLCanvasElement, conf, map): BABYLON.Scene {
+    this._instanceId++;
     const scene = new BABYLON.Scene(engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan(conf.background);
@@ -50,6 +59,7 @@ export class SceneService {
     const tpEndLvl = new BABYLON.Vector2(conf.tpEndLvl[0], conf.tpEndLvl[1]);
 
     Arbitre.getArbitreGame().newGame();
+    Arbitre.getInstance().setInstanceId(this._instanceId);
     Arbitre.getArbitreGame().setService(this.hudService);
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene);
