@@ -174,8 +174,9 @@ export class SceneService {
   }
 
   setCollision(world: p2.World, players: Player[], checkPoints: Block[]): void {
+    console.log(world, players, checkPoints);
     world.on('beginContact', (evt) => {
-      if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
+      if (players[evt.bodyA.id] && players[evt.bodyB.id]) {
         MapService.collisionDash(evt, players);
       }
       if (checkPoints.find(Arbitre.getArbitreGame().collisionCheckpoint, evt.bodyB) ||

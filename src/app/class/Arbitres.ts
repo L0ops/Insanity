@@ -239,7 +239,7 @@ class ArbitreGame {
 class ArbitrePlayer {
   private static instance: ArbitrePlayer;
   private id: number;
-  private players: Player[];
+  private players: Array<Player> = new Array<Player>();
   private animationsPlayers;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private spriteManagerPing: BABYLON.SpriteManager;
@@ -247,7 +247,6 @@ class ArbitrePlayer {
   private touched: number;
 
   constructor() {
-    this.players = [];
     this.dasher = 0;
     this.touched = 0;
   }
@@ -277,7 +276,7 @@ class ArbitrePlayer {
     this.players.forEach(player => {
       player.clear();
     })
-    this.players = [];
+    this.players = new Array<Player>();
   }
 
 
@@ -309,7 +308,7 @@ class ArbitrePlayer {
     player.body.position = [position, 1, 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
-    this.players.push(player);
+    this.players[player.body.id] = player;
     player.update();
   }
 
@@ -320,7 +319,7 @@ class ArbitrePlayer {
   public getFirstPlayer(): Player {
     let firstPlayer;
     for (let player of this.players) {
-      if (player.isAlive() && !player.hasFinishedLvl()) {
+      if (player && player.isAlive() && !player.hasFinishedLvl()) {
         firstPlayer = player;
         break;
       }

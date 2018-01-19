@@ -12,8 +12,8 @@ export class MapService {
   }
 
   static collisionEndGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]): void {
-    const player1 = bodyA.mass === 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
-    const player2 = (player1.body && player1.body.id === bodyB.id) ? null : players[bodyB.id - 1];
+    const player1 = bodyA.mass === 1 ? players[bodyA.id] : players[bodyB.id];
+    const player2 = (player1.body && player1.body.id === bodyB.id) ? null : players[bodyB.id];
     if (player1 && !player2) {
       player1.grounded = false;
     } else if (player1 && player2) {
@@ -59,8 +59,8 @@ export class MapService {
   static collisionDash(evt: p2.EventEmitter, players: Player[]) {
     let dasher: number;
     let touched: number;
-    const idA = evt.bodyA.id - 1;
-    const idB = evt.bodyB.id - 1;
+    const idA = evt.bodyA.id;
+    const idB = evt.bodyB.id;
     if (players[idA].movements['dash'].doSomething || players[idB].movements['dash'].doSomething) {
       dasher = players[idA].movements['dash'].doSomething ? idA : idB;
       touched = players[idA].movements['dash'].doSomething ? idB : idA;
@@ -78,8 +78,8 @@ export class MapService {
   }
 
   static preSolveGround(bodyA: p2.Body, bodyB: p2.Body, players: Player[]): void {
-    const player1 = bodyA.mass === 1 ? players[bodyA.id - 1] : players[bodyB.id - 1];
-    const player2 = (player1.body && player1.body.id === bodyB.id) ? null : players[bodyB.id - 1];
+    const player1 = bodyA.mass === 1 ? players[bodyA.id] : players[bodyB.id];
+    const player2 = (player1.body && player1.body.id === bodyB.id) ? null : players[bodyB.id];
     if (player1 && !player2) {
       if (!player1.grounded) {
         player1.grounded = true;
