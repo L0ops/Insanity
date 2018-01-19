@@ -104,10 +104,12 @@ class ArbitreGame {
   }
 
   public restartGame(): void {
-    ArbitrePlayer.getInstance().getPlayers().forEach((player, i) => {
+    let i = 0;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
       player.body.position = [i, 1, 0];
       player.body.velocity = [0, 0, 0];
       player.revive();
+      i++;
     });
     this.newGame();
   }

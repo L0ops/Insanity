@@ -68,7 +68,11 @@ export class SceneService {
     Arbitre.getInstance().setWorld(world);
     Arbitre.getArbitreGame().setTpEndLvl(tpEndLvl);
     Arbitre.getArbitreGame().setMaxRepop(conf.maxRepop);
-    playersName.forEach((pn, i) => Arbitre.getArbitrePlayer().createPlayer(pn, i));
+    let i = 0;
+    playersName.forEach(pn => {
+      Arbitre.getArbitrePlayer().createPlayer(pn, i);
+      i++;
+    });
     this.hudService.setCanvas(canvas);
     this.hudService.setBgMusic(bgMusic);
     this.hudService.playersHud();
@@ -174,7 +178,6 @@ export class SceneService {
   }
 
   setCollision(world: p2.World, players: Player[], checkPoints: Block[]): void {
-    console.log(world, players, checkPoints);
     world.on('beginContact', (evt) => {
       if (players[evt.bodyA.id] && players[evt.bodyB.id]) {
         MapService.collisionDash(evt, players);

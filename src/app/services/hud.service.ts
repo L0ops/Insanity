@@ -329,7 +329,6 @@ export class HudService {
     this.getTexture().addControl(this.validateButton);
 
     this.createButtonObservable(this.validateButton, (service: HudService) => {
-      console.log('validateButton');
       this.disposeHud();
       this.clearData();
       this.menuService.startMenu();
@@ -362,6 +361,11 @@ export class HudService {
     this.getTexture().addControl(this.cancelButton);
 
     this.createButtonObservable(this.cancelButton, (service: HudService) => {
+      if (Arbitre.getArbitreGame().gameState()) {
+        this.gameOverHud();
+      } else {
+        this.LeaveButtonHud();
+      }
       if (this.time > 0) {
         this.startChrono();
       }
@@ -381,8 +385,13 @@ export class HudService {
     this.getTexture().addControl(this.leaveGameButton);
 
     this.createButtonObservable(this.leaveGameButton, (service: HudService) => {
-      console.log('leave');
       Arbitre.getArbitreGame().pause();
+      if (Arbitre.getArbitreGame().gameState()) {
+        this.disposeGameOverHud();
+      } else {
+        this.leaveGameButton.dispose();
+        this.getTexture().removeControl(this.leaveGameButton);
+      }
       this.stopChrono();
       this.configButtonValidate();
       this.configButtonCancel();
