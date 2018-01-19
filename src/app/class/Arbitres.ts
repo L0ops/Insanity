@@ -132,9 +132,12 @@ class ArbitreGame {
 
   public regenerate(): void {
     setTimeout(() => {
-      this.getKeyGenerator().clean();
-      this.getKeyGenerator().generate();
-      // this.regenerate();
+      if (this.id && this.getKeyGenerator().getPlayers()) {
+        console.log(ArbitrePlayer.getInstance().getPlayers());
+        this.getKeyGenerator().clean();
+        this.getKeyGenerator().generate();
+        // this.regenerate();
+      }
     }, this.timerKeys);
   }
 

@@ -89,7 +89,8 @@ export default class KeyGenerator {
 
   public clean(): void {
     this.players.forEach(player => {
-      if (player.keybind.key.used) {
+      if (player.keybind && player.keybind.key &&
+        player.keybind.key.used) {
         player.keybind.resetBinds();
       }
     });
