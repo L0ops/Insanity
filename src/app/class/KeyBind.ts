@@ -45,25 +45,27 @@ export default class KeyBind {
     let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
-      if (keys) { keys.rightKey.pressed(); }
-      if (!this.unbind) {
-        this.releaseRight = false;
-        let date = + new Date();
-        if (!jump.doSomething) {
-          delete dash.lastMoveL;
-        }
-        if (this.player.isAlive()) {
-          if (!run.doRight && !dash.doSomething) {
-            if (!run.doLeft && !jump.doLeft) {
-              if (date - dash.lastMoveR < 300) {
-                dash.dash(Side.RIGHT);
+      if (this.player.canMove()) {
+        if (keys) { keys.rightKey.pressed(); }
+        if (!this.unbind) {
+          this.releaseRight = false;
+          let date = + new Date();
+          if (!jump.doSomething) {
+            delete dash.lastMoveL;
+          }
+          if (this.player.isAlive()) {
+            if (!run.doRight && !dash.doSomething) {
+              if (!run.doLeft && !jump.doLeft) {
+                if (date - dash.lastMoveR < 300) {
+                  dash.dash(Side.RIGHT);
+                } else if (!jump.doSomething) {
+                  run.run(Side.RIGHT,date);
+                } else {
+                  dash.lastMoveR = date;
+                }
               } else if (!jump.doSomething) {
-                run.run(Side.RIGHT,date);
-              } else {
-                dash.lastMoveR = date;
+                jump.jump(Side.LEFT);
               }
-            } else if (!jump.doSomething) {
-              jump.jump(Side.LEFT);
             }
           }
         }
@@ -98,25 +100,27 @@ export default class KeyBind {
     let keys = this.player.hudKeys;
 
     mousetrap.bind(value, () => {
-      if (keys) { keys.leftKey.pressed(); }
-      if (!this.unbind) {
-        this.releaseLeft = false;
-        let date = + new Date();
-        if (!jump.doSomething) {
-          delete dash.lastMoveR;
-        }
-        if (this.player.isAlive()) {
-          if (!run.doLeft && !dash.doSomething) {
-            if (!run.doRight && !jump.doRight) {
-              if (date - dash.lastMoveL < 300 ) {
-                dash.dash(Side.LEFT);
+      if (this.player.canMove()) {
+        if (keys) { keys.leftKey.pressed(); }
+        if (!this.unbind) {
+          this.releaseLeft = false;
+          let date = + new Date();
+          if (!jump.doSomething) {
+            delete dash.lastMoveR;
+          }
+          if (this.player.isAlive()) {
+            if (!run.doLeft && !dash.doSomething) {
+              if (!run.doRight && !jump.doRight) {
+                if (date - dash.lastMoveL < 300 ) {
+                  dash.dash(Side.LEFT);
+                } else if (!jump.doSomething) {
+                  run.run(Side.LEFT,date);
+                } else {
+                  dash.lastMoveL = date;
+                }
               } else if (!jump.doSomething) {
-                run.run(Side.LEFT,date);
-              } else {
-                dash.lastMoveL = date;
+                jump.jump(Side.RIGHT);
               }
-            } else if (!jump.doSomething) {
-              jump.jump(Side.RIGHT);
             }
           }
         }

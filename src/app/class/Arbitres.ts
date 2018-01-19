@@ -16,6 +16,7 @@ class ArbitreGame {
   private countWinPlayer: number;
   private winLvl: boolean;
   private timerKeys: number;
+  private resumeGame: boolean;
 
   private constructor() {
     this.maxRepop = 1;
@@ -53,6 +54,24 @@ class ArbitreGame {
       this.instance = new ArbitreGame();
     }
     return ArbitreGame.instance;
+  }
+
+  public pause(): void {
+    this.resumeGame = false;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
+      player.pause();
+    });
+  }
+
+  public play(): void {
+    this.resumeGame = true;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
+      player.start();
+    });
+  }
+
+  public isResume(): boolean {
+    return this.resumeGame;
   }
 
   public setMaxRepop(maxRepop: number): void {
@@ -226,6 +245,7 @@ class ArbitrePlayer {
   private spriteManagerPing: BABYLON.SpriteManager;
   private dasher: number;
   private touched: number;
+
   constructor() {
     this.players = [];
     this.dasher = 0;

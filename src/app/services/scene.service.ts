@@ -93,6 +93,7 @@ export class SceneService {
         .addPlayersToGenerate()
         .generateKeys()
         .regenerate();
+        Arbitre.getArbitreGame().play();
       scene.registerBeforeRender(() => {
         this.gameRenderLoop(gameLoopObject);
       });
@@ -102,7 +103,8 @@ export class SceneService {
 
   gameRenderLoop({world, freeCamera, firstPosCamera, camBoundary, players, scene}) {
     world.step(1 / 60);
-    if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl()) {
+    if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl() &&
+    Arbitre.getArbitreGame().isResume()) {
       const firstPlayer = Arbitre.getArbitrePlayer().getFirstPlayer();
       if (firstPlayer && !Arbitre.getArbitreGame().isWinLvl()) {
         freeCamera.position.x = firstPlayer.position.x;

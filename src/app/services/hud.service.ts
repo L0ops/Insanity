@@ -382,6 +382,7 @@ export class HudService {
 
     this.createButtonObservable(this.leaveGameButton, (service: HudService) => {
       console.log('leave');
+      Arbitre.getArbitreGame().pause();
       this.stopChrono();
       this.configButtonValidate();
       this.configButtonCancel();
