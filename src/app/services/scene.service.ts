@@ -43,9 +43,9 @@ export class SceneService {
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
-    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 2, -17), scene);
+    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(3, 2, -17), scene);
     const camBoundary = new BABYLON.Vector2(14.5, 8);
-    const firstPosCamera = freeCamera.position.y;
+    const firstPosCamera = new BABYLON.Vector2(freeCamera.position.x, freeCamera.position.y);
     this.controlCamera(freeCamera);
 
     const keys = [];
@@ -76,7 +76,6 @@ export class SceneService {
     this.hudService.setCanvas(canvas);
     this.hudService.setBgMusic(bgMusic);
     this.hudService.playersHud();
-    freeCamera.position.x = Arbitre.getArbitrePlayer().getFirstPlayer().position.x;
     const players = Arbitre.getArbitrePlayer().getPlayers();
     MapService.createGround(world, players, scene, map);
 
@@ -111,8 +110,9 @@ export class SceneService {
     Arbitre.getArbitreGame().isResume()) {
       const firstPlayer = Arbitre.getArbitrePlayer().getFirstPlayer();
       if (firstPlayer && !Arbitre.getArbitreGame().isWinLvl()) {
-        freeCamera.position.x = firstPlayer.position.x;
-        if (firstPlayer.position.y > firstPosCamera) {
+        if (firstPlayer.position.x > firstPosCamera.x) {
+          freeCamera.position.x = firstPlayer.position.x;
+        } if (firstPlayer.position.y > firstPosCamera.y) {
           freeCamera.position.y = firstPlayer.position.y;
         }
         // TODO: Maybe this code would be put in Arbiter class

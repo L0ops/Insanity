@@ -154,7 +154,6 @@ class ArbitreGame {
   public regenerate(): void {
     setTimeout(() => {
       if (this.id && this.getKeyGenerator().getPlayers()) {
-        console.log(ArbitrePlayer.getInstance().getPlayers());
         this.getKeyGenerator().clean();
         this.getKeyGenerator().generate();
         // this.regenerate();
@@ -307,7 +306,7 @@ class ArbitrePlayer {
     // player.body.position = [286 + position, -2, 0];
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
-    player.body.position = [position, 1, 0];
+    player.body.position = [position - 11, 1, 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
