@@ -17,6 +17,7 @@ class ArbitreGame {
   private winLvl: boolean;
   private timerKeys: number;
   private resumeGame: boolean;
+  private camera: BABYLON.FreeCamera;
 
   private constructor() {
     this.maxRepop = 1;
@@ -103,14 +104,19 @@ class ArbitreGame {
     return this.winLvl;
   }
 
+  public setCamera(camera: BABYLON.FreeCamera): void {
+    this.camera = camera;
+  }
+
   public restartGame(): void {
     let i = 0;
     ArbitrePlayer.getInstance().getPlayers().forEach(player => {
-      player.body.position = [i, 1, 0];
+      player.body.position = [i - 11, 1, 0];
       player.body.velocity = [0, 0, 0];
       player.revive();
       i++;
     });
+    this.camera.position = new BABYLON.Vector3(3, 2, -17);
     this.newGame();
   }
 

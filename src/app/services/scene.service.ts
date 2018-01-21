@@ -59,6 +59,7 @@ export class SceneService {
     const tpEndLvl = new BABYLON.Vector2(conf.tpEndLvl[0], conf.tpEndLvl[1]);
 
     Arbitre.getArbitreGame().newGame();
+    Arbitre.getArbitreGame().setCamera(freeCamera);
     Arbitre.getInstance().setInstanceId(this._instanceId);
     Arbitre.getArbitreGame().setService(this.hudService);
     const playersName = ['player1', 'player2', 'player3', 'player4'];
