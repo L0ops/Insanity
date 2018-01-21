@@ -16,12 +16,21 @@ const COUNTDOWN_TIME = 6000;
 
 @Injectable()
 export class SceneService {
+  private _instanceId: number;
 
   constructor(private hudService: HudService,
               private particleService: ParticleService) {
+    this._instanceId = 0;
+  }
+
+  clear(): void {
+    Arbitre.getArbitrePlayer().clear();
+    Arbitre.getArbitreGame().clear();
+    Arbitre.getInstance().clear();
   }
 
   createGameScene(engine: Engine, canvas: HTMLCanvasElement, conf, map): BABYLON.Scene {
+    this._instanceId++;
     const scene = new BABYLON.Scene(engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
     Environment.getInstance().setScene(scene).createBackgroundPlan(conf.background);
@@ -34,9 +43,9 @@ export class SceneService {
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
-    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(0, 2, -17), scene);
+    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(3, 2, -17), scene);
     const camBoundary = new BABYLON.Vector2(14.5, 8);
-    const firstPosCamera = freeCamera.position.y;
+    const firstPosCamera = new BABYLON.Vector2(freeCamera.position.x, freeCamera.position.y);
     this.controlCamera(freeCamera);
 
     const keys = [];
@@ -50,6 +59,8 @@ export class SceneService {
     const tpEndLvl = new BABYLON.Vector2(conf.tpEndLvl[0], conf.tpEndLvl[1]);
 
     Arbitre.getArbitreGame().newGame();
+    Arbitre.getArbitreGame().setCamera(freeCamera);
+    Arbitre.getInstance().setInstanceId(this._instanceId);
     Arbitre.getArbitreGame().setService(this.hudService);
     const playersName = ['player1', 'player2', 'player3', 'player4'];
     Arbitre.getInstance().setScene(scene);
@@ -58,11 +69,14 @@ export class SceneService {
     Arbitre.getInstance().setWorld(world);
     Arbitre.getArbitreGame().setTpEndLvl(tpEndLvl);
     Arbitre.getArbitreGame().setMaxRepop(conf.maxRepop);
-    playersName.forEach((pn, i) => Arbitre.getArbitrePlayer().createPlayer(pn, i));
+    let i = 0;
+    playersName.forEach(pn => {
+      Arbitre.getArbitrePlayer().createPlayer(pn, i);
+      i++;
+    });
     this.hudService.setCanvas(canvas);
     this.hudService.setBgMusic(bgMusic);
     this.hudService.playersHud();
-    freeCamera.position.x = Arbitre.getArbitrePlayer().getFirstPlayer().position.x;
     const players = Arbitre.getArbitrePlayer().getPlayers();
     MapService.createGround(world, players, scene, map);
 
@@ -83,6 +97,7 @@ export class SceneService {
         .addPlayersToGenerate()
         .generateKeys()
         .regenerate();
+        Arbitre.getArbitreGame().play();
       scene.registerBeforeRender(() => {
         this.gameRenderLoop(gameLoopObject);
       });
@@ -92,11 +107,13 @@ export class SceneService {
 
   gameRenderLoop({world, freeCamera, firstPosCamera, camBoundary, players, scene}) {
     world.step(1 / 60);
-    if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl()) {
+    if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl() &&
+    Arbitre.getArbitreGame().isResume()) {
       const firstPlayer = Arbitre.getArbitrePlayer().getFirstPlayer();
       if (firstPlayer && !Arbitre.getArbitreGame().isWinLvl()) {
-        freeCamera.position.x = firstPlayer.position.x;
-        if (firstPlayer.position.y > firstPosCamera) {
+        if (firstPlayer.position.x > firstPosCamera.x) {
+          freeCamera.position.x = firstPlayer.position.x;
+        } if (firstPlayer.position.y > firstPosCamera.y) {
           freeCamera.position.y = firstPlayer.position.y;
         }
         // TODO: Maybe this code would be put in Arbiter class
@@ -163,7 +180,7 @@ export class SceneService {
 
   setCollision(world: p2.World, players: Player[], checkPoints: Block[]): void {
     world.on('beginContact', (evt) => {
-      if (players[evt.bodyA.id - 1] && players[evt.bodyB.id - 1]) {
+      if (players[evt.bodyA.id] && players[evt.bodyB.id]) {
         MapService.collisionDash(evt, players);
       }
       if (checkPoints.find(Arbitre.getArbitreGame().collisionCheckpoint, evt.bodyB) ||
@@ -174,11 +191,15 @@ export class SceneService {
 
     world.on('preSolve', (evt) => {
       evt.contactEquations.forEach(contact => {
-        MapService.preSolveGround(contact.bodyA, contact.bodyB, players);
+        if (players[contact.bodyA.id] || players[contact.bodyB.id]) {
+          MapService.preSolveGround(contact.bodyA, contact.bodyB, players);
+        }
       });
     });
     world.on('endContact', (evt) => {
-      MapService.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      if (players[evt.bodyA.id] || players[evt.bodyB.id]) {
+        MapService.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      }
     });
   }
 }

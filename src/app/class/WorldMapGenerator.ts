@@ -49,7 +49,7 @@ export default class WorldMapGenerator {
             Arbitre.getArbitreGame().addCheckpointBlock(block);
             this._world.addBody(block.body);
           }
-          block.body.position[0] = x;
+          block.body.position[0] = x - 11;
           block.body.position[1] = kind === 'tree' ? (this._height - y) - 0.1 : this._height - y;
           block.update();
           block.body.position[1] = kind === 'tree' ? block.body.position[1] - 0.2 :

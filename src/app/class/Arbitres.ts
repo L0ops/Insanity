@@ -7,6 +7,7 @@ import Block from './Block';
 
 class ArbitreGame {
   private static instance: ArbitreGame;
+  private id: number;
   private overGame : boolean;
   private maxRepop: number;
   private checkPoints = new Array<Block>();
@@ -15,6 +16,8 @@ class ArbitreGame {
   private countWinPlayer: number;
   private winLvl: boolean;
   private timerKeys: number;
+  private resumeGame: boolean;
+  private camera: BABYLON.FreeCamera;
 
   private constructor() {
     this.maxRepop = 1;
@@ -22,11 +25,54 @@ class ArbitreGame {
     this.timerKeys = 10000;
   }
 
+  public setInstanceId(id: number): void {
+    this.id = id;
+    KeyGenerator.getInstance().setInstanceId(id);
+  }
+
+  public clear(): void {
+    delete this.id;
+    KeyGenerator.getInstance().clear();
+    delete this.overGame;
+    delete this.maxRepop;
+    delete this.checkPoints;
+    delete this.lastCheckTouch;
+    delete this.tpEndLvl;
+    delete this.countWinPlayer;
+    delete this.winLvl;
+    delete this.timerKeys;
+    ArbitreGame.deleteInstance();
+  }
+
+  static deleteInstance(): void {
+    if (ArbitreGame.instance) {
+      delete this.instance;
+    }
+  }
+
   static getInstance(): ArbitreGame {
     if (!ArbitreGame.instance) {
       this.instance = new ArbitreGame();
     }
     return ArbitreGame.instance;
+  }
+
+  public pause(): void {
+    this.resumeGame = false;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
+      player.pause();
+    });
+  }
+
+  public play(): void {
+    this.resumeGame = true;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
+      player.start();
+    });
+  }
+
+  public isResume(): boolean {
+    return this.resumeGame;
   }
 
   public setMaxRepop(maxRepop: number): void {
@@ -58,12 +104,19 @@ class ArbitreGame {
     return this.winLvl;
   }
 
+  public setCamera(camera: BABYLON.FreeCamera): void {
+    this.camera = camera;
+  }
+
   public restartGame(): void {
-    ArbitrePlayer.getInstance().getPlayers().forEach((player, i) => {
-      player.body.position = [i, 1, 0];
+    let i = 0;
+    ArbitrePlayer.getInstance().getPlayers().forEach(player => {
+      player.body.position = [i - 11, 1, 0];
       player.body.velocity = [0, 0, 0];
       player.revive();
+      i++;
     });
+    this.camera.position = new BABYLON.Vector3(3, 2, -17);
     this.newGame();
   }
 
@@ -106,9 +159,11 @@ class ArbitreGame {
 
   public regenerate(): void {
     setTimeout(() => {
-      this.getKeyGenerator().clean();
-      this.getKeyGenerator().generate();
-      // this.regenerate();
+      if (this.id && this.getKeyGenerator().getPlayers()) {
+        this.getKeyGenerator().clean();
+        this.getKeyGenerator().generate();
+        // this.regenerate();
+      }
     }, this.timerKeys);
   }
 
@@ -190,7 +245,8 @@ class ArbitreGame {
 
 class ArbitrePlayer {
   private static instance: ArbitrePlayer;
-  private players: Player[];
+  private id: number;
+  private players: Array<Player> = new Array<Player>();
   private animationsPlayers;
   private spriteManagerPlayer: BABYLON.SpriteManager;
   private spriteManagerPing: BABYLON.SpriteManager;
@@ -198,7 +254,6 @@ class ArbitrePlayer {
   private touched: number;
 
   constructor() {
-    this.players = [];
     this.dasher = 0;
     this.touched = 0;
   }
@@ -208,6 +263,34 @@ class ArbitrePlayer {
       this.instance = new ArbitrePlayer();
     }
     return ArbitrePlayer.instance;
+  }
+
+  public setInstanceId(id: number): void {
+      this.id = id;
+  }
+
+  public clear() {
+    this.clearPlayers();
+    delete this.animationsPlayers;
+    delete this.spriteManagerPlayer;
+    delete this.spriteManagerPing;
+    delete this.dasher;
+    delete this.touched;
+    ArbitrePlayer.deleteInstance();
+  }
+
+  private clearPlayers(): void {
+    this.players.forEach(player => {
+      player.clear();
+    })
+    this.players = new Array<Player>();
+  }
+
+
+  static deleteInstance() {
+    if (ArbitrePlayer.instance) {
+      delete this.instance;
+    }
   }
 
   public setAnimationPlayers(animationList) {
@@ -229,10 +312,10 @@ class ArbitrePlayer {
     // player.body.position = [286 + position, -2, 0];
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
-    player.body.position = [position, 1, 0];
+    player.body.position = [position - 11, 1, 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
-    this.players.push(player);
+    this.players[player.body.id] = player;
     player.update();
   }
 
@@ -243,7 +326,7 @@ class ArbitrePlayer {
   public getFirstPlayer(): Player {
     let firstPlayer;
     for (let player of this.players) {
-      if (player.isAlive() && !player.hasFinishedLvl()) {
+      if (player && player.isAlive() && !player.hasFinishedLvl()) {
         firstPlayer = player;
         break;
       }
@@ -277,9 +360,23 @@ class ArbitrePlayer {
 
 export default class Arbitre {
   private static instance: Arbitre;
+  private id: number;
   private world: p2.World;
   private scene: BABYLON.Scene;
+
   private constructor() {
+  }
+
+  clear() {
+    delete this.world;
+    delete this.scene;
+    Arbitre.deleteInstance();
+  }
+
+  public setInstanceId(id: number): void {
+    this.id = id;
+    ArbitreGame.getInstance().setInstanceId(id);
+    ArbitrePlayer.getInstance().setInstanceId(id);
   }
 
   static getArbitrePlayer(): ArbitrePlayer {
@@ -295,6 +392,12 @@ export default class Arbitre {
       Arbitre.instance = new Arbitre();
     }
     return Arbitre.instance;
+  }
+
+  static deleteInstance(): void {
+    if (this.instance) {
+      delete this.instance;
+    }
   }
 
   public getWorld(): p2.World {

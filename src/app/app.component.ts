@@ -30,6 +30,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   initMenuScene() {
+    this.engine.stopRenderLoop();
     const scene = this.menuService.createMenuScene(this.engine, this.canvas, 1, this);
     this.engine.runRenderLoop(() => {
       scene.render();
@@ -44,10 +45,15 @@ export class AppComponent implements AfterViewInit {
 
   initGame(): void {
     console.log('initGame');
+    this.engine.stopRenderLoop();
     const scene = this.sceneService.createGameScene(this.engine, this.canvas, this.conf, this.map);
     this.engine.runRenderLoop(function () {
       scene.render();
     });
+  }
+
+  clearGame(): void {
+    this.sceneService.clear();
   }
 
   initCanvas() {

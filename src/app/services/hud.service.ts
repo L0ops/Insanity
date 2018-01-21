@@ -6,6 +6,7 @@ import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
 import Stopwatch from 'agstopwatch';
 import Player from '../class/Player';
 import {InsanityGUI} from '../class/InsanityGUI';
+import {MenuService} from './menu.service';
 
 @Injectable()
 export class HudService {
@@ -21,10 +22,33 @@ export class HudService {
   private countDown: GUI.TextBlock;
   private gameOver: GUI.TextBlock;
   private retryGameButton: GUI.Button;
+  private validateButton: GUI.Button;
   private leaveGameButton: GUI.Button;
+  private cancelButton: GUI.Button;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
+
+  constructor(private menuService: MenuService) {
+
+  }
+
+  clearData(): void {
+    this.heads = new Map<string, GUI.Image>();
+    this.keys = new Map<string, InsanityGUI.KeyPair>();
+    this.scores = new Map<string, GUI.TextBlock>();
+    this.cd = new Map<string, InsanityGUI.CountDown>();
+    this.ranking = new Map<string, GUI.TextBlock>();
+    delete this.advancedTexture;
+    this.chrono = null;
+    this.stopWatch = new Stopwatch();
+    this.countDown = null;
+    this.gameOver = null;
+    this.retryGameButton = null;
+    this.time = 0;
+    this.btnMusic = null;
+    delete this.bgMusic;
+  }
 
   setCanvas(canvas:HTMLCanvasElement) {
     this.canvas = canvas;
@@ -58,10 +82,21 @@ export class HudService {
     });
   }
 
+  LeaveButtonHud(): HudService {
+    const leftLeave = (this.canvas.width / 15);
+    const topLeave = this.canvas.height - (this.canvas.height / 10);
+    this.configButtonLeave(leftLeave, topLeave);
+    return this;
+  }
+
   gameOverHud(): void {
     this.configTextGameOver();
     this.configButtonRetry();
-    this.configButtonLeave();
+    const leftLeave = ((this.canvas.width / 2) - (this.canvas.width / 40));
+    const topLeave = ((this.canvas.height / 2) + (this.canvas.height / 70));
+    this.leaveGameButton.dispose();
+    this.getTexture().removeControl(this.leaveGameButton);
+    this.configButtonLeave(leftLeave, topLeave);
   }
 
   startChrono(): void {
@@ -88,8 +123,10 @@ export class HudService {
   }
 
   stopChrono(): void {
-    this.time += this.stopWatch.elapsed;
-    this.stopWatch.stop();
+    if (this.stopWatch && this.stopWatch.running) {
+      this.time += this.stopWatch.elapsed;
+      this.stopWatch.stop();
+    }
   }
 
   ticTac(): boolean {
@@ -130,7 +167,7 @@ export class HudService {
       } else if (time <= 0 || !Arbitre.getArbitreGame().gameState()) {
         clearInterval(interval);
         this.getTexture().removeControl(this.countDown);
-        this.configButtonMusic(true);
+        this.LeaveButtonHud().configButtonMusic(true);
         this.bgMusic.play();
       }
     }, 1000);
@@ -281,18 +318,83 @@ export class HudService {
     this.getTexture().addControl(this.gameOver);
   }
 
-  configButtonLeave(): void {
+  configButtonValidate(): void {
+    const configuration = new Map<string, string>();
+
+    configuration.set('path', '../assets/Sprites/Button/ValidateButton.png');
+    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 10)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
+
+    this.validateButton = HudService.CreateGuiImageButton(configuration);
+    this.getTexture().addControl(this.validateButton);
+
+    this.createButtonObservable(this.validateButton, (service: HudService) => {
+      this.disposeHud();
+      this.clearData();
+      this.menuService.startMenu();
+    });
+  }
+
+  disposeLeavingButtons(exception: boolean = false): void {
+    this.validateButton.dispose();
+    this.getTexture().removeControl(this.validateButton);
+    this.validateButton = null;
+
+    this.cancelButton.dispose();
+    this.getTexture().removeControl(this.cancelButton);
+    this.cancelButton = null;
+    if (!exception) {
+      this.leaveGameButton.dispose();
+      this.getTexture().removeControl(this.leaveGameButton);
+      this.leaveGameButton = null;
+    }
+  }
+
+  configButtonCancel(): void {
+    const configuration = new Map<string, string>();
+
+    configuration.set('path', '../assets/Sprites/Button/CancelButton.png');
+    configuration.set('left_position', ''+((this.canvas.width / 2) + (this.canvas.width / 10)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
+
+    this.cancelButton = HudService.CreateGuiImageButton(configuration);
+    this.getTexture().addControl(this.cancelButton);
+
+    this.createButtonObservable(this.cancelButton, (service: HudService) => {
+      if (Arbitre.getArbitreGame().gameState()) {
+        this.gameOverHud();
+      } else {
+        this.LeaveButtonHud();
+      }
+      if (this.time > 0) {
+        this.startChrono();
+      }
+      Arbitre.getArbitreGame().play();
+      this.disposeLeavingButtons(true);
+    });
+  }
+
+  configButtonLeave(left: number, top: number): void {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/LeaveGame.png');
-    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 40)));
-    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 70)));
+    configuration.set('left_position', ''+left);
+    configuration.set('top_position', ''+top);
 
     this.leaveGameButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.leaveGameButton);
 
     this.createButtonObservable(this.leaveGameButton, (service: HudService) => {
-      console.log('leave');
+      Arbitre.getArbitreGame().pause();
+      if (Arbitre.getArbitreGame().gameState()) {
+        this.disposeGameOverHud();
+      } else {
+        this.leaveGameButton.dispose();
+        this.getTexture().removeControl(this.leaveGameButton);
+      }
+      this.stopChrono();
+      this.configButtonValidate();
+      this.configButtonCancel();
     });
   }
 
@@ -311,6 +413,7 @@ export class HudService {
     this.createButtonObservable(this.retryGameButton, (service: HudService) => {
       Arbitre.getArbitreGame().restartGame();
       service.disposeGameOverHud();
+      service.LeaveButtonHud();
     });
   }
 
@@ -416,12 +519,14 @@ export class HudService {
   }
 
   disposeBtnMusic() : void {
-    this.getTexture().removeControl(this.btnMusic);
-    this.btnMusic.dispose();
-    delete this.btnMusic;
+    if (this.btnMusic) {
+      this.getTexture().removeControl(this.btnMusic);
+      this.btnMusic.dispose();
+    }
   }
 
   disposeHud(): void {
+    this.disposeLeavingButtons();
     this.disposeHeads();
     this.disposeKeys();
     this.disposeScores();

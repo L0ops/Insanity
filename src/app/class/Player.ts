@@ -27,6 +27,7 @@ export default class Player extends Block {
   public hudKeys: InsanityGUI.KeyPair;
   public hudDashCd: InsanityGUI.CountDown;
   public pingManager: BABYLON.SpriteManager;
+  private resumeGame: boolean = false;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager, pingManager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
@@ -49,6 +50,35 @@ export default class Player extends Block {
     this.hudKeys = null;
     this.hudDashCd = null;
     this.pingManager = pingManager;
+  }
+
+  public clear(): void {
+    this.keybind.clear();
+    delete this.keybind;
+    delete this.grounded;
+    delete this.live;
+    delete this.key;
+    delete this.death;
+    this.lvlComplete = false;
+    delete this.scene;
+    delete this.ping;
+    delete this.animationList;
+    this.movements = new Array<Movement>();
+    delete this.hudKeys;
+    delete this.hudDashCd;
+    delete this.pingManager;
+  }
+
+  public canMove(): boolean {
+    return !this.resumeGame;
+  }
+
+  public pause() {
+    this.resumeGame = true;
+  }
+
+  public start() {
+    this.resumeGame = false;
   }
 
   public getPing(): Ping {
