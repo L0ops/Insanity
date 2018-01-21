@@ -190,11 +190,15 @@ export class SceneService {
 
     world.on('preSolve', (evt) => {
       evt.contactEquations.forEach(contact => {
-        MapService.preSolveGround(contact.bodyA, contact.bodyB, players);
+        if (players[contact.bodyA.id] || players[contact.bodyB.id]) {
+          MapService.preSolveGround(contact.bodyA, contact.bodyB, players);
+        }
       });
     });
     world.on('endContact', (evt) => {
-      MapService.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      if (players[evt.bodyA.id] || players[evt.bodyB.id]) {
+        MapService.collisionEndGround(evt.bodyA, evt.bodyB, players);
+      }
     });
   }
 }
