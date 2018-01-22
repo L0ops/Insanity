@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as BABYLON from 'babylonjs';
-import Player from '../class/Player';
+import Player from '../class/player/Player';
+import Arbitre from '../class/Arbitres';
 
 @Injectable()
 export class ParticleService {
   private particlesSystem: Array<BABYLON.ParticleSystem> = new Array<BABYLON.ParticleSystem>();
 
-  startParticle(scene: BABYLON.Scene, player: Player, type: string, emitRate?: number, nbPlay: number = 5000) : void {
+  startParticle(player: Player, type: string, emitRate?: number, nbPlay: number = 5000) : void {
+    const scene = Arbitre.getInstance().getScene();
     const particleSystem = ParticleService.CreateParticleSystem(scene);
 
     particleSystem.particleTexture = new BABYLON.Texture("../assets/Sprites/Particles/particle-" + type + ".png", scene);

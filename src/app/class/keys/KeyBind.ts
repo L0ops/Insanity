@@ -1,5 +1,5 @@
 import mousetrap from 'mousetrap';
-import Player from './Player';
+import Player from '../player/Player';
 import Key from './Key';
 
 export enum Side {
@@ -22,6 +22,10 @@ export default class KeyBind {
   }
 
   public clear(): void {
+    mousetrap.unbind(this.key.right);
+    mousetrap.unbind(this.key.left);
+    mousetrap.unbind(this.key.right, 'keyup');
+    mousetrap.unbind(this.key.left, 'keyup');
     delete this.player;
     delete this.key;
     delete this.releaseLeft;

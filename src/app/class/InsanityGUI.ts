@@ -1,7 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import * as GUI from 'babylonjs-gui';
-import Player from './Player';
-import Key from './Key';
+import Player from './player/Player';
+import Key from './keys/Key';
 
 export namespace InsanityGUI {
   export enum KeySide {

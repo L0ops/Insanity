@@ -4,7 +4,7 @@ import * as BABYLON from 'babylonjs';
 import Arbitre from '../class/Arbitres';
 import {parseLazyRoute} from '@angular/compiler/src/aot/lazy_routes';
 import Stopwatch from 'agstopwatch';
-import Player from '../class/Player';
+import Player from '../class/player/Player';
 import {InsanityGUI} from '../class/InsanityGUI';
 import {MenuService} from './menu.service';
 

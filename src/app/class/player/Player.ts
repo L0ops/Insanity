@@ -1,8 +1,8 @@
 import * as p2 from 'p2';
 
-import KeyBind from './KeyBind';
-import Key from './Key';
-import Block from './Block';
+import KeyBind from '../keys/KeyBind';
+import Key from '../keys/Key';
+import Block from '../Block';
 import Ping from './Ping';
 
 import Movement from './player_move/Movement';
@@ -11,7 +11,7 @@ import Run from './player_move/Run';
 import Jump from './player_move/Jump';
 import Dash from './player_move/Dash';
 import Hit from './player_move/Hit';
-import {InsanityGUI} from './InsanityGUI';
+import {InsanityGUI} from '../InsanityGUI';
 
 export default class Player extends Block {
   public keybind: KeyBind;

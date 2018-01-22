@@ -1,5 +1,5 @@
 import p2 from 'p2';
-import Block from './Block';
+import Block from '../Block';
 
 export default class WorldMap {
   private _blocks: Array<Block>;

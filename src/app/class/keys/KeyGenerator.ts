@@ -1,6 +1,6 @@
 import Key from './Key'
-import Player from './Player'
-import {HudService} from '../services/hud.service';
+import Player from '../player/Player'
+import {HudService} from '../../services/hud.service';
 
 export default class KeyGenerator {
   public keys: Key[];

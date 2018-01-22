@@ -1,6 +1,6 @@
 import * as p2 from 'p2';
 
-import Block from './Block';
+import Block from '../Block';
 import Player from './Player';
 
 export default class Ping extends BABYLON.Sprite {
