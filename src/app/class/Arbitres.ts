@@ -1,6 +1,6 @@
-import KeyGenerator from './KeyGenerator';
-import Key from './Key';
-import Player from './Player';
+import KeyGenerator from './keys/KeyGenerator';
+import Key from './keys/Key';
+import Player from './player/Player';
 import * as p2 from 'p2';
 import * as BABYLON from 'babylonjs';
 import Block from './Block';
@@ -18,6 +18,8 @@ class ArbitreGame {
   private timerKeys: number;
   private resumeGame: boolean;
   private camera: BABYLON.FreeCamera;
+  private firstPosCamera: BABYLON.Vector2;
+  private camBoundary: BABYLON.Vector2;
 
   private constructor() {
     this.maxRepop = 1;
@@ -104,8 +106,26 @@ class ArbitreGame {
     return this.winLvl;
   }
 
-  public setCamera(camera: BABYLON.FreeCamera): void {
+  public setCamera(camera: BABYLON.FreeCamera, firstPosCamera: BABYLON.Vector2, camBoundary: BABYLON.Vector2): void {
     this.camera = camera;
+    this.firstPosCamera = firstPosCamera;
+    this.camBoundary = camBoundary;
+  }
+
+  public setCameraPosition(firstPlayer): void {
+    if (firstPlayer.position.x > this.firstPosCamera.x) {
+      this.camera.position.x = firstPlayer.position.x;
+    } if (firstPlayer.position.y > this.firstPosCamera.y) {
+      this.camera.position.y = firstPlayer.position.y;
+    }
+  }
+
+  public getCamera(): BABYLON.FreeCamera {
+    return this.camera;
+  }
+
+  public getCamBoundary(): BABYLON.Vector2 {
+    return this.camBoundary;
   }
 
   public restartGame(): void {

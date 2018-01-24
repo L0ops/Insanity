@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import p2 from 'p2';
-import Block from './Block';
+import Block from '../Block';
 import WorldMap from './WorldMap';
-import Arbitre from './Arbitres';
+import Arbitre from '../Arbitres';
 
 export default class WorldMapGenerator {
   private _width: number;

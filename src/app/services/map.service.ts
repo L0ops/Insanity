@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import WorldMapGenerator from '../class/WorldMapGenerator';
+import WorldMapGenerator from '../class/map/WorldMapGenerator';
 import Arbitre from '../class/Arbitres';
-import Player from '../class/Player';
+import Player from '../class/player/Player';
 import * as BABYLON from 'babylonjs';
 import * as p2 from 'p2';
 
@@ -100,9 +100,11 @@ export class MapService {
     }
   }
 
-  static isPlayerDead(player, camBoundary, freeCamera) {
-    return (player.position.x + camBoundary.x < freeCamera.position.x ||
-      player.position.y + camBoundary.y < freeCamera.position.y ||
-      player.position.y - camBoundary.y > freeCamera.position.y);
+  static isPlayerDead(player) {
+    const camera = Arbitre.getArbitreGame().getCamera();
+    const camBoundary = Arbitre.getArbitreGame().getCamBoundary();
+    return (player.position.x + camBoundary.x < camera.position.x ||
+      player.position.y + camBoundary.y < camera.position.y ||
+      player.position.y - camBoundary.y > camera.position.y);
   }
 }
