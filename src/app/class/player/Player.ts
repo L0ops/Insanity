@@ -121,6 +121,10 @@ export default class Player extends Block {
     super.update();
   }
 
+  public resetScore(): void {
+    this.death = 0;
+  }
+
   public die(): void {
     this.live = false;
     this.death++;

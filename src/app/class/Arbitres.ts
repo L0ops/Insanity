@@ -194,7 +194,7 @@ class ArbitreGame {
     player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
     this.countWinPlayer++;
 
-    if (this.countWinPlayer == ArbitrePlayer.getInstance().getPlayers().length) {
+    if (this.countWinPlayer == ArbitrePlayer.getInstance().getNbPlayers()) {
       player.update();
       this.getKeyGenerator().getHudService().disposeKeys();
       this.winLvl = true;
@@ -272,10 +272,12 @@ class ArbitrePlayer {
   private spriteManagerPing: BABYLON.SpriteManager;
   private dasher: number;
   private touched: number;
+  private nb_players: number;
 
   constructor() {
     this.dasher = 0;
     this.touched = 0;
+    this.nb_players = 0;
   }
 
   static getInstance() {
@@ -329,7 +331,7 @@ class ArbitrePlayer {
     const scene = Arbitre.getInstance().getScene();
     const player = new Player(name, scene, this.animationsPlayers, this.spriteManagerPlayer, this.spriteManagerPing);
     //  To test winGameEvent Arbitre method
-    // player.body.position = [286 + position, -2, 0];
+    // player.body.position = [286 + (position - 11), -2, 0];
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
     player.body.position = [position - 11, 1, 0];
@@ -337,10 +339,15 @@ class ArbitrePlayer {
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
     player.update();
+    this.nb_players++;
   }
 
   public getPlayers(): Player[] {
     return this.players;
+  }
+
+  public getNbPlayers(): number {
+    return this.nb_players;
   }
 
   public getFirstPlayer(): Player {

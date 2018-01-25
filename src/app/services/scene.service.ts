@@ -185,10 +185,10 @@ export class SceneService {
       }
     } else if (checkPoints.find(Arbitre.getArbitreGame().lastCheckPoint, evt.bodyA) ||
       checkPoints.find(Arbitre.getArbitreGame().lastCheckPoint, evt.bodyB)) {
-      const player = players[evt.bodyA.id - 1] ? players[evt.bodyA.id - 1] : players[evt.bodyB.id - 1];
+      const player = players[evt.bodyA.id] ? players[evt.bodyA.id] : players[evt.bodyB.id];
       Arbitre.getArbitreGame().winGameEvent(player);
     } else {
-      const checkpoint = players[evt.bodyA.id - 1] ? evt.bodyB : evt.bodyA;
+      const checkpoint = players[evt.bodyA.id] ? evt.bodyB : evt.bodyA;
       Arbitre.getArbitreGame().setCheckpoint(checkpoint);
     }
   }
