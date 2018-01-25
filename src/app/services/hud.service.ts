@@ -20,11 +20,14 @@ export class HudService {
   private chrono: GUI.TextBlock;
   private stopWatch: Stopwatch = new Stopwatch();
   private countDown: GUI.TextBlock;
-  private gameOver: GUI.TextBlock;
+  private pauseImage: GUI.Image;
+  private gameOver: GUI.Image;
+  private leaveImage: GUI.Image;
   private retryGameButton: GUI.Button;
   private validateButton: GUI.Button;
   private leaveGameButton: GUI.Button;
   private cancelButton: GUI.Button;
+  private pauseButton: GUI.Button;
   private time: number = 0;
   private btnMusic: GUI.Button;
   private bgMusic: BABYLON.Sound;
@@ -83,20 +86,22 @@ export class HudService {
   }
 
   LeaveButtonHud(): HudService {
-    const leftLeave = (this.canvas.width / 15);
-    const topLeave = this.canvas.height - (this.canvas.height / 10);
-    this.configButtonLeave(leftLeave, topLeave);
+    this.configButtonPause();
     return this;
   }
 
   gameOverHud(): void {
-    this.configTextGameOver();
+    this.configImageGameOver();
     this.configButtonRetry();
-    const leftLeave = ((this.canvas.width / 2) - (this.canvas.width / 40));
-    const topLeave = ((this.canvas.height / 2) + (this.canvas.height / 70));
-    this.leaveGameButton.dispose();
+    const leftLeave = ((this.canvas.width / 2) - 150);
+    const topLeave = ((this.canvas.height / 2) - (this.canvas.height / 15));
+    const width = '100px';
+    const height = '100px';
+    if (this.leaveGameButton) {
+      this.leaveGameButton.dispose();
+    }
     this.getTexture().removeControl(this.leaveGameButton);
-    this.configButtonLeave(leftLeave, topLeave);
+    this.configButtonLeave(leftLeave, topLeave, width, height);
   }
 
   startChrono(): void {
@@ -173,6 +178,60 @@ export class HudService {
     }, 1000);
   }
 
+  pauseHud(): void {
+    Arbitre.getArbitreGame().pause();
+    const leftLeave = ((this.canvas.width / 2) - 150);
+    const topLeave = ((this.canvas.height / 2) - (this.canvas.height / 15));
+    const width = '100px';
+    const height = '100px';
+    this.configImagePause();
+    this.configButtonLeave(leftLeave, topLeave, width, height);
+    this.configButtonRetry();
+  }
+
+  retryGame(): void {
+    if (Arbitre.getArbitreGame().gameState()) {
+      this.disposeGameOverHud();
+      this.LeaveButtonHud();
+    } else {
+      this.disposePauseHud();
+    }
+    Arbitre.getArbitrePlayer().getPlayers().forEach(player => {
+      player.resetScore();
+      this.updateScorePlayer(player);
+    });
+    Arbitre.getArbitreGame().play();
+    Arbitre.getArbitreGame().restartGame();
+    this.time = 0;
+    this.chrono.dispose();
+    this.getTexture().removeControl(this.chrono);
+    this.chrono = null;
+  }
+
+  LeaveValidateHud() {
+    if (Arbitre.getArbitreGame().gameState()) {
+      this.disposeGameOverHud();
+    } else {
+      this.disposePauseHud();
+    }
+    this.stopChrono();
+    this.configImageAskValidate();
+    this.configButtonValidate();
+    this.configButtonCancel();
+  }
+
+  redisplayPauseHud(): void {
+    if (Arbitre.getArbitreGame().gameState()) {
+      this.gameOverHud();
+    } else {
+      this.pauseHud();
+    }
+    if (this.time > 0) {
+      this.startChrono();
+    }
+    this.disposeLeavingButtons(true);
+  }
+
   static CreateGuiImage(configuration: Map<string, string>): GUI.Image {
     const image = new BABYLON.GUI.Image(configuration.get('name'), configuration.get('path'));
 
@@ -231,6 +290,46 @@ export class HudService {
     }
   }
 
+  configImagePause(): void {
+    const configuration = new Map<string, string>();
+    configuration.set('left_position', ''+((this.canvas.width / 2) - 275));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 3)));
+    configuration.set('width', '550px');
+    configuration.set('height', '150px');
+    configuration.set('path', '../assets/Sprites/Text/Pause.png');
+    configuration.set('name', 'leave');
+
+    this.pauseImage = HudService.CreateGuiImage(configuration);
+    this.getTexture().addControl(this.pauseImage);
+  }
+
+
+  configImageAskValidate(): void {
+    const configuration = new Map<string, string>();
+    configuration.set('left_position', ''+((this.canvas.width / 2) - 275));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 3)));
+    configuration.set('width', '550px');
+    configuration.set('height', '150px');
+    configuration.set('path', '../assets/Sprites/Text/Leave.png');
+    configuration.set('name', 'leave');
+
+    this.leaveImage = HudService.CreateGuiImage(configuration);
+    this.getTexture().addControl(this.leaveImage);
+  }
+
+  configImageGameOver(): void {
+    const configuration = new Map<string, string>();
+    configuration.set('left_position', ''+((this.canvas.width / 2) - (200)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 3)));
+    configuration.set('width', '400px');
+    configuration.set('height', '150px');
+    configuration.set('path', '../assets/Sprites/Text/GameOver.png');
+    configuration.set('name', 'game_over');
+
+    this.gameOver = HudService.CreateGuiImage(configuration);
+    this.getTexture().addControl(this.gameOver);
+  }
+
   configImagePlayerHead(player: Player, head: number): void {
     if (!this.heads.has(player.name)) {
       const configuration = new Map<string, string>();
@@ -280,6 +379,9 @@ export class HudService {
 
     this.chrono = HudService.CreateGuiText(configuration);
     this.getTexture().addControl(this.chrono);
+    this.pauseButton.dispose();
+    this.getTexture().removeControl(this.pauseButton);
+    this.LeaveButtonHud();
     this.updateBtnMusic(this.bgMusic.isPlaying ? true : false);
   }
 
@@ -306,25 +408,14 @@ export class HudService {
     return this;
   }
 
-  configTextGameOver(): void {
-    const configuration = new Map<string, string>();
-
-    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 8)));
-    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 6)));
-    configuration.set('font_size', ''+42);
-    configuration.set('text', 'GAME OVER');
-
-    this.gameOver = HudService.CreateGuiText(configuration);
-    this.getTexture().addControl(this.gameOver);
-  }
-
   configButtonValidate(): void {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/ValidateButton.png');
-    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 10)));
-    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
-
+    configuration.set('left_position', ''+((this.canvas.width / 2) + (this.canvas.width / 40)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 15)));
+    configuration.set('width', '100px');
+    configuration.set('height', '100px');
     this.validateButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.validateButton);
 
@@ -335,66 +426,56 @@ export class HudService {
     });
   }
 
-  disposeLeavingButtons(exception: boolean = false): void {
-    this.validateButton.dispose();
-    this.getTexture().removeControl(this.validateButton);
-    this.validateButton = null;
-
-    this.cancelButton.dispose();
-    this.getTexture().removeControl(this.cancelButton);
-    this.cancelButton = null;
-    if (!exception) {
-      this.leaveGameButton.dispose();
-      this.getTexture().removeControl(this.leaveGameButton);
-      this.leaveGameButton = null;
-    }
-  }
-
   configButtonCancel(): void {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/CancelButton.png');
-    configuration.set('left_position', ''+((this.canvas.width / 2) + (this.canvas.width / 10)));
-    configuration.set('top_position', ''+((this.canvas.height / 2) + (this.canvas.height / 10)));
-
+    configuration.set('left_position', ''+((this.canvas.width / 2) - (this.canvas.width / 10)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 15)));
+    configuration.set('width', '100px');
+    configuration.set('height', '100px');
     this.cancelButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.cancelButton);
 
     this.createButtonObservable(this.cancelButton, (service: HudService) => {
-      if (Arbitre.getArbitreGame().gameState()) {
-        this.gameOverHud();
-      } else {
-        this.LeaveButtonHud();
-      }
-      if (this.time > 0) {
-        this.startChrono();
-      }
-      Arbitre.getArbitreGame().play();
-      this.disposeLeavingButtons(true);
+      service.redisplayPauseHud();
     });
   }
 
-  configButtonLeave(left: number, top: number): void {
+  configButtonPause(): void {
+    const configuration = new Map<string, string>();
+    configuration.set('path', '../assets/Sprites/Button/PauseButton.png');
+    configuration.set('left_position', ''+(this.canvas.width - ((this.canvas.width / 15) * 2)));
+    configuration.set('top_position', ''+(this.canvas.height / 30));
+    configuration.set('width', '50px');
+    configuration.set('height', '50px');
+    this.pauseButton = HudService.CreateGuiImageButton(configuration);
+    this.getTexture().addControl(this.pauseButton);
+
+    this.createButtonObservable(this.pauseButton, (service: HudService) => {
+      if (Arbitre.getArbitreGame().isResume()) {
+        service.pauseHud();
+      } else {
+        Arbitre.getArbitreGame().play();
+        service.disposePauseHud();
+        service.disposeLeavingButtons();
+      }
+    });
+  }
+
+  configButtonLeave(left: number, top: number, width: string, height: string): void {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/LeaveGame.png');
     configuration.set('left_position', ''+left);
     configuration.set('top_position', ''+top);
-
+    configuration.set('width', width);
+    configuration.set('height', height);
     this.leaveGameButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.leaveGameButton);
 
     this.createButtonObservable(this.leaveGameButton, (service: HudService) => {
-      Arbitre.getArbitreGame().pause();
-      if (Arbitre.getArbitreGame().gameState()) {
-        this.disposeGameOverHud();
-      } else {
-        this.leaveGameButton.dispose();
-        this.getTexture().removeControl(this.leaveGameButton);
-      }
-      this.stopChrono();
-      this.configButtonValidate();
-      this.configButtonCancel();
+      service.LeaveValidateHud();
     });
   }
 
@@ -402,18 +483,16 @@ export class HudService {
     const configuration = new Map<string, string>();
 
     configuration.set('path', '../assets/Sprites/Button/RetryGame.png');
-    configuration.set('left_position', ''+(this.canvas.width / 2));
-    configuration.set('top_position', ''+(this.canvas.height / 2));
-    configuration.set('width', '50px');
-    configuration.set('height', '40px');
+    configuration.set('left_position', ''+((this.canvas.width / 2) + (50)));
+    configuration.set('top_position', ''+((this.canvas.height / 2) - (this.canvas.height / 15)));
+    configuration.set('width', '100px');
+    configuration.set('height', '100px');
 
     this.retryGameButton = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.retryGameButton);
 
     this.createButtonObservable(this.retryGameButton, (service: HudService) => {
-      Arbitre.getArbitreGame().restartGame();
-      service.disposeGameOverHud();
-      service.LeaveButtonHud();
+      service.retryGame();
     });
   }
 
@@ -422,8 +501,9 @@ export class HudService {
 
     configuration.set('path', '../assets/Sprites/Button/' + (bool ? 'son' : 'soff') +'.png');
     configuration.set('left_position', ''+(this.canvas.width - ((this.canvas.width / 25) * 2)));
-    configuration.set('top_position', ''+(this.canvas.height / 30));
-
+    configuration.set('top_position', ''+(60/6));
+    configuration.set('width', '60px');
+    configuration.set('height', '60px');
     this.btnMusic = HudService.CreateGuiImageButton(configuration);
     this.getTexture().addControl(this.btnMusic);
 
@@ -531,6 +611,36 @@ export class HudService {
     this.disposeKeys();
     this.disposeScores();
     this.disposeBtnMusic();
+  }
+
+  disposePauseHud(): void {
+    this.retryGameButton.dispose();
+    this.getTexture().removeControl(this.retryGameButton);
+
+    this.leaveGameButton.dispose();
+    this.getTexture().removeControl(this.leaveGameButton);
+
+    this.pauseImage.dispose();
+    this.getTexture().removeControl(this.pauseImage);
+  }
+
+  disposeLeavingButtons(exception: boolean = false): void {
+    this.validateButton.dispose();
+    this.getTexture().removeControl(this.validateButton);
+    this.validateButton = null;
+
+    this.cancelButton.dispose();
+    this.getTexture().removeControl(this.cancelButton);
+    this.cancelButton = null;
+
+    this.leaveImage.dispose();
+    this.getTexture().removeControl(this.leaveImage);
+
+    if (!exception) {
+      this.leaveGameButton.dispose();
+      this.getTexture().removeControl(this.leaveGameButton);
+      this.leaveGameButton = null;
+    }
   }
 
   disposeGameOverHud(): void {
