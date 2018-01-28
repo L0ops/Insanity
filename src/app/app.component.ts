@@ -16,6 +16,7 @@ export class AppComponent implements AfterViewInit {
   private conf;
   private playerNumber: number;
   private selectedLevel: number;
+  private levels;
 
   constructor(private jsonReader: JsonReaderService,
               private sceneService: SceneService,
@@ -23,10 +24,11 @@ export class AppComponent implements AfterViewInit {
     console.log('Construct');
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     console.log('ngAfterViewInit');
     this.initCanvas();
     this.engine = new BABYLON.Engine(this.canvas, true);
+    this.levels = await this.jsonReader.getObject('JSON/levels.json');
     this.initMenuScene();
   }
 
@@ -39,7 +41,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   async initJson() {
-    this.map = await this.jsonReader.getObject('Sprites/map.json');
+    this.map = await this.jsonReader.getObject('JSON/' + this.levels[this.selectedLevel - 1].path);
     this.conf = await this.jsonReader.getObject('JSON/insanity.json');
     this.initGame();
   }

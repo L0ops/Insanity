@@ -105,6 +105,7 @@ export class SceneService {
     const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     Arbitre.getArbitrePlayer().setSpriteManager(playersName.length);
     Arbitre.getArbitrePlayer().setAnimationPlayers(animations);
+    Arbitre.getArbitreGame().setInitialSpawn(map.initialX, map.initialY);
     for (let i = 0; i < playerNumber; i++) {
       Arbitre.getArbitrePlayer().createPlayer(playersName[i], i);
     }
