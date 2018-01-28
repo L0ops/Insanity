@@ -20,6 +20,7 @@ class ArbitreGame {
   private camera: BABYLON.FreeCamera;
   private firstPosCamera: BABYLON.Vector2;
   private camBoundary: BABYLON.Vector2;
+  private initialSpawn: Array<number>;
 
   private constructor() {
     this.maxRepop = 1;
@@ -131,7 +132,7 @@ class ArbitreGame {
   public restartGame(): void {
     let i = 0;
     ArbitrePlayer.getInstance().getPlayers().forEach(player => {
-      player.body.position = [i - 11, 1, 0];
+      player.body.position = [i + this.initialSpawn[0], this.initialSpawn[1], 0];
       player.body.velocity = [0, 0, 0];
       player.revive();
       i++;
@@ -261,6 +262,14 @@ class ArbitreGame {
   public lastCheckPoint(body, index, checkPoints): boolean {
     return index === (checkPoints.length -1) && body.body === this;
   }
+
+  public setInitialSpawn(x: number, y: number) {
+    this.initialSpawn = [x, y];
+  }
+
+  public getInitialSpawn(): Array<number> {
+    return this.initialSpawn;
+  }
 }
 
 class ArbitrePlayer {
@@ -332,7 +341,8 @@ class ArbitrePlayer {
     // player.body.position = [286 + position, -2, 0];
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
-    player.body.position = [position - 11, 1, 0];
+    const playersSpawn = Arbitre.getArbitreGame().getInitialSpawn();
+    player.body.position = [position + playersSpawn[0], playersSpawn[1], 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
