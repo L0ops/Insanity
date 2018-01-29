@@ -391,13 +391,18 @@ export class HudService {
   configTextRankPosition(paddingTop: number): HudService {
     const players = Arbitre.getArbitrePlayer().getPlayers();
     let i = 0;
-    const left = (this.canvas.width / 2) - (this.canvas.width / 20);
+    let left = (this.canvas.width / 2) - (this.canvas.width / 20) - (this.canvas.width / 20);
     let top = (this.canvas.height / 2) - (this.canvas.height / 10);
     const configuration = new Map<string, string>();
 
     configuration.set('left_position', ''+left);
 
     players.forEach(player => {
+      if (i == 4) {
+        left = (this.canvas.width / 2) + (this.canvas.width / 20);
+        configuration.set('left_position', ''+left);
+        top = (this.canvas.height / 2) - (this.canvas.height / 10);
+      }
       configuration.set('top_position', ''+top);
       configuration.set('player_name', player.name);
       configuration.set('text', ''+(i + 1));
@@ -577,24 +582,36 @@ export class HudService {
 
   resetScorePosition(paddingTop: number): HudService {
     const players = Arbitre.getArbitrePlayer().getPlayers();
-    const left = (this.canvas.width / 2) + (this.canvas.width / 15);
+    let left = (this.canvas.width / 2);
     let top = (this.canvas.height / 2) - (this.canvas.height / 10);
+    let i = 0;
     players.forEach(player => {
+      if (i == 4) {
+        left = (this.canvas.width / 2) + ((this.canvas.width / 20) * 3);
+        top = (this.canvas.height / 2) - (this.canvas.height / 10);
+      }
       this.scores.get(player.name).left = left;
       this.scores.get(player.name).top = top;
       top+= paddingTop;
+      i++;
     });
     return this;
   }
 
   resetHeadsPosition(paddingTop: number): HudService {
     const players = Arbitre.getArbitrePlayer().getPlayers();
-    const left = (this.canvas.width / 2);
+    let left = (this.canvas.width / 2) - (this.canvas.width / 20);
     let top = (this.canvas.height / 2) - (this.canvas.height / 10) - (this.canvas.height / 72);
+    let i = 0;
     players.forEach(player => {
+      if (i == 4) {
+        left = (this.canvas.width / 2) + ((this.canvas.width / 20) * 2);
+        top = (this.canvas.height / 2) - (this.canvas.height / 10) - (this.canvas.height / 72);
+      }
       this.heads.get(player.name).left = left;
       this.heads.get(player.name).top = top;
       top+= paddingTop;
+      i++;
     });
     return this;
   }
