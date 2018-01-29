@@ -328,8 +328,8 @@ class ArbitrePlayer {
     const scene = Arbitre.getInstance().getScene();
     const player = new Player(name, scene, this.animationsPlayers, this.spriteManagerPlayer, this.spriteManagerPing);
     //  To test winGameEvent Arbitre method
-    player.body.position = [286 + (position - 11), -2, 0];
-    // player.body.position = [position - 11, 1, 0];
+    // player.body.position = [286 + (position - 11), -2, 0];
+    player.body.position = [position - 11, 1, 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
