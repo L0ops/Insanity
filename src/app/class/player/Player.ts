@@ -138,6 +138,10 @@ export default class Player extends Block {
     return this.lvlComplete;
   }
 
+  public restartLevel(): void {
+    this.lvlComplete = false;
+  }
+
   public dead(): number {
     return this.death;
   }

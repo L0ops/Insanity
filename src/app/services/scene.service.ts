@@ -33,7 +33,7 @@ export class SceneService {
 
   createGameScene(engine: Engine, canvas: HTMLCanvasElement, conf, map): BABYLON.Scene {
     this._instanceId++;
-
+    console.log(canvas);
     const scene = new BABYLON.Scene(engine);
     scene.actionManager = new BABYLON.ActionManager(scene);
 
@@ -48,7 +48,9 @@ export class SceneService {
     this.initGame(scene, tpEndLvl, conf.maxRepop);
     this.initPlayers(scene, conf.animations, map);
     this.initMap(scene, map);
-
+    console.log(Arbitre.getArbitreGame().isResume(),
+                Arbitre.getArbitreGame().isWinLvl(),
+                Arbitre.getArbitreGame().gameState());
     this.startGame(scene, keys);
     return scene;
   }
