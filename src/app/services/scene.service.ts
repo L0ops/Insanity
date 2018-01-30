@@ -30,8 +30,8 @@ export class SceneService {
     Arbitre.getInstance().clear();
   }
 
-  createGameScene({engine, canvas, conf, map, playerNumber}: {
-    engine: Engine, canvas: HTMLCanvasElement, conf, map, playerNumber
+  createGameScene({engine, canvas, conf, map, playerNumber, keyboard}: {
+    engine: Engine, canvas: HTMLCanvasElement, conf, map, playerNumber: number, keyboard: number
   }): BABYLON.Scene {
     this._instanceId++;
     console.log(canvas);
@@ -39,7 +39,8 @@ export class SceneService {
     scene.actionManager = new BABYLON.ActionManager(scene);
 
     const keys = [];
-    conf.keys.forEach(kp => keys.push(new Key(kp[0], kp[1])));
+    const confKeys = keyboard === 1 ? conf.keys.qwerty : conf.keys.azerty;
+    confKeys.forEach(kp => keys.push(new Key(kp[0], kp[1])));
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);

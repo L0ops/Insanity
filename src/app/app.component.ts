@@ -16,6 +16,7 @@ export class AppComponent implements AfterViewInit {
   private conf;
   private playerNumber: number;
   private selectedLevel: number;
+  private keyboard: number;
   private levels;
 
   constructor(private jsonReader: JsonReaderService,
@@ -54,7 +55,8 @@ export class AppComponent implements AfterViewInit {
       canvas: this.canvas,
       conf: this.conf,
       map: this.map,
-      playerNumber: this.playerNumber
+      playerNumber: this.playerNumber,
+      keyboard: this.keyboard
     };
     const scene = this.sceneService.createGameScene(sceneParams);
     this.engine.runRenderLoop(function () {
@@ -76,7 +78,8 @@ export class AppComponent implements AfterViewInit {
   launchGame(playerNumber: number, level: number): void {
     this.playerNumber = playerNumber;
     this.selectedLevel = level;
-    console.log(playerNumber, level);
+    // TODO : Replace by the value given by Armand
+    this.keyboard = 2;
     this.initJson();
   }
 }
