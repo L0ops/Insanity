@@ -23,7 +23,7 @@ export class MapService {
 
   static createGround(world: p2.World, players: Player[], scene: BABYLON.Scene, map): void {
     const {width, height, data: blocks} = map.layers[0];
-    const worldSpriteManager = new BABYLON.SpriteManager('world-sprite', '../assets/Sprites/tile.png', width * height, 80, scene);
+    const worldSpriteManager = new BABYLON.SpriteManager('world-sprite', '../assets/Sprites/TileFile.png', width * height, 80, scene);
     WorldMapGenerator.getInstance()
       .setSize(width, height)
       .setWorldDetails(blocks)

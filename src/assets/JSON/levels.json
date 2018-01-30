@@ -1,8 +1,20 @@
 [
   {
-    "path": "map.json"
+    "path": "map1.json"
   },
   {
     "path": "map2.json"
+  },
+  {
+    "path": "map3.json"
+  },
+  {
+    "path": "map4.json"
+  },
+  {
+    "path": "map5.json"
+  },
+  {
+    "path": "map1.5.json"
   }
 ]
