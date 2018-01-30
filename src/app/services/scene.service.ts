@@ -46,12 +46,9 @@ export class SceneService {
     const tpEndLvl = new BABYLON.Vector2(conf.tpEndLvl[0], conf.tpEndLvl[1]);
 
     this.initScene(scene, canvas, conf.background);
-    this.initGame(scene, tpEndLvl, conf.maxRepop);
+    this.initGame(scene, tpEndLvl, conf.maxRepop, map);
     this.initPlayers(scene, conf.animations, map, playerNumber);
     this.initMap(scene, map);
-    console.log(Arbitre.getArbitreGame().isResume(),
-                Arbitre.getArbitreGame().isWinLvl(),
-                Arbitre.getArbitreGame().gameState());
     this.startGame(scene, keys);
     return scene;
   }
@@ -93,10 +90,10 @@ export class SceneService {
     Arbitre.getInstance().setWorld(world);
   }
 
-  initGame(scene: BABYLON.Scene, tpEndLvl: BABYLON.Vector2, maxRepop: number): void {
-    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(3, 2, -17), scene);
-    const camBoundary = new BABYLON.Vector2(14.5, 8);
-    const firstPosCamera = new BABYLON.Vector2(freeCamera.position.x, freeCamera.position.y);
+  initGame(scene: BABYLON.Scene, tpEndLvl: BABYLON.Vector2, maxRepop: number, map): void {
+    const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(map.camSpot.x, map.camSpot.y, -17), scene);
+    const camBoundary = new BABYLON.Vector2(map.camBoundary.x, map.camBoundary.y);
+    const firstPosCamera = new BABYLON.Vector2(map.limitCamera.x, map.limitCamera.y);
     Arbitre.getArbitreGame().setCamera(freeCamera, firstPosCamera, camBoundary);
     Arbitre.getArbitreGame().setService(this.hudService);
     Arbitre.getArbitreGame().setTpEndLvl(tpEndLvl);
@@ -107,7 +104,7 @@ export class SceneService {
     const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     Arbitre.getArbitrePlayer().setSpriteManager(playersName.length);
     Arbitre.getArbitrePlayer().setAnimationPlayers(animations);
-    Arbitre.getArbitreGame().setInitialSpawn(map.initialX, map.initialY);
+    Arbitre.getArbitreGame().setInitialSpawn(map.beginSpot.x, map.beginSpot.y);
     for (let i = 0; i < playerNumber; i++) {
       Arbitre.getArbitrePlayer().createPlayer(playersName[i], i);
     }

@@ -18,7 +18,7 @@ class ArbitreGame {
   private timerKeys: number;
   private resumeGame: boolean;
   private camera: BABYLON.FreeCamera;
-  private firstPosCamera: BABYLON.Vector2;
+  private limitCamera: BABYLON.Vector2;
   private camBoundary: BABYLON.Vector2;
   private initialSpawn: Array<number>;
 
@@ -107,16 +107,16 @@ class ArbitreGame {
     return this.winLvl;
   }
 
-  public setCamera(camera: BABYLON.FreeCamera, firstPosCamera: BABYLON.Vector2, camBoundary: BABYLON.Vector2): void {
+  public setCamera(camera: BABYLON.FreeCamera, limitCamera: BABYLON.Vector2, camBoundary: BABYLON.Vector2): void {
     this.camera = camera;
-    this.firstPosCamera = firstPosCamera;
+    this.limitCamera = limitCamera;
     this.camBoundary = camBoundary;
   }
 
   public setCameraPosition(firstPlayer): void {
-    if (firstPlayer.position.x > this.firstPosCamera.x) {
+    if (firstPlayer.position.x > this.limitCamera.x) {
       this.camera.position.x = firstPlayer.position.x;
-    } if (firstPlayer.position.y > this.firstPosCamera.y) {
+    } if (firstPlayer.position.y > this.limitCamera.y) {
       this.camera.position.y = firstPlayer.position.y;
     }
   }
