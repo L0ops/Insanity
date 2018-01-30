@@ -15,6 +15,8 @@ export class AppComponent implements AfterViewInit {
   private map;
   private conf;
   private playerNumber: number;
+  private selectedLevel: number;
+  private levels;
 
   constructor(private jsonReader: JsonReaderService,
               private sceneService: SceneService,
@@ -22,10 +24,11 @@ export class AppComponent implements AfterViewInit {
     console.log('Construct');
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     console.log('ngAfterViewInit');
     this.initCanvas();
     this.engine = new BABYLON.Engine(this.canvas, true);
+    this.levels = await this.jsonReader.getObject('JSON/levels.json');
     this.initMenuScene();
   }
 
@@ -38,7 +41,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   async initJson() {
-    this.map = await this.jsonReader.getObject('Sprites/map.json');
+    this.map = await this.jsonReader.getObject('JSON/' + this.levels[this.selectedLevel - 1].path);
     this.conf = await this.jsonReader.getObject('JSON/insanity.json');
     this.initGame();
   }
@@ -46,14 +49,21 @@ export class AppComponent implements AfterViewInit {
   initGame(): void {
     console.log('initGame');
     this.engine.stopRenderLoop();
-    const scene = this.sceneService.createGameScene(this.engine, this.canvas, this.conf, this.map);
+    const sceneParams = {
+      engine: this.engine,
+      canvas: this.canvas,
+      conf: this.conf,
+      map: this.map,
+      playerNumber: this.playerNumber
+    };
+    const scene = this.sceneService.createGameScene(sceneParams);
     this.engine.runRenderLoop(function () {
       scene.render();
     });
   }
 
   clearGame(): void {
-    this.sceneService.clear();
+    SceneService.clear();
   }
 
   initCanvas() {
@@ -63,8 +73,9 @@ export class AppComponent implements AfterViewInit {
     this.canvas.style.marginLeft = '10%';
   }
 
-  launchGame({playerNumber, level}: {playerNumber: number, level: number}): void {
+  launchGame(playerNumber: number, level: number): void {
     this.playerNumber = playerNumber;
+    this.selectedLevel = level;
     console.log(playerNumber, level);
     this.initJson();
   }

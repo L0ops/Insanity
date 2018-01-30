@@ -4,7 +4,6 @@ import Key from '../class/keys/Key';
 import Environment from '../class/map/Environment';
 import * as BABYLON from 'babylonjs';
 import Engine = BABYLON.Engine;
-import mousetrap from 'mousetrap';
 import * as p2 from 'p2';
 import {HudService} from './hud.service';
 import Block from '../class/Block';
@@ -25,13 +24,15 @@ export class SceneService {
     this._instanceId = 0;
   }
 
-  clear(): void {
+  static clear(): void {
     Arbitre.getArbitrePlayer().clear();
     Arbitre.getArbitreGame().clear();
     Arbitre.getInstance().clear();
   }
 
-  createGameScene(engine: Engine, canvas: HTMLCanvasElement, conf, map): BABYLON.Scene {
+  createGameScene({engine, canvas, conf, map, playerNumber}: {
+    engine: Engine, canvas: HTMLCanvasElement, conf, map, playerNumber
+  }): BABYLON.Scene {
     this._instanceId++;
     console.log(canvas);
     const scene = new BABYLON.Scene(engine);
@@ -46,7 +47,7 @@ export class SceneService {
 
     this.initScene(scene, canvas, conf.background);
     this.initGame(scene, tpEndLvl, conf.maxRepop);
-    this.initPlayers(scene, conf.animations, map);
+    this.initPlayers(scene, conf.animations, map, playerNumber);
     this.initMap(scene, map);
     console.log(Arbitre.getArbitreGame().isResume(),
                 Arbitre.getArbitreGame().isWinLvl(),
@@ -65,14 +66,14 @@ export class SceneService {
         .addPlayersToGenerate()
         .generateKeys()
         .regenerate();
-        Arbitre.getArbitreGame().play();
+      Arbitre.getArbitreGame().play();
       scene.registerBeforeRender(() => {
         this.gameRenderLoop();
       });
     }, COUNTDOWN_TIME);
   }
 
-  initScene(scene: BABYLON.Scene,canvas: HTMLCanvasElement, background): void {
+  initScene(scene: BABYLON.Scene, canvas: HTMLCanvasElement, background): void {
     Environment.getInstance().setScene(scene).createBackgroundPlan(background);
     const bgMusic = new BABYLON.Sound('bgMusic', '../assets/Music/bgmusic.mp3', scene, null, {
       loop: true,
@@ -102,15 +103,15 @@ export class SceneService {
     Arbitre.getArbitreGame().setMaxRepop(maxRepop);
   }
 
-  initPlayers(scene: BABYLON.Scene, animations, map): void {
-    const playersName = ['player1', 'player2', 'player3', 'player4'];
+  initPlayers(scene: BABYLON.Scene, animations, map, playerNumber: number): void {
+    const playersName = ['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'];
     Arbitre.getArbitrePlayer().setSpriteManager(playersName.length);
     Arbitre.getArbitrePlayer().setAnimationPlayers(animations);
-    playersName.forEach((pn, i) => {
-      Arbitre.getArbitrePlayer().createPlayer(pn, i);
-    });
-    const players = Arbitre.getArbitrePlayer().getPlayers();
-    this._players = players;
+    Arbitre.getArbitreGame().setInitialSpawn(map.initialX, map.initialY);
+    for (let i = 0; i < playerNumber; i++) {
+      Arbitre.getArbitrePlayer().createPlayer(playersName[i], i);
+    }
+    this._players = Arbitre.getArbitrePlayer().getPlayers();
     this.hudService.playersHud();
   }
 
@@ -123,7 +124,7 @@ export class SceneService {
   gameRenderLoop() {
     this._world.step(1 / 60);
     if (!Arbitre.getArbitreGame().gameState() && !Arbitre.getArbitreGame().isWinLvl() &&
-    Arbitre.getArbitreGame().isResume()) {
+      Arbitre.getArbitreGame().isResume()) {
       this.gameBehaviour();
     } else {
       if (this.hudService.ticTac()) {
