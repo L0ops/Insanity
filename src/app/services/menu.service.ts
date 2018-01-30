@@ -6,8 +6,8 @@ import * as GUI from 'babylonjs-gui';
 export class MenuService {
 
   private advancedTexture: GUI.AdvancedDynamicTexture;
-  private count: number;
-  private selectedLevel: number = null;
+  private count = 1;
+  private selectedLevel = 1;
   private panel: BABYLON.GUI.StackPanel;
   private header: BABYLON.GUI.TextBlock;
   private levels: BABYLON.GUI.StackPanel;
@@ -71,7 +71,7 @@ export class MenuService {
       this.disposeSecondMenu();
       const playerNumber = this.count;
       const level = this.selectedLevel;
-      this.component.launchGame({playerNumber, level});
+      this.component.launchGame(playerNumber, level);
     });
   }
 
@@ -142,7 +142,6 @@ export class MenuService {
     const levelsRow = new BABYLON.GUI.StackPanel();
     levelsRow.isVertical = false;
     levelsRow.verticalAlignment = VERTICAL_POS[i];
-    console.log(levelsRow.verticalAlignment);
     [0, 1, 2].forEach(j => this.addLevel(levelsRow, i, j));
     this.levels.addControl(levelsRow);
   }
@@ -165,6 +164,9 @@ export class MenuService {
       textBlock.color = '#c57695';
       this.lastSelectedLevelTextBlock = textBlock;
     });
+    const isFirstLevel = index + rowIndex === 0;
+    this.lastSelectedLevelTextBlock = isFirstLevel ? textBlock : this.lastSelectedLevelTextBlock;
+    textBlock.color = isFirstLevel ? '#c57695' : 'white';
     row.addControl(level);
   }
 }
