@@ -12,13 +12,12 @@ class ArbitreGame {
   private maxRepop: number;
   private checkPoints = new Array<Block>();
   private lastCheckTouch: Block;
-  private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
   private winLvl: boolean;
   private timerKeys: number;
   private resumeGame: boolean;
   private camera: BABYLON.FreeCamera;
-  private firstPosCamera: BABYLON.Vector2;
+  private limitCamera: BABYLON.Vector2;
   private camBoundary: BABYLON.Vector2;
   private initialSpawn: Array<number>;
 
@@ -40,7 +39,6 @@ class ArbitreGame {
     delete this.maxRepop;
     delete this.checkPoints;
     delete this.lastCheckTouch;
-    delete this.tpEndLvl;
     delete this.countWinPlayer;
     delete this.winLvl;
     delete this.timerKeys;
@@ -86,10 +84,6 @@ class ArbitreGame {
     return this.maxRepop;
   }
 
-  public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
-    this.tpEndLvl = tpEndLvl;
-  }
-
   public gameState(): boolean {
     return this.overGame;
   }
@@ -107,16 +101,16 @@ class ArbitreGame {
     return this.winLvl;
   }
 
-  public setCamera(camera: BABYLON.FreeCamera, firstPosCamera: BABYLON.Vector2, camBoundary: BABYLON.Vector2): void {
+  public setCamera(camera: BABYLON.FreeCamera, limitCamera: BABYLON.Vector2, camBoundary: BABYLON.Vector2): void {
     this.camera = camera;
-    this.firstPosCamera = firstPosCamera;
+    this.limitCamera = limitCamera;
     this.camBoundary = camBoundary;
   }
 
   public setCameraPosition(firstPlayer): void {
-    if (firstPlayer.position.x > this.firstPosCamera.x) {
+    if (firstPlayer.position.x > this.limitCamera.x) {
       this.camera.position.x = firstPlayer.position.x;
-    } if (firstPlayer.position.y > this.firstPosCamera.y) {
+    } if (firstPlayer.position.y > this.limitCamera.y) {
       this.camera.position.y = firstPlayer.position.y;
     }
   }
@@ -191,13 +185,13 @@ class ArbitreGame {
 
   public winGameEvent(player: Player): void {
     player.finishedLevel();
+    Arbitre.getInstance().getWorld().removeBody(player.body);
+    player.clearImage();
     this.getKeyGenerator().cleanPlayer(player);
     player.hudDashCd.dispose();
-    player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
     this.countWinPlayer++;
 
     if (this.countWinPlayer == ArbitrePlayer.getInstance().getNbPlayers()) {
-      player.update();
       this.getKeyGenerator().getHudService().disposeKeys();
       this.winLvl = true;
       this.lvlRanking();
@@ -337,7 +331,10 @@ class ArbitrePlayer {
     const scene = Arbitre.getInstance().getScene();
     const player = new Player(name, scene, this.animationsPlayers, this.spriteManagerPlayer, this.spriteManagerPing);
     //  To test winGameEvent Arbitre method
-    // player.body.position = [286 + position, -2, 0];
+    // player.body.position = [280 + position, -2, 0]; // map1
+    // player.body.position = [15 + position, 35, 0]; // map3
+    // player.body.position = [138 + position, 15, 0]; // map4
+    // player.body.position = [6 + position, 5, 0]; // map5
     // To go to firstCheckPoint
     // player.body.position = [60, 3, 0];
     const playersSpawn = Arbitre.getArbitreGame().getInitialSpawn();
