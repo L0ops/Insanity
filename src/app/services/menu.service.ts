@@ -30,7 +30,6 @@ export class MenuService {
 
   createMenuScene(engine: BABYLON.Engine, canvas: HTMLElement, menuLevel: number, component: AppComponent = null): BABYLON.Scene {
     this.component = component;
-
     const scene = new BABYLON.Scene(engine);
     const light = new BABYLON.PointLight('Omni', new BABYLON.Vector3(20, 20, 100), scene);
     const camera = new BABYLON.ArcRotateCamera('Camera', 0, 0.8, 100, BABYLON.Vector3.Zero(), scene);
@@ -49,9 +48,10 @@ export class MenuService {
 
   showFirstMenu(): void {
     this.addPanel();
+    this.addImageSettings(this.panel, 'player', '300px', '100px');
     this.addHeader();
     this.addSlider();
-    this.addButton(this.panel);
+    this.addButton(this.panel, 'next');
     this.button.onPointerDownObservable.add(() => {
       this.showSecondMenu();
     });
@@ -71,7 +71,7 @@ export class MenuService {
   showSecondMenu(): void {
     this.disposeFirstMenu();
     this.addLevels();
-    this.addButton(this.levels);
+    this.addButton(this.levels, 'play');
     this.button.onPointerDownObservable.add(() => {
       this.disposeSecondMenu();
       const playerNumber = this.count;
@@ -82,7 +82,7 @@ export class MenuService {
 
   addPanel(): void {
     const panel = new BABYLON.GUI.StackPanel();
-    panel.width = '220px';
+    panel.width = '300px';
     panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     this.advancedTexture.addControl(panel);
@@ -98,6 +98,16 @@ export class MenuService {
     }
   }
 
+  addImageSettings(panel: BABYLON.GUI.StackPanel,filename: string, width: string, height: string): void {
+    const image = new BABYLON.GUI.Image(filename, '../../assets/Sprites/Text/' + filename + 'settings.png');
+
+    image.width = width;
+    image.height = height;
+    image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    panel.addControl(image);
+  }
+
   addHeader(): void {
     const header = new BABYLON.GUI.TextBlock();
     header.text = '1 player';
@@ -107,13 +117,13 @@ export class MenuService {
     this.header = header;
   }
 
-  addButton(panel: BABYLON.GUI.StackPanel): void {
-    const button = BABYLON.GUI.Button.CreateSimpleButton('but', 'Click Me');
-    button.width = 0.2;
-    button.height = '40px';
-    button.width = '100px';
-    button.color = 'white';
-    button.background = 'green';
+  addButton(panel: BABYLON.GUI.StackPanel, filename: string): void {
+    const button = BABYLON.GUI.Button.CreateImageOnlyButton('', '../../assets/Sprites/Button/' + filename + '.png');
+
+    button.height = '80px';
+    button.width = '200px';
+    button.top = 5;
+    button.thickness = 0;
     panel.addControl(button);
     this.button = button;
   }
@@ -134,11 +144,11 @@ export class MenuService {
   }
 
   addLevels(): void {
-    console.log('addLevels');
     const levels = new BABYLON.GUI.StackPanel();
     levels.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     levels.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     this.levels = levels;
+    this.addImageSettings(levels, 'map', '300px', '100px');
     [0, 1, 2].forEach(i => this.addLevelsRow(i));
     this.advancedTexture.addControl(levels);
   }
