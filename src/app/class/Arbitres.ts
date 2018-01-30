@@ -191,13 +191,13 @@ class ArbitreGame {
 
   public winGameEvent(player: Player): void {
     player.finishedLevel();
+    Arbitre.getInstance().getWorld().removeBody(player.body);
+    player.clearImage();
     this.getKeyGenerator().cleanPlayer(player);
     player.hudDashCd.dispose();
-    player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
     this.countWinPlayer++;
 
     if (this.countWinPlayer == ArbitrePlayer.getInstance().getNbPlayers()) {
-      player.update();
       this.getKeyGenerator().getHudService().disposeKeys();
       this.winLvl = true;
       this.lvlRanking();

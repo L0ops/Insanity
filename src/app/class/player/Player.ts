@@ -52,6 +52,11 @@ export default class Player extends Block {
     this.pingManager = pingManager;
   }
 
+  public clearImage(): void {
+    this.dispose();
+    this.ping.dispose();
+  }
+
   public clear(): void {
     this.keybind.clear();
     delete this.keybind;
