@@ -342,9 +342,9 @@ class ArbitrePlayer {
     // player.body.position = [138 + position, 15, 0]; // map4
     // player.body.position = [6 + position, 5, 0]; // map5
     // To go to firstCheckPoint
-    player.body.position = [60, 3, 0];
+    // player.body.position = [60, 3, 0];
     const playersSpawn = Arbitre.getArbitreGame().getInitialSpawn();
-    // player.body.position = [position + playersSpawn[0], playersSpawn[1], 0];
+    player.body.position = [position + playersSpawn[0], playersSpawn[1], 0];
     player.initPing(position);
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
