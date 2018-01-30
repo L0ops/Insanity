@@ -121,6 +121,10 @@ export default class Player extends Block {
     super.update();
   }
 
+  public resetScore(): void {
+    this.death = 0;
+  }
+
   public die(): void {
     this.live = false;
     this.death++;
@@ -132,6 +136,10 @@ export default class Player extends Block {
 
   public hasFinishedLvl(): Boolean {
     return this.lvlComplete;
+  }
+
+  public restartLevel(): void {
+    this.lvlComplete = false;
   }
 
   public dead(): number {

@@ -135,6 +135,7 @@ class ArbitreGame {
       player.body.position = [i + this.initialSpawn[0], this.initialSpawn[1], 0];
       player.body.velocity = [0, 0, 0];
       player.revive();
+      player.restartLevel();
       i++;
     });
     this.camera.position = new BABYLON.Vector3(3, 2, -17);
@@ -195,7 +196,7 @@ class ArbitreGame {
     player.body.position = [this.tpEndLvl.x - this.countWinPlayer, this.tpEndLvl.y, 0];
     this.countWinPlayer++;
 
-    if (this.countWinPlayer == ArbitrePlayer.getInstance().getPlayers().length) {
+    if (this.countWinPlayer == ArbitrePlayer.getInstance().getNbPlayers()) {
       player.update();
       this.getKeyGenerator().getHudService().disposeKeys();
       this.winLvl = true;
@@ -213,11 +214,7 @@ class ArbitreGame {
       }
       return 0;
     });
-    this.getKeyGenerator().getHudService()
-     .resetHeadsPosition(50)
-     .resetScorePosition(50)
-     .configTextRankPosition(50)
-     .resetChronoPosition();
+    this.getKeyGenerator().getHudService().winHud();
   }
 
   public addCheckpointBlock(block): void {
@@ -281,10 +278,12 @@ class ArbitrePlayer {
   private spriteManagerPing: BABYLON.SpriteManager;
   private dasher: number;
   private touched: number;
+  private nb_players: number;
 
   constructor() {
     this.dasher = 0;
     this.touched = 0;
+    this.nb_players = 0;
   }
 
   static getInstance() {
@@ -347,10 +346,15 @@ class ArbitrePlayer {
     Arbitre.getInstance().getWorld().addBody(player.body);
     this.players[player.body.id] = player;
     player.update();
+    this.nb_players++;
   }
 
   public getPlayers(): Player[] {
     return this.players;
+  }
+
+  public getNbPlayers(): number {
+    return this.nb_players;
   }
 
   public getFirstPlayer(): Player {
