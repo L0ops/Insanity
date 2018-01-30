@@ -12,7 +12,6 @@ class ArbitreGame {
   private maxRepop: number;
   private checkPoints = new Array<Block>();
   private lastCheckTouch: Block;
-  private tpEndLvl: BABYLON.Vector2;
   private countWinPlayer: number;
   private winLvl: boolean;
   private timerKeys: number;
@@ -40,7 +39,6 @@ class ArbitreGame {
     delete this.maxRepop;
     delete this.checkPoints;
     delete this.lastCheckTouch;
-    delete this.tpEndLvl;
     delete this.countWinPlayer;
     delete this.winLvl;
     delete this.timerKeys;
@@ -84,10 +82,6 @@ class ArbitreGame {
 
   public getMaxRepop(): number {
     return this.maxRepop;
-  }
-
-  public setTpEndLvl(tpEndLvl: BABYLON.Vector2): void {
-    this.tpEndLvl = tpEndLvl;
   }
 
   public gameState(): boolean {

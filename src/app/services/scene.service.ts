@@ -43,10 +43,9 @@ export class SceneService {
 
     // `const light =` is useless because we don't reuse it later
     const light = new BABYLON.PointLight('Point', new BABYLON.Vector3(5, 10, 5), scene);
-    const tpEndLvl = new BABYLON.Vector2(conf.tpEndLvl[0], conf.tpEndLvl[1]);
 
     this.initScene(scene, canvas, conf.background);
-    this.initGame(scene, tpEndLvl, conf.maxRepop, map);
+    this.initGame(scene, conf.maxRepop, map);
     this.initPlayers(scene, conf.animations, map, playerNumber);
     this.initMap(scene, map);
     this.startGame(scene, keys);
@@ -90,13 +89,12 @@ export class SceneService {
     Arbitre.getInstance().setWorld(world);
   }
 
-  initGame(scene: BABYLON.Scene, tpEndLvl: BABYLON.Vector2, maxRepop: number, map): void {
+  initGame(scene: BABYLON.Scene, maxRepop: number, map): void {
     const freeCamera = new BABYLON.FreeCamera('FreeCamera', new BABYLON.Vector3(map.camSpot.x, map.camSpot.y, -17), scene);
     const camBoundary = new BABYLON.Vector2(map.camBoundary.x, map.camBoundary.y);
     const firstPosCamera = new BABYLON.Vector2(map.limitCamera.x, map.limitCamera.y);
     Arbitre.getArbitreGame().setCamera(freeCamera, firstPosCamera, camBoundary);
     Arbitre.getArbitreGame().setService(this.hudService);
-    Arbitre.getArbitreGame().setTpEndLvl(tpEndLvl);
     Arbitre.getArbitreGame().setMaxRepop(maxRepop);
   }
 
