@@ -28,6 +28,7 @@ export default class Player extends Block {
   public hudDashCd: InsanityGUI.CountDown;
   public pingManager: BABYLON.SpriteManager;
   private resumeGame: boolean = false;
+  private rank: number = 0;
 
   constructor(name: string, scene: BABYLON.Scene, animations, manager: BABYLON.SpriteManager, pingManager: BABYLON.SpriteManager) {
     super(name, scene, manager, false, 'player');
@@ -135,8 +136,13 @@ export default class Player extends Block {
     this.death++;
   }
 
-  public finishedLevel(): void {
+  public finishedLevel(rank: number): void {
     this.lvlComplete = true;
+    this.rank = rank;
+  }
+
+  public getRank(): number {
+    return this.rank;
   }
 
   public hasFinishedLvl(): Boolean {
