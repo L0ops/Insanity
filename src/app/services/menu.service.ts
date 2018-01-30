@@ -169,9 +169,9 @@ export class MenuService {
       textBlock.color = '#c57695';
       this.lastSelectedLevelTextBlock = textBlock;
     });
-    const isFirstLevel = index + rowIndex === 0;
-    this.lastSelectedLevelTextBlock = isFirstLevel ? textBlock : this.lastSelectedLevelTextBlock;
-    textBlock.color = isFirstLevel ? '#c57695' : 'white';
+    const isSelectedLevel = index + 1 + rowIndex * 3 === this.selectedLevel;
+    this.lastSelectedLevelTextBlock = isSelectedLevel ? textBlock : this.lastSelectedLevelTextBlock;
+    textBlock.color = isSelectedLevel ? '#c57695' : 'white';
     row.addControl(level);
   }
 }
