@@ -70,9 +70,10 @@ export class AppComponent implements AfterViewInit {
 
   initCanvas() {
     this.canvas = <HTMLCanvasElement> document.getElementById('renderCanvas');
-    this.canvas.style.width = '80%';
-    this.canvas.style.height = '50%';
-    this.canvas.style.marginLeft = '10%';
+    this.canvas.style.width = '65%';
+    this.canvas.style.height = '40%';
+    this.canvas.style.margin = '0 auto';
+    this.canvas.style.display = 'block';
   }
 
   launchGame(playerNumber: number, level: number, keyboard: number): void {

@@ -1,5 +1,5 @@
 { "height":30,
-  "beginSpot": {"x": -6, "y": -2},
+  "beginSpot": {"x": -9, "y": -2},
   "camSpot": {"x": 3, "y": 2},
   "camBoundary": {"x": 14.5, "y": 8},
   "limitCamera":{"x": 3, "y": 2},
