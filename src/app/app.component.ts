@@ -30,12 +30,12 @@ export class AppComponent implements AfterViewInit {
     this.initCanvas();
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.levels = await this.jsonReader.getObject('JSON/levels.json');
-    this.initMenuScene();
+    this.initMenuScene(1);
   }
 
-  initMenuScene() {
+  initMenuScene(menu: number) {
     this.engine.stopRenderLoop();
-    const scene = this.menuService.createMenuScene(this.engine, this.canvas, 1, this);
+    const scene = this.menuService.createMenuScene(this.engine, this.canvas, menu, this);
     this.engine.runRenderLoop(() => {
       scene.render();
     });
@@ -75,11 +75,11 @@ export class AppComponent implements AfterViewInit {
     this.canvas.style.marginLeft = '10%';
   }
 
-  launchGame(playerNumber: number, level: number): void {
+  launchGame(playerNumber: number, level: number, keyboard: number): void {
     this.playerNumber = playerNumber;
     this.selectedLevel = level;
-    // TODO : Replace by the value given by Armand
-    this.keyboard = 2;
+    this.keyboard = keyboard;
+    console.log(playerNumber, level, keyboard);
     this.initJson();
   }
 }
