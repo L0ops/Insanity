@@ -184,7 +184,7 @@ class ArbitreGame {
   }
 
   public winGameEvent(player: Player): void {
-    player.finishedLevel();
+    player.finishedLevel(this.countWinPlayer);
     Arbitre.getInstance().getWorld().removeBody(player.body);
     player.clearImage();
     this.getKeyGenerator().cleanPlayer(player);
@@ -205,6 +205,12 @@ class ArbitreGame {
         return 1;
       } else if (p1.dead() < p2.dead()) {
         return -1;
+      } else if (p1.dead() == p2.dead()) {
+        if (p1.getRank() > p2.getRank()) {
+          return 1;
+        } else {
+          return -1;
+        }
       }
       return 0;
     });
