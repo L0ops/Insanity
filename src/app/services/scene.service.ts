@@ -58,7 +58,7 @@ export class SceneService {
     this.hudService.startCountDown(COUNTDOWN_TIME);
     setTimeout(() => {
       Arbitre.getArbitreGame()
-        .setTimerKeys(10000)
+        .setTimerKeys(60 * 1000)
         .setKeys(keys)
         .addPlayersToGenerate()
         .generateKeys()
