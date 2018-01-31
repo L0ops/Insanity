@@ -24,7 +24,7 @@ class ArbitreGame {
   private constructor() {
     this.maxRepop = 1;
     this.countWinPlayer = 0;
-    this.timerKeys = 10000;
+    this.timerKeys = 60 * 1000;
   }
 
   public setInstanceId(id: number): void {
@@ -174,11 +174,10 @@ class ArbitreGame {
   }
 
   public regenerate(): void {
-    setTimeout(() => {
+    setInterval(() => {
       if (this.id && this.getKeyGenerator().getPlayers()) {
         this.getKeyGenerator().clean();
         this.getKeyGenerator().generate();
-        // this.regenerate();
       }
     }, this.timerKeys);
   }
